@@ -1,0 +1,726 @@
+\documentclass{book}
+\usepackage{amsmath, amsthm, graphicx, amssymb, mathtools}
+\usepackage[english]{babel}
+
+\title{Learnig and Estimation of Dynamical Systems}
+\author{Dante Piotto}
+\date{Spring semester 2023}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Introduction}
+Goal of the course: build matemathical models of dynamical systems from data\\
+Password of slides: LEDS\$2023\\
+Office appointments to be decided with professor as needed\\
+\section{What is a system?}
+A slice of reality whose evoultion in time can be described by a certain number of measurable attributes (variables)\\
+Inputs: independent variables(causes) which describe the action the surrounding environment on the system\\
+Outputs: dependent variables (effects) which describe the reactoin of the syste\\
+Mathematica model: a set of quantitative relationships between the system variables\\
+Solving probelms in scientific disciplicnes by means of mathematical models:
+\begin{enumerate}
+    \item determination of a mathematical model of the system
+    \item solution of the problem by using the model (i.e. in the mathematical world)
+    \item implementation fo the obtained solution on the real process
+\end{enumerate}
+Competent model: a good model for solving a given problem in a certain problem context
+\begin{itemize}
+    \item different mathematical models can be associated with the same system
+    \item classification of models based on  the modeling objectives
+\end{itemize}
+modeling objectives:
+\begin{itemize}
+    \item inference
+    \item control
+    \item prediction
+    \item filtering
+    \item diagnosis
+    \item predictive maintenance
+    \item simulation
+    \item speech and image recognition
+\end{itemize}
+
+\subsection{Learning modesl from data}
+Data (set of samples)
+\begin{align*}
+    u(1), u(2),\dots, u(N) & \qquad y(1), y(2), \dots, y(N) & u(t)\in \mathcal{U},y(t)\in \mathcal{Y}
+\end{align*}
+Target model(function)
+\[\mathcal{M}_p(\theta)
+\]
+\( \mathcal{M}_p(\cdot)\) represents a function linking input and output samples, $\theta$ is a set of parameters and $p$ is a set of hyperparameters\\
+Static models: $f:\mathcal{U}\to\mathcal{Y}$\\
+Dynamic models: $f:(\mathcal{U},\mathcal{Y})\to\mathcal{Y}$\\
+
+\section{Types of learning}
+Supervised learning ($u,y$ known):
+\begin{itemize}
+    \item $\mathcal{Y}$ is discrete: classification
+    \item  $\mathcal{Y}$ is continuous: regression
+\end{itemize}
+Unsupervised learning ($u,y$  uknown):
+\begin{itemize}
+    \item $\mathcal{Y}$ is discrete: clustering
+    \item $\mathcal{Y}$ is continuous: dimensionality reduction
+\end{itemize}
+Classification: assign the input to one of a finite number of classes\\
+Regression: find an input-output relation\\
+Reinforcement learning: finding suitable actions to take in a given situation in order to maximize a reward. Both $u,y$ are known but we haev to find the "optimal" output for a given input
+
+This course deals with Supervised learning
+%insert images with examples of models for regression and classification
+\section{fields related to learning from data}
+\begin{itemize}
+    \item Machine learning
+    \item Pattern recognition
+    \item Statistical learning
+    \item Data mining
+    \item System identification
+\end{itemize}
+\subsection{System identification}
+System identification is the art and science of building mathematical models of dynamic systems from observed input-output data\\
+Learning from data is a \emph{data-driven(black box) approach}: a model is selected within a specified model class by using a selection criterion on the only basis of experimental (observed) data. No reference tot he physical nature of the system is made
+\begin{itemize}
+    \item the obtained models have limited validity
+    \item the model parameters may lack any physical meaning
+    \item models relatively easy to construct and use
+    \item ability to extract only some relevant aspects from complex frameworks
+\end{itemize}
+
+In contrast, \emph{physical modeling} is a white box approach. The systems is partitiond into subsystems that aredescribed by using known laws of physics. Then, the model of the system is obtained by joining such relations.
+
+\subsubsection{Grey box approach}
+It often happens that a model based on physical modeling contains a number of uknown parameters: identification(learning) methods can be applied to estimate the uknown parameters.
+
+\section{Learning steps}
+%insert flowchart from slides
+The planned use of the model is important in designing the experiment to collect data (when possible).
+
+
+
+
+
+\chapter{Stochastic Processes}
+
+Let us consider a random experiment, with sample space $\Omega$, and let us associate to each event $\omega_i$ in the sample space a signal $x(t,\omega_i)$. With a fixed $\omega$ we have a function of time $x(t)$, and at each fixed $t_i$, $x(\omega)$ is a random variable
+
+
+
+
+
+Definition (discrete time stochastic process):\\
+A function $x(t,\omega)$ where $t \in \{\dots, -2,-1-0,1,2,1\dots\}$ is time and $\omega \in \Omega$ is an outcome of the sample space.\\
+$x(t,\omega_i)$ is called a \emph{realization} of the stochastic process
+Given $t=t_1$ the first order cdf and pdf are:
+\[F(x;t_1)=P(x(t_1)\leq x) \qquad f(x;t_1)=\frac{\delta F(x;t_1)}{\delta x}\]
+
+Autocovariance: 
+relation proven using linearity of the expectation operaror
+
+\section{stationary stochastic processes}
+A stochastic process is stationary if 
+\begin{gather}
+    F(x_1,x_2,\dots, x_k;t_1,t_2,\dots,t_k)=F(x_1,x_2,\dots, x_k;t_1+\tau,t_2+ \tau,\dots,t_k+ \tau)\\
+    \forall \tau, \forall k, \forall \{t_1,t_2,\dots,t_k\}
+\end{gather}
+this property also holds for the pdf
+Consequences:
+\begin{gather}
+    \mu_x(t)=\mu_x\\
+    \sigma_x^2(t)=\sigma_x^2\\
+    r_x(t_1,t_2)=r_x(t_1-t_2)=r_x(\tau)\\
+    c_x(t_1,t_2)=c_x(t_1-t_2)=c_x(\tau)
+\end{gather}
+A process is weakly stationary (or wide-sense stationary) if the 4 properties above hold
+\\Toeplitz matrix: symmetric matrix with all elements belonging to a diagonal being equal. \\
+Cross-correlation and cross-covariance can only be defined for stationary stochastic proceesses
+
+\subsection{cross-correlation and cross-covariance}
+
+\section{vector stochastic processes}
+
+\section{gaussian processes}
+
+\section{white processes}
+it is not possible to define a continuous time white process
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Stochastic models}
+
+
+PSD= Power Spectral Density
+
+Moving Average noise is also called pink noise
+Matlab considers the normalized autocorrelation.
+
+
+\section{Matlab stuff}
+rand(): generates white noise vector\\
+cov(X): gives the variance of vector X\\
+randn(): generates gaussian distributed white noise vector\\
+autocorr(X): gives the normalized autocorrelation\\
+to get the non normalized autocorrelation: autocorr(X)*cov(X)\\
+filter(): useful to generate AR, MA, and ARMA processes\\
+
+
+
+
+
+\chapter{Estmation problem}
+w.p.1: with probability 1
+A biased estimator with small variance and a sufficiently small bias may be preferrable to an unbiased estimator with high variance. \emph{bias-variance tradeoff}
+
+\chapter{Linear regression}
+Let us consider the static model
+\[
+    y(t) = f(u(t))+e(t) \quad \text{model class } \mathcal{M}_p(\theta)
+\]
+If the function $f$ is linear in the parameters (elements of $\theta$), the modell can be written in the \emph{linear regression} form:
+\[
+    y(t) = \varphi^T(t)\theta+e(t)
+\]
+\section{The Least Squares Method}
+available data set:
+\[
+    y(1),y(2),\dots,y(N),u(1),u(2),\dots,u(N)
+\]
+If an estimate $\hat{\theta}$ were available, we would compute the misfit between $y(t)$ and its 'prediction' $\hat{y}(t)$:
+\[
+    \varepsilon(t)=y(t)-\hat{y}(t)=y(t)-\varphi^T(t)\hat{\theta}
+\]
+where the error term $\epsilon(t)$ is the residual. The LS method finds the estimate $\hat{\theta}$ that minimizes the loss function
+\begin{equation}
+    J(\theta)=\sum_{t=1}^N \varepsilon^2(t)=\sum_{t=1}^N (y(t)-\varphi^T(t)\hat{\theta})^2
+\end{equation}
+In matrix form:
+\[
+    \varepsilon=Y-\Phi \theta
+\]
+where
+\[
+    \varepsilon = \begin{bmatrix}
+        \varepsilon(1) \\ \varepsilon(2) \\ \vdots \\ \varepsilon(N)
+    \end{bmatrix}
+    y= \begin{bmatrix}
+       y(1) \\ y(2) \\ \vdots \\ y(N)
+    \end{bmatrix}
+    \varphi = \begin{bmatrix}
+        \varphi (1) \\ \varphi(2) \\ \vdots \\ \varphi(epsilonN)
+    \end{bmatrix}
+\]
+so that
+\begin{equation}
+    J(\theta)=\sum_{t=1}^N \varepsilon^2(t)=\|\varepsilon\|^2=\| Y-\Phi \theta \|^2
+\end{equation}
+The optimization problem to be solved is
+\[
+    \min_{\theta \in \mathcal{M}_p(\theta)}J(\theta)
+\]
+The solution can be found by using the following relations:
+\[
+    \frac{\partial A^Tx}{\partial x} =A, \quad \frac{\partial x^T A}{\partial x} = A, \quad \frac{\partial x^TAx}{\partial x} = (A+A^T)x
+\]
+where $A$ is an $n \times n$ matrix and $x$ is a $n \times 1$ vector\\
+From the above relations we obtain the \emph{normal equations}
+\[
+    \Phi^T\Phi\theta=\Phi^TY
+\]
+\emph{proof was covered in class}\\
+\begin{gather*}
+    J(\theta)=Y^TY-2Y^T\Phi\theta+\theta^T\Phi^T\Phi\theta\\
+    \frac{\partial J(\theta)}{\partial\theta}= 0 -2\Phi^TY+(\Phi^T\Phi + \Phi^T\Phi)\theta\\
+    \frac{\partial J(\theta)}{\partial\theta}= -2\Phi^TY + 2\Phi^T\Phi \theta\\
+    \frac{\partial J(\theta)}{\partial\theta}=0 \implies \Phi^T\Phi \theta =\Phi^TY
+\end{gather*}
+To complete the proof we must prove that the second derivative of the matrix is positive definite 
+\begin{gather*}
+    \frac{\partial^2 J(\theta)}{\partial\theta^2}=2\Phi^T\Phi
+\end{gather*}\
+If the $N \times p$ matrix $\Phi$ is tall ($N>p$) and full rank, the LS estimate is given by
+\begin{equation}
+    \hat{\theta} = (\Phi^T\Phi)^{-1}\Phi^TY
+\end{equation}
+
+
+
+\subsection{Geometrical interpretation of the LS estimate}
+The estimated function is such that the sum of the squares of the distances, evaluated along the $y$-axis, between $y(t)$ and its 'prediction' $\hat{y}(t)$ is minimized.\\
+Consider the linear map described by $\Phi$:
+\[
+    \Phi : \mathbb{R}^p\to\mathbb{R}^N
+\]
+Let $\Phi_1,\Phi_2,\dots,\Phi_p$ be the columns of matrix $\Phi$. The LS problem consists in finding the linear combination of $\Phi_1,\Phi_2,\dots,\Phi_p$ that approximates $Y$ as closely as possible. Therefore, the solution is given by the orthogonal projection of $Y$ onto the subspace spanned by $\Phi_1,\Phi_2,\dots,\Phi_p$, i.e. the orthogonal projection of $Y$ onto the image of $A$
+\\$\hat{\theta}$ is such that $\varepsilon=Y-\Phi\hat{\theta}$ is ortogonal to $\Phi_1,\Phi_2,\dots,\Phi_p$
+\[
+    \implies \quad \varepsilon^T\Phi = 0
+\]
+\begin{gather*}
+    \varepsilon = Y-\Phi\hat{\theta}=Y-\hat{Y}\\
+    \varepsilon^T\Phi=(Y-\Phi\hat{\theta}=Y-\hat{Y})^T\Phi=Y^T\Phi-\hat{\theta}\Phi^T\Phi\\
+    =Y^T\Phi-Y^T\Phi(\Phi^T\Phi)^{-1}\Phi^T\Phi = 0
+\end{gather*}
+The LS solution $\hat{\theta}$ can be obtained by considering the pseudoinverse of $\Phi$:
+\[
+    \hat{\theta} = \Phi^\dagger Y
+\]
+If $\Phi$ is  full rank, its pseudoinverse is just given by $\Phi^\dagger = (\Phi^T\Phi)^{-1}\Phi^T$
+\subsection{Statistical properties of the LS estimator}
+Assume the true model
+\[
+    y(t)=\varphi^T(t)\theta^* + w(t)
+\]
+where $w(t)$ is a zero mean white process with variance $\sigma_w^2$. Let $\hat{\theta}_N$ be an estimate obtained by using N input-output samples\\
+It follows that
+\begin{gather*}
+    E[\hat{\theta}] = E[(\Phi^T\Phi)^{-1}\Phi^TY]\\
+    Y=\Phi\theta^*+w\\
+    E[\hat{\theta}]E=[(\Phi^T\Phi)^{-1}\Phi^TY=\Phi\theta^*+w]=E[\theta^*+(\Phi^T\Phi)^{-1}\Phi^Tw]\\
+    =\theta^*(\Phi^T\Phi)^{-1}\Phi^TE[w]=\theta^*
+\end{gather*}
+therefore the LS estimator is unbiased.
+
+\subsection{LS estimation fo ARX models}
+The closed form solution of the LS problem is obtained in a similar fashion to the FIR model case.
+\subsubsection{Identifiablity}
+\begin{itemize}
+    \item $u(t)$ has to be persistently exciting of order $\geq n$
+    \item In order to have a well-condition matrix $H$ (i.e.) with a low condition number), it is also necessary that $n$ is not greater than the minimal order of an ARX model compatible with the data
+\end{itemize}
+\subsubsection{Statistical properties}
+True model:
+\[
+    y(t)=\varphi^T(t)\theta^*+w(t)
+\]
+It follows that
+\begin{gather*}
+    \hat{\theta} =  \left(\frac{1}{N}\sum_{t=1}^{N}\varphi(t)\varphi^T(t)\right)^{-1} \frac{1}{N}\sum_{t=1}^{N}\varphi(t)\left(\varphi^T(t)\theta^*+w(t)\right)\\
+    \hat{\theta} = \theta^* + \left(\frac{1}{N}\sum_{t=1}^{N}\varphi(t)\varphi^T(t)\right)^{-1} \frac{1}{N}\sum_{t=1}^{N}\varphi(t)w(t)
+\end{gather*}
+The estimate is biased: \( E[\hat{\theta}]\neq \theta^* \)
+Consisstency:
+\begin{gather*}
+    \lim_{N\to\infty} \hat{\theta}_N = \theta^*+\lim_{N\to\infty}\left(\frac{1}{N}\sum \varphi(t)\varphi^T(t)\right)^{-1}\frac{1}{N}\sum \varphi(t)w(t)\\  
+    \lim_{N\to\infty} \hat{\theta}_N=\theta^*+E[\varphi(t)\varphi^T(t)]^{-1}E[\varphi(t)w(t)]=\theta^*-\Sigma_{\varphi}^{-1}r_{\varphi w}
+\end{gather*}
+where $\Sigma_{\varphi}^{-1}=E(\varphi(t)\varphi^T(t)$ and $r_{\varphi w}$ is the cross correlation. 
+Because $u(t)$ is pe of order $n$, and $w(t)$ is white, $\Sigma_{\varphi}$ is invertible, and $r_{\varphi w}=0$ because $y(t-n)$ does not depend on $w(t)$ for $n>0$ and $u(t)$ in general does not depend on $w$, therefore
+\[
+    \lim_{N\to\infty}\hat{\theta}=\theta^*
+\]
+It is also possible to prove that
+\[
+    \sqrt{N}(\hat{\theta}\theta^* \to \mathcal{N}(0,P), \text{ for } N\to\infty\
+\]
+with
+\[
+    P=\sigma_w^2\Sigma_{\varphi}^{-1}
+\]
+
+A consistent estimate of $\sigma_w^2$ is given by
+\[
+    \sigma_w^2=J(\hat{\theta})
+\]
+Then, $cov(\hat{\theta})$ can be estimated as
+\[
+    \frac{\hat{\sigma}_w^2\hat{\Sigma}_{\varphi}^{-1}}{N} = \hat{\sigma}_w^2(H^TH)^{-1}
+\]
+The equivalence can be derived considering
+\[
+    \hat{\Sigma}_{\varphi}=\frac{1}{N}\sum \varphi(t)\varphi^T(t)=\frac{H^TH}{N}
+\]
+\subsection{ARX optimal (one step ahead) predictor}
+True model:
+\[
+    y(t)=\varphi^T(t)\theta^*+w(t)
+\]
+
+Problem: find the optimal (minimal variance) prediction of $y(t)$ given the past data $y(t-1),u(t-1),y(t-2),u(t-2),\dots$
+It is easy to show that the optimal predictor $\hat{y}(t|t-1)$ is given by
+\[
+    y(t|t-1)=\varphi^T(t)\theta^*
+\]
+we know that
+\[
+    y(t)=-a_1^*y(t-1)-\cdots-a_n^*y(t-n)+b_1^*u(t-1)+\cdots+b_n^*u(t-n)+w(t)
+\]
+because $w(t)$ is a white process, the best estimate we can make for it is its mean, $0$.
+
+For any other predictor $\hat{\bar{y}}(t)$
+\[
+    E[(y(t)-\hat{\bar{y}}(t))^2]\geq E[(y(t)-\hat{y}(t|t-1))^2]=\sigma_w^2
+\]
+As a consequence, the LS estimation $\hat{\theta}$ leads to a predictive model and the residual $\varepsilon(t)$ can be seen as a prediction error. In fact, from
+\[
+    \lim_{N\to\infty}\hat{\theta}=\theta^*
+\]
+it follows that
+\[
+    \varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}\xrightarrow[N\to\infty]{} \theta^*
+\]
+\subsection{LS estimation of AR models}
+\[
+    y(t)+a_1y(t-1)+\dots+a_ny(t-n)=e(t)
+\]
+Linear regression form:
+\[
+    y(t)=\varphi^T(t)\theta+e(t)
+\]
+where:
+\begin{gather*}
+    \varphi(t)=\begin{bmatrix}
+        -y(t-1) & -y(t-2) & \cdots & -y(t-n)
+    \end{bmatrix}^T\\
+    \theta=\begin{bmatrix} a_1 & \cdots & a_n \end{bmatrix}^T\\
+    Y= -H_y(n)\theta+\varepsilon
+\end{gather*}
+LS estimate:
+\[
+    \hat{\theta}=-(H_y^T(n)H_y(n))^{-1}H_y^T(n)Y
+\]
+Statistical properties and optimale predictor: similar considerations to those of the ARX case.
+\section{Recursive least squares}
+Let $\hat{theta(t-1)}$ be a LS estimate obtained form data collected up to time $t-1$:
+\[
+    \hat{\theta}(t-1)=\left(\sum_{k=1}^{t-1}\varphi(k)\varphi^T(k)\right)^{-1} \sum_{k=1}^{t-1}\varphi(k)y(k) \qquad(1)
+\]
+Recursive identification methods consist of updating $\hat{\theta}(t-1)$ by some "simple modification" once data at time $t$ becomes available to compute $\hat{\theta}(t)$
+
+Starting from (1) and 
+\begin{gather*}
+    S(t)=HH^T=\sum_{k=1}^t\varphi(k)\varphi^T(k)=S(t-1)+\varphi(t)\varphi^T(t)\\
+    \sum_{k=1}^t\\varphi(k)y(k)=\sum_{k=1}^{t-1}\varphi(k)y(k)+\varphi(t)y(t)\\
+    \hat{theta}(t)=S(t)^{-1}\sum_{k=1}^t\varphi(k)y(k)
+\end{gather*}
+It is possible to obtain
+\[
+    \hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)
+\]
+where
+\[
+    K(t)=S(t)^{-1}\varphi(t)
+\]
+and we can recall that
+\[
+    \varepsilon(t) = y(t)-\varphi^T(t)\hat{\theta}(t-1)
+\]
+is the prediction error.
+computation was developed in class
+This leads to the following recursive least squares algorithm:
+\subsubsection{RLS I}
+\begin{enumerate}
+    \item $S(T) = S(t-1) + \varphi(t)\varphi^T(t)$
+    \item $K(t) = S(t)^{-1}\varphi(t)$
+    \item $\varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}(t-1)$
+    \item $\hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)$
+\end{enumerate}
+By defining \(R(t) = \frac{S(t)}{t}\) it is possible to derive a RLS algorithm for
+\[
+    \hat{\theta}(t) = \left(\frac{1}{t}\sum_{k=1}^t \varphi(k)\varphi^T(k)\right)^{-1}\frac{1}{t}\sum_{k=1}^t\varphi(k)y(k)
+\]
+in fact, $R(t)$ can be easily updated
+\[
+    R(t)=\frac{S(t)}{t}=\frac{S(t-1)+\varphi(t)\varphi^T(t)}{t}=\frac{t-1}{t}R(t-1)+\frac{\varphi(t)\varphi^T(t)}{t}
+\]
+Following the same steps used to derive RLS I we get (computation was developed in class):
+\subsubsection{RLS II}
+\begin{enumerate}
+    \item $R(T) = \frac{t-1}{t}R(t-1) + \frac{1}{t}\varphi(t)\varphi^T(t)$
+    \item $K(t) = \frac{1}{t}R(t)^{-1}\varphi(t)$
+    \item $\varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}(t-1)$
+    \item $\hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)$
+\end{enumerate}
+In order to not compute a matrix inversion at each step and instead updating the inverse itself, we can rely on the following result
+\subsubsection{Matrix inversion lemma (Woodbury identity)}
+Let $A,C$ be square and invertible. Then
+\[
+    (A+BCD)^{-1}=A^{-1}-A^{-1}B(C^{-1}+DA^{-1}B)^{-1}DA^{-1}
+\]
+\begin{gather*}
+    S(t)^{-1}=(S(t-1)+\varphi(t)\varphi^T(t)=^{-1}\\
+    A=S(t-1)\\
+    B=\varphi(t)\\
+    C=1\\
+    D=\varphi^T(t)\\
+    S(t)^{-1}=S(t-1)^{-1}-S(t-1)^{-1}\varphi(T)(1+\varphi^T(t)S(t-1)^{-1}\varphi(t))^{-1}\varphi^T(t)S(t-1)^{-1}
+\end{gather*}
+note that $(1+\varphi^T(t)S(t-1)^{-1}\varphi(t))$ is a scalar, so we can write:
+\[
+    S(t)^{-1}=S(t-1)^{-1}-\frac{S(t-1)^{-1}\varphi(T)\varphi^T(t)S(t-1)^{-1}}{1+\varphi^T(t)S(t-1)^{-1}\varphi(t)}
+\]
+We can now modify RLS I and RLS II in order to avoid matrix inversion
+\subsubsection{RLS III}
+\begin{enumerate}
+    \item $S(T) = S(t-1)^{-1}-\frac{S(t-1)^{-1}\varphi(T)\varphi^T(t)S(t-1)^{-1}}{1+\varphi^T(t)S(t-1)^{-1}\varphi(t)}
+$
+    \item $K(t) = S(t)^{-1}\varphi(t)$
+    \item $\varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}(t-1)$
+    \item $\hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)$
+\end{enumerate}
+\subsubsection{RLS IV}
+\begin{enumerate}
+    \item $P(T) =\frac{t}{t-1} P(t-1)-\frac{t}{t-1}\frac{P(t-1)^{-1}\varphi(T)\varphi^T(t)P(t-1)^{-1}}{t-1+\varphi^T(t)P(t-1)\varphi(t)}
+$
+\item $K(t) = P(t)\frac{1}{t}phi(t)$
+    \item $\varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}(t-1)$
+    \item $\hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)$
+\end{enumerate}
+with $P(t)=R(t)^{-1}$
+
+\subsubsection{Initialization}
+The RLS algorithm needs to be initialized. One possibility is to start with an initial batch estimate, which will be better the more data is available. It is also possible to start with some other type of guess on the model parameters, potentially also very bad, e.g. a vector of zeros. However, a guess for the gain matrix (either $S(0), R(0), P(0)$ depending on the specific algorithm) is necessary. With the RLS IV, a good initialization would be
+\[
+    P(0)=\alpha I_p
+\]
+If we are confident about the initial guess of the parameters, a small value of $\alpha$ is appropriate. On the flipside, if we expect the inital estimator to be bad, the value of $\alpha$ shall be quite large.
+\subsection{Asymptotic behaviour of the RLS algorithm}
+
+\[
+    y(t)=\varphi^T(t)\theta^*+w(t)
+\]
+\[
+    \lim_{t\to\infty}\hat{\theta}(t)=\theta^* \quad \text{ w.p. 1}
+\]
+$R(t)$ in the RLS II algo is an estimate of the covariance matrix. Looking at the RLS II we can observe that from step 2, $K(t)$ approaches 0. Therefore, asymptotically, there is no correction.
+\[
+    lim_{t1\to\infty} K(t) = \frac{\Sigma^{-1}_{\varphi}}{\infty}\varphi(t) = 0
+\]
+
+
+
+
+
+
+\subsection{Recursive wighted least squares}
+A modification of the RLS algorithm aimed at tracking  parameter variations by giving less importance to past data and more importance to recenet data.
+\[
+    J(\theta)=\sum_{t=1}^{N}\lambda^{N-t}\varepsilon^2(t)=\varepsilon^TW\varepsilon
+\]
+where
+\[
+    W=\text{diag}\begin{bmatrix} \lambda^{N-1} & \lambda^{N-2} & \cdots & \lambda & 1 \end{bmatrix}    
+\]
+and $\lambda, 0<\lambda<1$ is the \emph{forgetting factor}. We have
+\[
+    \hat{\theta} = \left( \sum_{t=1}^{N}\lambda^{N-t}\varphi(t)\varphi^T(t) \right)^{-1}\sum_{t=1}^{N}\lambda^{N-t}\varphi(t)y(t)
+\]
+The scalar $\lambda$ should be chosen by a trade-off between the ability to track parameter changes on one hand, and good estimation accuracy on the other hand.
+
+Recursive weighted LS: determine a recursive form of 
+\[
+    \hat{\theta} (t) = \left( \sum_{k=1}^t \lambda^{t-k}\varphi(k)\varphi^T(k) \right) ^{-1} \sum_{k=1}^t \lambda^{t-k}\varphi(k)y(k)
+\]
+Define
+\[
+    S(t)=\sum_{k=1}^t \lambda^{t-k}\varphi(k)\varphi^T(k)=\lambda S(t-1)+\varphi(t)\varphi^T(t)
+\]
+Following the same reasoning useed to derive the previous recursive algorighms we can derive the RWLS algorithms
+\subsubsection{RWLS I}
+\begin{enumerate}
+    \item $S(t) = \lambda S(t-1) + \varphi(t)\varphi^T(t)$
+    \item $K(t) = S(t)^{-1}\varphi(t)$
+    \item $\varepsilon(t) = y(t) - \varphi^T(t) \hat{\theta}(t-1)$
+    \item $\hat{\theta}(t-1)+K(t)\varepsilon(t)$
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Prediction error methods}
+Let us consider the ARMAX model
+\[
+    A(z^{-1})y(t) = B(z^{-1}) u(t) +C(z^{-1})w(t)
+\]
+or
+\[
+    y(t) + a_1y(t-1) + \cdots + a_ny(t-n) = b_1u(t-1) + \cdots + b_n u(t-n) + w(t)+c_1w(t-1) + \cdots + c_nw(t-n)
+\]
+Then
+\[
+    y(t)=\varphi^T(t)\theta + w(t)
+\]
+where
+\[
+    \varphi(t) = \begin{bmatrix} 
+        -y(t-1) & \cdots &  -y(t-n) & u(t-1) & \dots & u(t-n) & w(t-1) & \cdots & w(t-n)
+    \end{bmatrix}^T
+\]
+
+In a real data setting we may assume the model
+\[
+    A(z^{-1})y(t)=B(z^{-1})u(t)+C(z^{-1})\varepsilon(t)
+\]
+where $\varepsilon(t)$ is the residual. Problem: the residual can be computed once the estimate $\hat{\theta}$ is available, so that it is a function of $\theta,\varepsilon(t,\theta)$
+\[
+    y(t)=\varphi^T(t,\theta)\theta+\varepsilon(t)
+\]
+This is no longer a linear regression and the least squares method cannot be applied.
+If we consider 
+\[
+    \frac{C(z^{-1}}{A(Z^{-1}}
+\]
+as a disturbance $d(t)$ and only try to estimate the plant, we obtain
+\[
+    y(t)=\bar{\varphi}^T(t)\bar{\theta}+e(t)
+\]
+and we can use the least squares method. However, $e(t)$ is now a coloured process and this estimator is not unbiased. Let us assume a true model exists $\theta^*$.
+\begin{gather*}
+    y(t)=\bar{\varphi}^T(t)\theta^++e(t)\\
+    \hat{\bar{\theta}}_{LS} = \left( \frac{1}{N} \sum_{t=1}^N \bar{\varphi}(t)\bar{\varphi}^T(t)\right) \frac{1}{N} \sum_{t=1}^N \bar{\varphi}(t)y(t)\\
+    =\theta^+ + \left(\frac{1}{N}\sum_{t=1}^N \bar{\varphi}(t)\bar{\varphi}^T(t)\right)^{-1}\frac{1}{N}\sum_{t=1}^N \bar{\varphi}(t)e(t)\\
+    \lim_{N\to\infty} \hat{\bar{\theta}}_{LS}=\theta^*+\Sigma_{\hat{\varphi}}^{-1}r_{\bar{\varphi}e}\\
+    r_{\bar{\varphi}e}=E[\bar{\varphi}(t)e(t)] = E [ \begin{bmatrix}
+    -y(t-1) \\ \vdots \\ -y(t-n) \\ u(t-1) \\ \vdots \\ u(t-n) \end{bmatrix} e(t)]\\
+    e(t) = w(t) c_1w(t-1)+ \cdots + c_nw(t-n)\\
+    r_{\bar{\varphi}e} = \begin{bmatrix} \\ \\ 0 \\ 0 \\ \vdots \\ 0 \end{bmatrix} \text{ with n zeros}
+\end{gather*}
+$y(t-1) = f(w(t-1), w(t-2, \dots )$\\
+$e(t) = f(w(t), w(t-1), \dots, w(t-n)$ so there is a correlation between the terms of $y$ and those of $e$, so the first elements of the above vector are not zero, therefore
+\[
+    \lim_{N\to\infty} \hat{\bar{\theta}}_{LS}=\theta^*+\Sigma_{\hat{\varphi}}^{-1}r_{\bar{\varphi}e}\neq 0
+\]
+so the estimator is biased.
+
+General model structure:
+\[
+    y(t) = G(z^{-1})u(t) + H(z^{-1})w(t)
+\]
+where $w(t)$ is a zero mean white process with variance $\sigma^2_w$ and uncorrelated with $u(t)$\\
+Available measurements:
+\[
+    y(1-n),y(2-n),\dots,y(N),u(1-n),u(2-n),\dots,u(N)
+\]
+Prediction error method: find the estimate $\hat{\theta}$ that minimizes the loss function
+\[
+J(\theta) = \frac{1}{N}\sum_{t=1}^N\varepsilon^2(t,\theta) = \frac{1}{N} \sum_{t=1}^N(y(t)-\hat{y}(t|t-1,\theta))^2
+\]
+where $\hat{y}(t|t-1,\theta)$ is the \emph{optimal one step ahead prediction} of $y(t)$. Optimal (minimal variance)  prediction: a prediction of $y(t)$ given $\theta$ and the past I/O data up to time $t-1$ s.t. the variance of the prediction error $\varepsilon(t)$ is minimal
+The model can be rewritten as
+\[
+y(t) = G(z^{-1})u(t) + (H(z^{-1})-1)w(t)+w(t)
+\]
+by replacing $w(t)$ with $\frac{1}{H(z^{-1})}y(t)-\frac{G(z^{-1})}{H(z^{-1})}u(t)$, after some stes we get
+\[
+    y(t)=\left(1-\frac{1}{H(z^{-1})}\right) y(t) + \frac{G(z^{-1})}{H(z^{-1})}u(t)+w(t)
+\]
+from which it is easy to prove
+\[
+    \hat{y}(t|t-1,\theta)=\left(1-\frac{1}{H(z^{-1})}\right)y(t)+\frac{G(z^{-1})}{H(z^{-1})}u(t)
+\]
+For any other predictor $y^p(t)$ we have
+\[
+    E[(y(t)-y^p(t))^2]\geq E[(y(t)-\hat{y}(t|t-1,\theta))^2]
+\]
+\begin{gather*}
+    E[(y(t)-y^p(t))^2]=E[(Gu(t)+Hw(t)-y^p(t))^2]\\
+    =E[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u+w(t)-y^p(t)\right)^2]
+\end{gather*}
+We can notice that $w(t)$ is uncorrelated with all other members of the sum as $y^p(t)$ depends only on the first $t-1$ samples, therefore
+\begin{gather*}
+    =E[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2]+E[w(t)^2]
+    =E[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2]+\sigma_{w^2}
+\end{gather*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Statistical hypothesis testing}
+
+\chapter{Model complexity selection and regulariztion}
+
+\chapter{model assesment (validation)}
+
+\chapter{Maximum likelihood estimation}
+
+\chapter{Classification: probabilistic models}
+
+
+
+
+
+
+
+
+
+
+\end{document}
