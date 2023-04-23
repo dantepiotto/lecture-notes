@@ -4,6 +4,16 @@
 \usepackage{textgreek}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
 
 \title{IPCV}
 \author{Dante Piotto}
@@ -554,6 +564,279 @@ where
     Z(p) = \sum_{q\in I} e^{-\frac{\|N_p-N_q\|^2_2}{h^2}}
 \end{gather*}
 In practice, to reduce the computational burden, only a region of the image is considered rather than the whole image.
+
+
+
+
+
+
+\section{Image segmentation and blob analysis} 
+*sigh* some notes have been lost to the doom that are amd drivers for ubuntu, and will not for the time being be rewritten. We carry on, pondering the option of archlinux with growing intensity.
+
+
+
+
+
+
+
+
+
+\subsection{Coulour-based segmentation}
+In several applications, the sought for objects exhibit a known colour quite different from that of background structures. Hence, it is reasonable to try segmenting out foreground from background based on colour information. Let us denote a pixel's colour as:
+\[
+    I(p)=\begin{bmatrix}
+        I_r(p) \\
+        I_g(p) \\
+        I_b(p) 
+    \end{bmatrix}
+\]
+Then, segmentation can be achieved by computing and thresholding the distance between each pixel's colour and the reference background coloour $\mu$:
+\[
+    \forall p \in I : \begin{cases}
+        d(I(p),\mu)\leq T \rightarrow O(p) = B \text{ } (F)\\
+        d(I(p),\mu) >T \rightarrow O(p) = F \text{ } (B)
+    \end{cases}
+\]
+\[
+    d(I(p),\mu) = ((I_r(p)-\mu_r)^2+(I_g(p)-\mu_g)^2+(I_b(p)-\mu_b)^2)^{\displaystyle\frac{1}{2}}
+\]
+It is thus necessary to know the reference colour, $\mu$, which can be conveniently estimated from one or more training images, by taking an average of pixels in the image. The decision surface would therefore be a sphere in the RGB colour spaces centered at $\mu$ with a radius as large as $T$. Eulidean distance can however lead to mistakes due to training samples exhibiting different variation along different channels.
+\subsubsection{Mahalanobis Distance}
+given the covariance matrix of the pixel values:
+\[
+    \Sigma = \begin{pmatrix}
+        \sigma_{rr}^2 & \sigma_rg^2 & \sigma_{rb}^2 \\
+        \sigma_{gr}^2 & \sigma_{gg}^2 & \sigma_{gb}^2 \\
+        \sigma_{br}^2 & \sigma_{bg}^2 & \sigma_{bb}^2 \\
+    \end{pmatrix} \Leftarrow \begin{cases}
+        \sigma^2_{ij} = \frac{1}{N}\sum_{k=1}^{N}(I_i(p_k)-\mu_i)(I_j(p_k)-\mu_j)\\
+        i,j \in \{r,g,b\}
+    \end{cases}
+\]
+and recalling that the Euclidean distance can be rewritten as:
+\[
+    d(I(p),\mu) = ((I(p)-\mu)^T(I(p)-\mu))^{\frac{1}{2}}
+\]
+The \emph{Mahalanobis Distance} is given by:
+\[
+    d_M(I(p),\mu) = ((I(p)-\mu)^T\Sigma^{-1}(I(p)-\mu))^{\frac{1}{2}}
+\]
+wlog let's consider a diagonal $\Sigma$ (i.e. independent components in $I(p)$)
+\begin{gather*}
+    \Sigma = \begin{pmatrix}
+        \sigma_{rr}^2 & 0 & 0 \\
+        0 & \sigma_{gg}^2 & 0 \\
+        0 & 0 & \sigma_{bb}^2 \\
+    \end{pmatrix} \Rightarrow \begin{pmatrix}
+        1/\sigma_{rr}^2 & 0 & 0 \\
+        0 & 1/\sigma_{gg}^2  0 \\
+        0 & 0 & 1/\sigma_{bb}^2 \\
+    \end{pmatrix} \\ \\
+    \Sigma^{-1}(I(p)-\mu) = \begin{bmatrix}
+        (I_r(p)-\mu_r)/\sigma_{rr}^2
+        (I_g(p)-\mu_g)/\sigma_{gg}^2
+        (I_b(p)-\mu_b)/\sigma_{bb}^2
+    \end{bmatrix} \\ \\
+d_M(I(p),\mu) = \left( \displaystyle\frac{(I_r(p)-\mu_r)^2}{\sigma_{rr}^2} + \displaystyle\frac{(I_g(p)-\mu_g)^2}{\sigma_{gg}^2} + \displaystyle\frac{(I_b(p)-\mu_b)^2}{\sigma_{bb}^2}   \right)^{\frac{1}{2}}
+\end{gather*}
+If we consider the equation 
+\[
+    d_M^2(I(p),\mu) \leq T^2
+\]
+we get that the decision surface is an ellipsoid centered at $\mu$ with axes aligned to the coordinate axes and semi-axes lengths given by
+\[
+    L=\begin{bmatrix}
+        L_r \\ L_g \\ L_b
+    \end{bmatrix} = T \begin{bmatrix}
+        \sigma_rr \\\sigma_gg \\\sigma_bb 
+    \end{bmatrix}
+\]
+Note that the Mahalanobis distance weighs the differences along components of the vector differently. In particular, they are weighed according to inverse proportionality to the learned variances.
+
+Due to $\Sigma$ being real ad symmetric, it can always be diagonalized through eigenvalue decomposition:
+\[
+    \Sigma = RDR^T \qquad R=(e_1,e_2,e_3), \quad D= \begin{pmatrix}
+        \lambda_1 & 0 & 0\\
+        0 & \lambda_1 & 0\\
+        0 & 0 & \lambda_1
+    \end{pmatrix}
+\]
+where $e_i$ are (orthonormal) eingenvectors of $\Sigma$, $\lambda_i$ the corresponding eigenvalues and $R^T$ the rotation matrix to transform the data into a new coordinate system having axes aligned to the eigenvectors. 
+\subsection{Binary Morphology operators}
+tools used to improve or analyse binary images. The operators manipulate the image by a small "kernel" referred to as \emph{structuring elements}.
+\subsubsection{Dilation (Minkowsky sum)}
+The output image is obtained by sliding the structuring element at each foreground pixel in the image. Useful for correcting false negatives.
+\subsubsection{Erosion (Minkowsky subtraction)}
+The output image is obtained by sliding the structuring element across the whole image keeping only those pixels where the structuring element fits the foreground pixels. Useful for correcting false positives.
+\subsubsection{Opening}
+Erosion followed by dilation:
+\[
+    A \circ B = (A\ominus B) \oplus B
+\]
+Removes parts of the foreground that don't match the structuring element.
+\subsubsection{Closing}
+Dilation followed by erosion:
+\[
+    A \bullet B = (A\oplus B) \ominus B
+\]
+Like opening the background by a flipped structuring element
+
+\subsection{Connected component labeling}
+Different blobs are given different labels while the background is left unaffected. Connected components (blobs) are foreground regions that are connected. Connectivity may be defined through 4-neighbourhoods or 8-neighbourhoods (4-way connectivity and 8-way connectivity). A path from pixel p to pixel q is a sequence of pixels $p=p_1,p_2,\dots p_n =q$ s.t. $p_i$ and $p_{i+1}$ are neighbouring. A connected region is a region s.t for any two pixels $p,q$ in that region there exists a path between $p$ and $q$ contained in the region.
+\subsection{Blob analysis}
+Blobs can be analysed to extract a few useful pieces of information:
+\subsubsection{Area}
+\[
+    A = \displaystyle\sum_{p\in R}^{}1 
+\]
+Equal to the number of pixels in the blob
+\subsubsection{Barycentre}
+\[
+    B = \begin{bmatrix}
+        i_B \\ j_B
+    \end{bmatrix} \quad i_B =\displaystyle\frac{1}{A}\displaystyle\sum_{p\in R}^{}i \quad j_B =\displaystyle\frac{1}{A}\displaystyle\sum_{p\in R}^{}j \quad p = \begin{bmatrix}
+        i \\ j
+    \end{bmatrix}
+\]
+\subsubsection{Orientation}
+Defined according to the axis (line through the baricenter) of least inertia (major axis):
+\[
+    \argmin_I\left( \displaystyle\sum_{p\in\mathbb{R}}^{}d_I^2(p)\right)
+\]
+Orientation is typically defined as the angle between the major axis and the horizontal axis of the image.
+\subsubsection{Oriented Bounding Box}
+aka Minimum Enclosing Rectangle: given by the major and minor\footnote{line through the baricenter perpendicular to the major axis} axes by finding the points that have the highest distance from the major and minor axes on either side, and computing the lines parallel to the axes through said points and their intersections. 
+\subsubsection{Lenght and Width}
+Length: extent of the object along the major axis\\
+Width: extent of the object along the minor axis\\
+\subsubsection{Elongatedness}
+Ratio between length and width:
+\[
+    E=\displaystyle\frac{L}{W}
+\]
+\subsubsection{Rectangularity}
+Ratio between the area of the object and the area of the OBB:
+\[
+    R=\displaystyle\frac{A}{LW}
+\]
+\subsubsection{Ellipticity}
+Ratio between the area of the object and the area of the ellipse having major and minor axes equal to $L$ and $W$ respectively
+\[
+    E=\displaystyle\frac{A}{A_{LW}},\quad A_{LW}=\displaystyle\frac{\pi}{4}LW
+\]
+
+\section{Local features}
+Edges: pixels that lie inbetween two different uniform regions. 
+\subsubsection{1D Step-Edge} %oh no what are you doing step-edge?
+In the transitoin region between the two constant levels, the absolute value of the first derivative is high (and reaches an extremum at the inflection point)
+% [TODO] instert image of 1D step-edge
+Accordingly, the simplest edge-detection operator relies on thresholding the absolute value of the first derivative of the signal. 
+\subsubsection{2D Step-Edge}
+A 2D Step-Edge is characterized by both strength and direction. Hence, we cannot use a directional derivative but instead we need an operator allowing to sense the edge whatever its direction is. For this purpose, we use the gradient:
+\[
+    \nabla I(x,y)=\displaystyle\frac{\partial I (x,y)}{\partial x}i + \displaystyle\frac{\partial I (x,y)}{\partial y} j
+\]
+The direction of the gradient is that of the highest variation of the function, while its magnitude is the absolute value of the directional derivative along such direction. 
+
+\subsection{Edge detection by Gradient Thresholding}
+% [TODO] insert scheme of 2d edge detection 
+Edge detection by gradient thresholding can be achieved by applying this scheme 
+\subsubsection{Discrete approximation of the gradient}
+Backward or forward differences can be used:
+\begin{gather*}
+    \displaystyle\frac{\partial I(x,y)}{\partial x} \cong I_x(i,j)=I(i,j)-I(i,j-1), \quad     \displaystyle\frac{\partial I(x,y)}{\partial y} \cong I_y(i,j)=I(i,j)-I(i-1,j)\\
+    \displaystyle\frac{\partial I(x,y)}{\partial x} \cong I_x(i,j)=I(i,j)-I(i,j+1), \quad     \displaystyle\frac{\partial I(x,y)}{\partial y} \cong I_y(i,j)=I(i,j)-I(i+1,j)
+\end{gather*}
+which may be thought of as correlation by:
+\[
+    \begin{bmatrix}
+        -1 & 1
+    \end{bmatrix}\quad
+    \begin{bmatrix}
+        -1 \\ 1
+    \end{bmatrix}
+\]
+Or also central differences:
+\[
+    \displaystyle\frac{\partial I(x,y)}{\partial x} \cong I_x(i,j)=I(i,j+1)-I(i,j-1), \quad     \displaystyle\frac{\partial I(x,y)}{\partial y} \cong I_y(i+1,j)=I(i,j)-I(i-1,j)\\
+\]
+with the corresponding correlation kernels given by:
+\[
+    \begin{bmatrix}
+        -1 & 0 & 1
+    \end{bmatrix}\quad
+    \begin{bmatrix}
+        -1 \\ 0 \\ 1
+    \end{bmatrix}
+\]
+We can estimate the magintude by different approximations:
+\[
+    \|\nabla I\|_2=\sqrt{I_x^2+I_y^2} \quad \|\nabla I \|_1 = |I_x| + |I_y| \quad \|\nabla I \|_\infty = max(I_x,I_y)
+\]
+The third approximation is faster and more invariant wrt edge direction. 
+
+However, it is well known that differetiation amplifies noise, making edge detection through differentiation problematic. It is therefore necessary to denoise images for edge detection, which does however lead to blurred edges that will be harder to detect. 
+\subsection{Smooth Derivatives}
+Smoothing and differentiation are carried out jointly within a single step. This is achieved  by computing differences of means. To avoid blurring edges, the two operations are carried out along orthogonal directions
+\begin{gather*}
+    \mu_x(i,j)=\displaystyle\frac{1}{3}[I(i,j-1)+I(i,j)+I(i,j+1)] \quad \mu_y(i,j)=\displaystyle\frac{1}{3}[I(i-1,j)+I(i,j)+I(i+1,j)]\\
+    \tilde{I}_x(i,j) = \mu_y(i,j+1)-\mu_y(i,j) = \displaystyle\frac{1}{3}[I(i-1,j+1)+I(i,j+1)+I(i+1,j+1)-I(i-1,j)-I(i,j)-I(i+1,j)]\\
+    \implies \text{ which is equivalent to the kernel }\displaystyle\frac{1}{3}\begin{bmatrix}
+        -1 1 \\
+        -1 1 \\
+        -1 1 
+    \end{bmatrix}
+\end{gather*}
+and similarlty for $\tilde{I}_y(i,j)$ the kernel turns out to be:
+\[
+    \displaystyle\frac{1}{3}\begin{bmatrix}
+        -1 & -1 & -1 \\
+        1 & 1 & 1
+    \end{bmatrix}
+\]
+In the \emph{Prewitt operator}, derivatives are approximated by central differences (better for diagonal edges)
+\begin{gather*}
+    \tilde{I}_x(i,j)=\mu_y(i,j+1)-\mu_y(i,j-1) \quad \implies \quad \begin{bmatrix}
+        -1 & 0 & -1 \\
+        -1 & 0 & -1 \\
+        -1 & 0 & -1 
+    \end{bmatrix}\\
+    \tilde{I}_y(i,j)=\mu_x(i,j+1)-\mu_x(i,j-1) \quad \implies \quad \begin{bmatrix}
+        -1 & -1 & -1 \\
+        0 & 0 & 0 \\
+        1 & 1 & 1 
+    \end{bmatrix}
+\end{gather*}
+In the \emph{Sobel operator}, the central pixel is weighted more to further improve isotropy:
+\begin{gather*}
+    \mu_y(i,j)=\displaystyle\frac{1}{4}[I(i-1,j)+2(i,j)+I(i+1,j)]\\
+    \tilde{I}_x(i,j)= \mu_y(i,j+1)-\mu_y(i,j-1)\\
+    \implies \displaystyle\frac{1}{4}\begin{bmatrix}
+        -1 & 0 & 1 \\
+        -2 & 0 & 2 \\
+        -1 & 0 & 1 \\
+    \end{bmatrix}
+\end{gather*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

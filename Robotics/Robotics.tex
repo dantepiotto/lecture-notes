@@ -3,9 +3,18 @@
 \usepackage{amsmath, amsthm, graphicx, amsfonts}
 \usepackage[english]{babel}
 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
 \title{Industrial Robotics M}
 \author{Dante Piotto}
 \date{spring semester 2023}
+
 
 \begin{document}
 
@@ -782,6 +791,64 @@ That is, as $K_p$ is positive definite
 \[
     q=q_d
 \]
+A perfect compensation of the gravity term is necessary, otherwise it is not possible to guarantee the stability of the system.
+
+The "PD+g(q)" approach can be extended to the position control in work-space.
+
+
+
+
+
+\subsection{Inverse dynamics control}
+The manipulator is considered as a nonlinear MIMO system described by 
+\[
+    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=u
+\]
+or in short:
+\[
+    M(q)\ddot{q}+n(q,\dot{q})=u
+\]
+Two assumptions are necessary:
+\begin{itemize}
+    \item the model is linear in the control input: $ \dot{x}=f(x)+\alpha u(t)$
+    \item The matrix $M(q)$ is invertible for any configuration fo the manipulator: $ \exists f^{-1}(x)$
+\end{itemize}
+Let us choose the control input $u$ as:
+\[
+    u=M(q)y + n(q,\dot{q})
+\]
+it follows that
+\[
+    M\ddot{q}+n=My+n
+\]
+and thus
+\[
+    \ddot{q}=y
+\]
+where $y$ is the new input of the system
+% TODO [insert image of control scheme]
+The system results to be completely decoupled and linear. However, the resulting system has two poles in the origin and is therefore unstable. In order to stabilyze the system $y$ can be chosen as:
+\[
+    y= -K_D\dot{q}-K_Pq+r
+\]
+This means adding proportional and derivative control. From $\ddot{q}=y$ it follows:
+\[
+    \ddot{q}+K_D\dot{q}+K_Pq=r
+\]
+Which is asymptotically stable as long as $K_P$ and $K_D$ are positive-definite. If matrices $K_P,K_D$ are diagonal matrices defined by
+\[
+    K_P=diag\{\omega_n^2\} \qquad K_D=diag\{2\delta \omega_n\}
+\]
+the dynamics of the $i$-th component is characterized by the specified natural frequency and damping coefficient. A predefined trajectory $q_d(t)$ can be tracked by defining
+\[
+    r = \ddot{q}_d+K_D\dot{q}_d+K_Pq_d
+\]
+Then the dynamics of the tracking error is
+\[
+    \ddot{\tilde{q}} + K_D\dot{\tilde{q}} + K_P\tilde{q} = 0
+\]
+which converges to zero.
+% TODO [insert image of control scheme]
 
 
 
@@ -789,6 +856,476 @@ That is, as $K_p$ is positive definite
 
 
 
+
+
+\chapter{Advanced Position Control Schemes}
+
+
+
+
+
+
+
+
+
+\section{Robust Control}
+Aims at compensating directly possible errors deriving from model errors and/or external disturbances. Some of the most known robust control techniques:
+\begin{itemize}
+    \item H-infinity loop shaping
+    \item Loop transfer recovery (LQG,LTR)
+    \item Sliding mode control (SMC), a variation of variable structure control (VSS)
+\end{itemize}
+\subsection{Variable Structure Control}
+\subsubsection{Example}
+Consider a second order dynamic system described by 
+\[
+    \ddot{x}=-\psi x \quad \text{with } \quad \psi= \{a_1^2,a_2^2\} \quad (a_1^2>1>a_2^2)
+\]
+% TODO [insert phase plane images slide 10]
+Assuming that $\psi$ is a control input, by using the commutation law:
+\[
+    \psi=\begin{cases}
+        a_1^2 \text{ if } x\dot{x}>0\\
+        a_2^2 \text{ if } x\dot{x}<0\\
+    \end{cases}
+\]
+An asymptotically stable system is obtained
+% TODO [insert image from slide 10]
+\subsubsection{Example}
+Consider the system
+\[
+    \ddot{x}-\xi \dot{x}+\psi x = 0 \quad \xi >0 
+\]
+where we choose
+\[
+    \psi = \begin{cases}
+        -a \quad (A)\\
+        a \quad (B)
+    \end{cases}
+\]
+The system is unstable (different signed elements of the equation).
+
+In case (A), there are two real eigenvales, given by:
+\[
+    \lambda_{1,2} = \displaystyle\frac{\xi}{2}\pm \sqrt{\displaystyle\frac{\xi^2}{4}+a}
+\]
+one is stable (negative) and one unstable (positive)
+
+In case (B) there are complex conjugate eigenvalues with positive real part given that $a>\frac{\xi^2}{4}$. 
+% TODO [insert phase portraits]
+By choosing
+\[
+    \psi = \begin{cases}
+        -a \quad \text{if} \quad xs<0 \quad (A)
+        a \quad \text{if} \quad xs>0 \quad (B)
+    \end{cases} \quad s = -cx +\dot{x}
+\]
+where
+\[
+    c=\frac{\xi}{2}-\sqrt{\frac{\xi^2}{4}+a}<0
+\]
+is the inclination of of the line representing the stable mode in the (A) case. The resulting system is asympotitically stable.
+
+This type of control scheme is called Variable structure control or Sliding Mode Control (as the system goes towards a stable mode and "slides" towards the origin) and can be generalized:
+
+We define a \emph{Sliding Surface} $S(x)=0$ based on which we decide which one of two control laws is used:
+\[
+    u_c = \begin{cases}
+        K_1(x) \quad \text{if} \quad S(x)>0\\
+        K_2(x) \quad \text{if} \quad S(x)<0\\
+    \end{cases}
+\]
+% TODO [insert image of control scheme slide 13]
+
+Two steps are involved in the design of variable structure control:
+\begin{itemize}
+    \item choice of the sliding surface $S(x)$ so that the control system has the desired dynamic behaviour 
+    \item choice of the control law $u_i$ $(i=1,\dots,m)$ in order to force the state on the sliding surface $S_i(x)$ evin in case of parameter variations or external disturbances. 
+\end{itemize}
+\subsubsection{Example}
+Let us consider the second order system
+\[
+    \ddot{y} + a\dot{y} + by = \psi +u \qquad G(s) = \displaystyle\frac{1}{s^2+as+b}
+\]
+where $u$ is the control and $\psi$ is an external disturbance, supposed to be bounded with bounded first order derivative
+\[
+    |\psi|<\Delta_0 \qquad |\dot{\psi}|<\Delta_1
+\]
+
+Choice of the sliding surface:
+\[
+    S(x) = \dot{y} + cy = 0 \quad \text{with} \quad x=(y,\dot{y})
+\]
+When the state $x=(y,\dot{y})\in S(x)=0$:
+\begin{itemize}
+    \item the dynamics of the controlled system is exponentially asymptotically stable \[
+            \dot{y} = -cy \quad \implies \quad y(t) = y(0)e^{-ct}, \quad c>0
+    \]
+    \item the output of the system $y(t)$ goes to zero with a velocity that depends only the parameter "$c$", that is on the chosen sliding surface
+    \item the behaviour of the controlled system does not depend neither on the external disturbance nor on changes in the parameters $a$ and $b$. (ROBUST)
+\end{itemize}
+
+Choice of the control: It is possible to prove that the discontinuous control law
+\[
+    u(t) = -K sgn S(x)
+\]
+is able to force the state towards the sliding surface $S(x)=0$ as long as $K>\Delta_0$, with total disturbance rejection. This control can only take the state of the system to 0. Substituting $y$ and $\dot{y}$ with the tracking error: $x=(e,\dot{e})$, we can track a given trajectory with the chosen dynamics, with $e=y_d-y$. If $y_d\neq 0 $ the set point is to be considered another disturbance to the system as it is an exogenous input to the system, requiring $y_d \times G(0)$ to be compensated. The lower bound on $K$ therefore becomes:
+\[
+    K>\Delta_0+y_dG(0)
+\]
+
+\subsubsection{Continuous time}
+When the state $x$ is on the sliding surface $S(x)=0$, we have the \emph{ideal sliding mode}: 
+\begin{itemize}
+    \item the control action $u(t)$ commutes with infinite frequency
+    \item the oscillation produced on the output variable $y(t)$ has a null amplitude
+\end{itemize}
+\subsubsection{Discrete time}
+If the VS control law is implemented as a discrete-time system we have:
+\begin{itemize}
+    \item a finite commutation frequency
+    \item a residual oscillation on the output variable $y(t)$ (\emph{chattering})
+\end{itemize}
+The amplitude of the residual oscillaition is proportional to the sampling period $T$ and the value of $K$ of the control action
+\[
+    |y(t)|\leq KT
+\]
+Therefore, it is not possible to force the state "exactly" on the surface $S(x)=0$, but it is rather possible to keep it within a sufficiently small neighbourhood of it (\emph{discrete sliding mode})
+\subsection{The chattering problem}
+From a practical point of view, it is not possible to commute the control between the two values $u^+,u^-$ at an infinite frequency. Therefore, "oscillations" are generated in the controlled system (or in the actuator), typically in a frequency range within the system's bandwidth\footnote{if the control input is discontinuous, all the frequencies are excited and the natural frequencies of the system are necessarily excited}. Then, non modelled dynamics may be excited and undesired behaviours bay e obtained. Some methods have been proposed to avoid this problem, among them:
+\begin{itemize}
+    \item Boundary layers
+    \item DIC (Discrete Integral Control)
+\end{itemize}
+\subsubsection{Boundary Layers}
+A region with proper amplitude is defined around the sliding surface; in this region, the control action is not discontinuous, but rather it changes in a continuous way, linealry proportional to the error.
+% TODO [insert boundary layer images slide 32]
+\subsubsection{DIC (Discrete Integral Control)}
+Let us assme that the disturbance is bounded with bounded first derivative:
+\[
+    |\psi|<\Delta_0 \qquad |\dot{\psi}|<\Delta_1
+\]
+In addition to the standard VS control term ($-k sgnS(x)$), two additional contributions are used: a term proportional to the error $-\lambda S(x)$ and one proportional to the integral of its sign
+\[
+    \begin{cases}
+        u(t) = -\lambda S(x) -ksngS(x)-\tilde{\psi}(t)\\
+        \dot{\tilde{\psi}} (t) = h sgn S(x)
+    \end{cases}
+\]
+It is possible to prove the following: \\
+If the parameters $k,h$ and $\lambda$ of the control law are chosen such that:
+\[
+    k>0, \quad h>\Delta_1, \quad h\lambda k > \Delta_1^2(1-ln2)
+\]
+then the controlled system is globally asymptotically stable, and the state reaches the sliding surdace $S(x)=0$ in a finite time.
+Note that there is no lower bound on $k$, and it can therefore be chosen to be quite small to reduce the chattering effect. The lower bound on $h$, means that the implemented controller must be faster than the disturbance (have a higher derivative). 
+
+The resulting controller is composed of a proportional, intergral and a switching component. If the proportional part is not present, i.e. $\lambda = 0$, the control action is still able to sabilize the system, but only for "small" initial conditions. 
+
+\subsection{Robust control of industrial manipulators}
+In general, it is difficult to compensate exactly the dynamics of a robot manipulator. In practice, what we get is only a partial compensation. Let us consider the inverse dynamics control:
+\[
+    u=\hat{M}(q)y+\hat{n}(q,\dot{q})
+\]
+where $\hat{M}$ and $\hat{n}$ represent the known part of the dynamic model. In general, uncertainties may be expressed as 
+\[
+    \tilde{M}=\hat{M}-M \qquad \tilde{n} = \hat{n} - n
+\]
+By using the above equation, we have
+\[
+    M\ddot{q}+n=\hat{M}+\hat{n}
+\]
+Since matrix $M$ is invertible, we have, (adding and subtracting $y$)
+\begin{gather*}
+    \ddot{q} = y + (M^{-1}\hat{M}-I)y+M^{-1}\tilde{n}\\
+    =y-\eta
+\end{gather*}
+with
+\[
+    \eta = (M^{-1}\hat{M}-I)y+M^{-1}\tilde{n}
+\]
+note that, if $\hat{M}=M$ and $\hat{n}=n$ then $\eta=0$ and $\ddot{q}=y$
+By using the same control as in the ideal case:
+\[
+    y=\ddot{q}_d+K_D(\dot{q}_d-\dot{q})+K_P(q_d-q)
+\]
+The error dynamics $\tilde{q}$ is given by 
+\[
+    \ddot{\tilde{q}}+K_D\dot{\tilde{q}} + K_P\tilde{q}=\eta
+\]
+and therefore it is not possible to guaradntee that $\tilde{q}$ goes to zero ($\eta$ depends on the uncertainties of the system)
+From
+\[
+    \ddot{q}=y-\eta
+\]
+we have 
+\[
+    \ddot{\tilde{q}}=\ddot{q}_d-y+\eta
+\]
+Therefore, by defining $\xi = \begin{bmatrix}
+    \tilde{q}^T  & \dot{\tilde{q}}^T
+\end{bmatrix}^T $ as the state vector, we obtain the first order differential equation
+\[
+    \dot{\xi} = H\xi + D(\ddot{q}_d-y+\eta)
+\]
+with
+\[
+    H=\begin{bmatrix}
+        0 & I \\ 0 & 0
+    \end{bmatrix} \in \mathbb{R}^{2n\times 2n} \qquad D = \begin{bmatrix}
+        0 \\ I
+    \end{bmatrix} \in \mathbb{R}^{2n\times 2n}
+\]
+The problem with tracking a given trajectory ($q_d,\dot{q}_d,\ddot{q}_d$) may be solved by designing a control law $y$ that stabilizes the error dynamics $\xi$, that is nonlinear and time variant (because of $\eta$). Because of the properties of any assigned trajectory (boundedness of veolcity/acceleration) and considering the properties of the dynamic model fo a robot manipulator(boundedness) it is possible to estimate tha range of variablity of the uncertainties $\eta$ affecting the error dynamics. 
+
+In order to compensate for the uncertainty term $\eta$, we define a control law as:
+\[
+    y = \ddot{q}_d +K_D\dot{\tilde{q}} + K_P\tilde{q}+w = \ddot{q}_d + w + \begin{bmatrix}
+        K_P & K_D
+    \end{bmatrix} \begin{bmatrix}
+    \tilde{q} \\ \dot{\tilde{q}}
+    \end{bmatrix}
+\]
+the error dynamics in this case results
+\[
+    \dot{\xi} = H \xi + D(\eta-w)
+\]
+where the eigenvalues of the matrix
+\[
+    \tilde{H}= (H-DK) = \begin{bmatrix}
+        0 & I \\ -K_P & -K_D
+    \end{bmatrix}
+\]
+have negative real part (as $K_P,K_D$ are positive definite)
+By properly choosing the two matrices $K_P,K_D$ for example as 
+\[
+    K_P = diag\{\omega_{n1}^2,\dots,\omega_{nn}^2\} \qquad K_D = diag\{2\delta_1\omega_{n1},\dots,2\delta\omega_{nn}\} 
+\]
+it is possible to obtain a desired (and decoupled) behaviour for the linear part of the error dynamics. Notice that if $\eta=0$, then by choosing $w=0$ we obtain the previous control scheme. Viceversa, if $\eta\neq 0$, a proper value for $w$ must be defined. The Lyapunov method is adopted, choosing as a candidate Lyapunov function
+\[
+    V(\xi)=\xi^TQ\xi>0 \quad \forall \xi \neq 0
+\]
+where $Q$ is a symmetric, positive definite matrix
+By derivation, since $\dot{\xi}=\tilde{H}\xi+D(\eta-w)$, we have:
+\begin{gather*}
+    \dot{V} = \dot{x}^TQ\xi+\xi^TQ\dot{x}\\
+    =(\tilde{H}\xi+D(\eta-w)^TQ\xi+\xi^TQ/\tilde{H}\xi+D(\eta-w))\\
+    =\xi^T(\tilde{H}^TQ+Q\tilde{H})\xi+2\xi^TQD(\eta-w)\\
+    =-\xi^TP\xi+2\xi^TQD(\eta-w)\\
+    =-\xi^TP\xi+2z^T(\eta-w)
+\end{gather*}
+where\[
+    z=d^TQ\xi
+\]
+and, since $\tilde{H}<0$, the equation 
+\[
+    \tilde{H}^TQ+Q\tilde{H}=-P, \quad \forall P>0
+\]
+has a unique solution $Q$, symmetric and positive definite. 
+Notice that the first term is negative definite. We need to prove negativity of the second term. The vector $z$ is known, therefore we can choose the control input:
+\[
+    w=\displaystyle\frac{\rho}{\|z\|}z \quad rho>\|\eta\|
+\]
+we obtain
+\begin{gather*}
+    z^T(\eta-w)=z^T\eta-\displaystyle\frac{\rho}{\|z\|}z^Tz \leq \|z\|\|\eta\|-\rho\|z\| \leq 0
+\end{gather*}
+and thus
+\[
+    \dot{V}<0
+\]
+Overall control scheme:
+% [TODO] insert image slide 52
+This is akin to sliding mode control as the direction of $z$ cannot be assumed to be continuous. The sliding subspace $S(\xi)=D^TQ\xi=0$ depends on the choice of the matrix $Q$. The chattering problem may be solved e.g. by the 'boundary layers' method:
+\[
+    w=\begin{cases}
+        \displaystyle\frac{\rho}{\|z\|}z \quad \text{when }\|z\|\geq\epsilon
+        \displaystyle\frac{\rho}{\epsilon}z \quad \text{when }\|z\|<\epsilon
+    \end{cases}
+\]
+Discrete Integral Control may exhibit some unexpected behaviour and implementative challenges due to the complexity of the system. 
+
+
+\section{Adaptive Control}
+Aims at modifying the control parameters in order to adapt to different working conditions, or to different values of the model parameters.
+There are two main families of adaptive controllers:
+\begin{itemize}
+    \item Self Tuning Regulator (indirect)
+    \item Implicit regulator (direct)
+\end{itemize}
+% [TODO] insert schemes slide 56
+We assume the dynamics of the process to be linear wrt the parameters to be estimated, and we require the change of parameters to be slower than the dynamics of the system. 
+\subsection{Robot parameters}
+For design purposes:
+\begin{itemize}
+    \item kinematic parameters are assumed to be known (DH parameters, 3 per link)
+    \item uncertain (constant) parameters that can be identified off line: masses(1), positions of CoMs(3), inertia matrices(6) (10 per link)
+    \item parameters that are (slowly) varying during operation: viscous, dry and stiction friction at each joint (3 per joint)
+    \item uknown and abruptly changing parameters: mass, CoM, inertia matrix of the payload wrt the tool center point (10)
+\end{itemize}
+so for an n-dof robot: $(3+10+3)\times n +10=16\times n +10 $ parameters
+
+The main goals of an adaptive control scheme may be defined as:
+\begin{itemize}
+    \item given a twice differentiable desired joint trajectory $q_d(t),\dot{q}_d(t),\ddot{q}_d(t)$ 
+    \item execute this trajectory under large dynamic uncertainties $\tilde{\alpha}=\alpha-\hat{\alpha}$ with a tracking error that vanishes asymptotically: \[
+            \tilde{q}=q_d-q\to 0,\quad \dot{\tilde{q}}=\dot{q}_d-\dot{q}\to 0
+    \]
+    guaranteeing global stability
+    \item paramenter identification (i.e. $\tilde{\alpha}\to 0$) is not of particular concern 
+        if the desired trajectory is persistently exciting, one obtaines parameter identification as a by-product ($\tilde{\alpha}\to 0$)
+    \item indirect adaptive control schemes are more complex, but in principle allow also systematic convergence of dynamic coefficients to their true values
+\end{itemize}
+It is always possible to write the Euler-Lagrange formulation of the dynamics of an $n$ dof robot as 
+\[
+    Y(q,\dot{q},\ddot{q})\alpha = u
+\]
+where:
+\begin{itemize}
+    \item vector $\alpha$ contains only uknown or uncertain coefficients
+    \item each component of $\alpha$ is in general a combination of the robot physical parameters
+    \item the model regression matrix $Y$ depends: linearly on $\ddot{q}$, quadratically on $\dot{q}$, nonlinearly on $q$
+\end{itemize}
+In general, only a partial knowledge of the dynamic parameters is available, and therefore we may describe the dynamics of a robot as:
+\[
+    \hat{M}(q)\ddot{q}+\hat{C}(q,\dot{q})\dot{q}+\hat{D}\dot{q}+\hat{g}(q)=Y(q,\dot{q},\ddot{q})\alpha=u
+\]
+where $\hat{M},\hat{C},\hat{D},\hat{g}$ estimate $\alpha$.
+Some controllers are better suited to adaptive control with robot manipulators.
+\subsection{Inverse dynamics feedforward + PD}
+% [TODO] insert inverse dynamics ff+PD scheme slide 66
+Given a desired trajectory it is possible to implement an inverse dynamics ff + PD control action defined as:
+\[
+    u=M(q_d)\ddot{q_d}+C(q_d,\dot{q}_d)\dot{q}_d+D\dot{q}_d+g(q_d)+K_P\tilde{q}+K_d\dot{\tilde{q}}
+\]
+being $\tilde{q}$ and $\dot{\tilde{q}}$ the position and velocity errors. Since the dynamic parameters are in general not exactly known, only an approximation of the ff term can be computed. It can be shown that the control law leads to an error dynamics described by 
+\[
+    \ddot{\tilde{q}}+K_d\dot{\tilde{q}}+K_P\tilde{q}=\eta
+\]
+being $\eta$ a nonlinear function of the parameter uncertainties and of the nl dynamics of the robot, so the error does not vainsh asymptotically
+\subsection{NL control based on fb linearization}
+
+The error dynamics behaves analogously to the previous case, and does not vanish asymptotically. 
+\subsection{Nonlinear tracking control law without cancelations}
+Let us consider a candidate control law:
+\[
+    u=M(q)\ddot{q}_d+C(q,\dot{q})\dot{q}_d+D\dot{q}_d+g(q)+K_p\tilde{q}+K_d\dot{\tilde{q}}
+\]
+that is a nonlinear trajectory tracking control law having global asymptotic stabilization properties. In principle, the control law could be made adaptive by defining 
+\[
+    \dot{\hat{\alpha}}=\gamma(\hat{\alpha}q,\dot{q},q_d,\dot{q}_d)
+\]
+where $\gamma(\dot)$ is a proper update law for the robot's parameters
+
+It can be shown that with this control law the velocities could track the desired ones (eventually with zero error), but a permanent residual position error may occur if parameters are not exactly known. A possible solution is to modify the velocity reference as 
+\[
+    \dot{q}_d \to \dot{q}_r=\dot{q}_d+ \Lambda(q_d-q), \quad \Lambda>0 
+\]
+where ofthe the value $\Lambda=K_d^{-1}K_p$ is chosen
+
+In robootics, in order to design an adaptive control law we exploit the property of the dynamic model to be linear wrt the parameters 
+\[
+    Y(q,\dot{q},\ddot{q})\alpha=u
+\]
+Let us consider the control law:
+\[
+    u=M(q)\ddot{q}_r+C(q,\dot{q})\dot{q}_r+D\dot{q}_r+g(q)+K_D\sigma
+\]
+where 
+\begin{flalign*}
+    \dot{q}_r = \dot{q}_d+\Lambda\tilde{q}\\
+    \ddot{q}_r = \ddot{q}_d+\Lambda\dot{\tilde{q}}
+\end{flalign*}
+and $K_D$ a positive definite matrix. The term $K_D\sigma$ is equivalent to a PD control action onthe tracking error assuming 
+\[
+    \sigma=\dot{q}_r-\dot{q}=\dot{\tilde{q}}+\Lambda\tilde{q}
+\]
+The overall dynamics is the described by 
+\[
+    M(q) \dot{\sigma} +C(q,\dot{q})\sigma+D\sigma+K_D\sigma=0
+\]
+
+To prove stability of the system we use the Lyapunov method. We choose as a candidate Lyapunov function 
+\[
+    V(\sigma,\tilde{q}) = \displaystyle\frac{1}{2}\sigma^TM(q)\sigma+\displaystyle\frac{1}{2}\tilde{q}^TA\tilde{q}>0 \quad \forall \sigma,\tilde{q} \neq 0 
+\]
+where $A$ is positive definite.
+% [TODO] insert conti slide 76
+
+
+On the basis of the previous result, let us consider the control law 
+\[
+    u = \hat{M}(q)\ddot{q}_r+\hat{C}(q,\dot{q})\dot{q}_r+\hat{D}\dot{q}_r+\hat{ŋ}(q)+K_D\sigma = Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\hat{\alpha}+K_D\sigma
+\]
+Notice that $Y$ does not depend on $\ddot{q}$. 
+With this control, the overall dynamics are described by:
+% {TODO]
+In order to prove the stability of the system under this new control law, we once again use the Lyapunov method: 
+% [TODO] Lyapunov results + control scheme slide 78-79-80
+% slide 81 skipped 
+\subsubsection{To sum up}
+
+Adaptive control:
+\begin{itemize}
+    \item does not compensate directly external disturbance
+    \item depends on the considered model 
+    \item tries to compensate the effects of disturbances by modifying the parameters 
+    \item "smooth" control action
+\end{itemize}
+
+Robust Control:
+\begin{itemize}
+    \item direct compensation of disturbances 
+    \item chattering phenomenon
+\end{itemize}
+
+
+
+
+
+
+
+\section{Learning/Repetitive Control}
+If a robot has to repeat a given task cyclically, following every time the same trajectory, possible uncertainties in the system may be compensated by adopting learning or repetitive control schemes, by means of which the contrl system, by repeating the task, learns the optimal control input to be applied in order to have zero tracking error. There are learning or repetitive control schemes to solve 
+\begin{itemize}
+    \item trajectory tracking problems 
+    \item control to steady state configurations.
+\end{itemize}
+% [TODO] insert ff control scheme slide 4 
+Two control actions: 
+\begin{itemize}
+    \item feedback, based on the error $e=y_d-y$ 
+    \item feedforward, updated at each iteration
+\end{itemize}
+
+Assumptions: 
+\begin{itemize}
+    \item dynamic model of the robot \[
+            ;(q)\ddot{q}+C(q,\dot{q})\dot{q}+g(q)=u
+    \]
+    \item boundedness of the gradient of the gravity term \[
+        \|\displaystyle\frac{\partial g}{\partial q}\| \leq \alpha
+    \] 
+    \item joint-based PD controller (without g compensation) \[
+            u= K_p(q_d-q) -K_d\dot{q} \quad K_p>0,K_d> 0
+    \]
+    \item it can be shown that the systeem is stable and that in steady-state we have:\[
+            q=\bar{q},\quad \dot{q}=0,\quad g(\bar{q})=K_p(q_d-\bar{q}),\quad \tilde{q}=q_d-\bar{q}
+    \]
+\end{itemize}
+Control scheme:
+\begin{itemize}
+    \item at the $i-th$ iteration, the control actino is \[
+            u(t) =\displaystyle\frac{1}{\beta}K_p(q_d-q(t))-K_d\dot{q}(t)+u_{i-1} \quad \beta>0,\quad q(0)=\bar{q}_{i-1}
+    \]
+\end{itemize}
+\subsubsection{Theorem (sufficient condition for convergence)}
+If the following conditions:
+\begin{enumerate}
+    \item $\lambda_{min}(K_p)\geq \alpha$
+    \item  $0<\beta\leq 0.5$
+\end{enumerate}
+hold, then the sequence converges to $q_d$ from any initial condition
 
 
 

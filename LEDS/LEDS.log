@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.9)  31 MAR 2023 15:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.9)  19 APR 2023 16:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -306,32 +306,55 @@ Overfull \hbox (48.41377pt too wide) detected at line 666
 []
  []
 
-[25] [26
+
+Overfull \hbox (62.71922pt too wide) detected at line 679
+[]
+ []
+
+[25]
+Underfull \vbox (badness 3312) has occurred while \output is active []
+
+ [26] [27] [28
 
 ]
 Chapter 7.
-[27] [28
+[29] [30
 
 ]
 Chapter 8.
-[29]
+[31]
 Overfull \hbox (15.9453pt too wide) has occurred while \output is active
-\OT1/cmr/m/n/10 30 \OT1/cmr/m/sl/10 CHAPTER 8.  MODEL COMPLEXITY SELECTION AND REGULARIZTION
+\OT1/cmr/m/n/10 32 \OT1/cmr/m/sl/10 CHAPTER 8.  MODEL COMPLEXITY SELECTION AND REGULARIZTION
  []
 
-[30
+[32]
+Overfull \hbox (25.6631pt too wide) detected at line 864
+\OML/cmm/m/it/10 FPE \OT1/cmr/m/n/10 = [][] = []\OML/cmm/m/it/10 J\OT1/cmr/m/n/10 ([]) = []\OML/cmm/m/it/10 J\OT1/cmr/m/n/10 ([])\OML/cmm/m/it/10 J\OT1/cmr/m/n/10 ([]) = \OML/cmm/m/it/10 J\OT1/cmr/m/n/10 ([]) + []\OML/cmm/m/it/10 J\OT1/cmr/m/n/10 ([])
+ []
+
+[33]
+Overfull \hbox (15.9453pt too wide) has occurred while \output is active
+\OT1/cmr/m/n/10 34 \OT1/cmr/m/sl/10 CHAPTER 8.  MODEL COMPLEXITY SELECTION AND REGULARIZTION
+ []
+
+[34]
+Chapter 9.
+[35
 
 ]
-Chapter 9.
-[31] [32
+Overfull \hbox (41.83281pt too wide) in paragraph at lines 991--993
+\OT1/cmr/m/n/10 and the sam-ple au-to-cor-re-la-tion ma-trix $[](\OML/cmm/m/it/10 m\OT1/cmr/m/n/10 )$, which is an es-ti-mate of $\OML/cmm/m/it/10 E\OT1/cmr/m/n/10 [\OML/cmm/m/it/10 '[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 t; m\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 '[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 t; m\OT1/cmr/m/n/10 )]$ 
+ []
+
+[36] [37] [38
 
 ]
 Chapter 10.
-[33] [34
+[39] [40
 
 ]
 Chapter 11.
-[35] (./LEDS.aux) ) 
+[41] (./LEDS.aux) ) 
 Here is how much of TeX's memory you used:
  4758 strings out of 480171
  77313 string characters out of 5894490
@@ -339,12 +362,12 @@ Here is how much of TeX's memory you used:
  22649 multiletter control sequences out of 15000+600000
  479069 words of font info for 65 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 60i,15n,67p,479b,279s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on LEDS.pdf (35 pages, 255222 bytes).
+ 60i,15n,67p,612b,279s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on LEDS.pdf (41 pages, 316467 bytes).
 PDF statistics:
- 208 PDF objects out of 1000 (max. 8388607)
- 133 compressed objects within 2 object streams
+ 249 PDF objects out of 1000 (max. 8388607)
+ 160 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

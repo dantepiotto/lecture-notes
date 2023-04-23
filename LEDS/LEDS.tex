@@ -667,8 +667,65 @@ We can notice that $w(t)$ is uncorrelated with all other members of the sum as $
 
 
 
+\begin{gather*}
+    \lim_{N\to\infty} J''(\theta)= 2E[\psi(t,\theta)[\psi^T(t,\theta)]] - 2E[\varepsilon(t,\theta)\frac{\partial^2 \varepsilon(t,\theta)}{\partial \theta^2}]
+\end{gather*}
+assume $\theta^*$ exists, then
 
 
+\subsection{Identification of ARMAX models}
+\begin{gather*}
+    \varepsilon(t,\theta)= -c_1\epsilon(t-1,\theta)-c_2\epsilon(t-2,\theta),\dots -c_n\epsilon(t-n,\theta)+y(t)+a_1y(t-1)+\dots + b_nu(t-n)
+\end{gather*}
+
+
+Identification of ARARX models: the optimal predictor is
+\[
+    \hat{y}(t|t-1\theta)=(1-a(z^{-1})D(z^{-1}))y(t)+B(z^{-1})D(z^{-1})u(t)
+\]
+which can be seen as
+\[
+    \hat{y}(t|t-1\theta)=(1-\bar{A}(z^{-1}))-\bar{B}(z^-1)u(t)
+\]
+which is equivalent to an ARX model. One could apply LQ estimation to the model and try to identify the model by finding common roots between $\bar{A}$ and $\bar{B}$ or if just a predictive model is required LQ estimation itself is sufficient.
+\subsection{Statistical properties of PEM estimators}
+Assume that a true model exists and
+\begin{itemize}
+    \item the input is persistently exciting of sufficiently high order
+    \item The Hessian $J''(\theta)$ is nonsingular at least locally around the minimum points of $J(\theta)$
+\end{itemize}
+In this case, the PEM estimate is consistent (proof skipped)
+\[
+    \lim_{N\to\infty} \hat{theta} = \theta^*
+\]
+Moreover
+\[
+    \sqrt{N}(\hat{\theta}-\theta^*) \to \mathcal{N}(0,P), \quad \text{for } N\to\infty
+\]
+with
+\[
+    P = \sigma_w^2 (E[\psi(t,\theta^*)\psi(t,\theta^*)^T])^{-1} = \sigma_w^2 \Sigma_{\psi}^{-1}
+\]
+If $w(t)$ is gaussian distributed
+\[
+    w(t)\sim \mathcal{N}(0,\sigma_w^2)
+\]
+The PEM estimate is also asymptotically efficient, therefore $P$ is the lowest covariance matrix of the estimate that can be obtained.
+\subsection{MISO ARX models}
+\begin{gather*}
+    u(t) \in \mathbb{R}^r \quad u(t) = \begin{bmatrix}
+        u_1(t) \\ u_2(t) \\ \vdots \\ u_r(t)
+    \end{bmatrix}\\
+    A(z^{-1})y(t) = B_1(z^{-1}) u_1(t) + \dots + B_r u_r(t) + e(t)\\
+    B_1(z^{-1}) = b_{11}z^{-1} + b_{12}z^{-2} + \dots + b_{1n}z^{-n}\\
+    B_2(z^{-1}) \text{ similar }
+    P=n+rn=(r+1)n\\
+    H=\begin{bmatrix}
+        -H_y(n) & H_{u_1}(n) & \dots & H_{u_n}(n)
+    \end{bmatrix}\\
+    \hat{\theta}_{LS} \left( \displaystyle\frac{H^TH}{N} \right)^{-1}\displaystyle\frac{H^TY}{N}\\
+    H^TH \theta = H^TY
+\end{gather*}
 
 
 
@@ -708,7 +765,298 @@ We can notice that $w(t)$ is uncorrelated with all other members of the sum as $
 
 \chapter{Model complexity selection and regulariztion}
 
+Model complexity selection: given a model class $\mathcal{M}(\theta)$, estimate the model complexity $p$, i.e. choose the best model class $\mathcal{M}_p(\theta)$
+
+\emph{Training set}: the set of data used for learning the model\\
+\emph{Underfitting}: the model is not rich enough to fit the data well\\
+\emph{Overfitting}: the model is too rich and adapts too closely to the training data\\
+\emph{Validation set}: the set of data used for evaluating the predictive capabilities of the models obtained with the training set in order to estimate the model complexity.
+\begin{itemize}
+    \item General rule: 60-70\% of the data used for training set, rest for validation 
+    \item when using the training set, the higher the model complexity, the better the data fitting. the prediction error is thus underestimated
+    \item when dealing with real data, the loss function exhibits a monotone decrease in the training set and a \emph{U-shape} in the validation set.
+\end{itemize}
+
+ARX MODEL: 
+\begin{gather*}
+    \hat{\theta}_{LS} \to \theta^* \text{ for } N\to \infty\\
+    \varepsilon(t) \to w(t) \text{ for } N\to\infty\\
+    J(\hat{\theta}_{LS})=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}\varepsilon(t,\hat{\theta}_{LS})^2 = \hat{\sigma}_\varepsilon^2\\
+    J(\hat{\theta}_{LS}) \to \sigma_w^2 \text{ for } N\to \infty\\
+    n=4 \quad \theta^* = \begin{bmatrix}
+        a_1^* & a_3^* & a_3^* & a_4^* & b_1^* &  b_2^* & b_3^* & b_4^*
+    \end{bmatrix}
+\end{gather*}
+
+If the validation set is used repeatedly to estimate the model complexity, the prediction error may be underestimated as well. This happens for very complex models like neural networks. For this reason, when dealing with neural networks the dataset is split into three parts. The third set is called \emph{test set} and is used for model assessment, i.e. for testing the predictive capabilities of the final chosen model. This requires a very large number of available samples. It is possible to design criteria that allow to estimate the model complexity by using the training test
+
+\subsection{The F-test}
+Let $\mathcal{M}_{p_1}(\theta),\mathcal{M}_{p_2}(\theta)$ such that $p_1<p_2$ ($p=2n$ for ARX models, $p=n$ for AR models etc.) Consider the test quantity
+\[
+    x=N\displaystyle\frac{J(\hat{\theta^1_N})J(\hat{\theta^2_N})}{J(\hat{\theta^2_N})}
+\]
+where $\hat{\theta}^1_N,\hat{\theta}^1_N$ are PEM (or LS) estimates: intuitively:
+\begin{itemize}
+    \item $x$ large: the decrease int he loss function is significant, hence $\mathcal{M}_{p_2}(\theta)$ is better
+    \item x small: $\mathcal{M}_{p_1}(\theta)$ and $\mathcal{M}_{p_2}(\theta)$ are almost equivalent so that $\mathcal{M}_{p_1}(\theta)$ should be chosen accorfing to the parsimony principle
+\end{itemize}
+How to quantify "large" and "small"?
+\begin{itemize}
+    \item If $\mathcal{M}_{p_1}(\theta)$ is not large enough to include the true system: \[
+            J(\hat{\theta}_N^1)-J(\hat{\theta}_N^2) \text{ is } O(1) \quad x\text{ is of magnitude } N
+    \]
+    \item If $\mathcal{M}_{p_1}(\theta)$ is large enough: \[
+            x \to \chi^2(p_2-p_1), \quad \text{for } N\to\infty
+    \]
+\end{itemize}
+The following statistical test can be performed:
+\[
+    \begin{cases}
+        H_0:\mathcal{M}_{p_1}(\theta) \text{ is suitable to describe the system}
+        H_1:\mathcal{M}_{p_1}(\theta) \text{ is not suitable }
+    \end{cases}
+\]
+that is:
+\[
+    \begin{cases}
+        H_0: x \tilde \chi^2(p_2-p_1)
+        H_1: \text{not }H_0
+    \end{cases}
+\]
+after the choice of the significance level:
+\[
+    \begin{cases}
+        x\leq \chi^2_\alpha(p_2-p_1) \implies \text{ accept }H_0
+        x>\chi^2_\alpha(p_2-p_1) \implies \text{ accept }H_1
+    \end{cases}
+\]
+\subsection{The final prediction error (FPE) criterion}
+Let $\hat{\theta}_N$ be a PEM (or LS) estimate of a model of complexity $p$ and assume that it is then used to predict future data. Assume also that a true model exists and consider the prediction error variance (the expectation is with respect to future data):
+\[
+    V(V\hat{\theta}_N) = E \left[ (y(t)-\hat{y}(t|t-1,\hat{\theta}_N))^2   \right]
+\]
+by replacing $y(t)=\varphi^T(t)\theta^*+w(t)$ in $V(\hat{\theta}N)$ and computing the expectation we get
+\[
+    V(\hat{\theta}_N) = \sigma_\omega^2 + (\hat{\theta}_N-\theta^*)^T\Sigma_\varphi(\hat{\theta}_N-\theta^*)
+\]
+consider now the criterion function
+\[
+    FPE = E[V(\hat{\theta}_N)]
+\]
+where the expectation is with respect to past data. By taking into account that:
+\begin{itemize}
+    \item \[
+            E[(\hat{\theta}_N-\theta^*)^T\Sigma_{\varphi}(\hat{\theta}_N-\theta^*)]=E[\text{trace}(\Sigma_\varphi(\hat{\theta}_N-\theta^*)(\hat{\theta}_N-\theta^*)^T]
+        \]\footnote{E[trace($v^TAv)]=$E[trace($Avv^T$)]}
+\item Asymptotically: $\sqrt{N}(\hat{\theta}_N-\theta^*)\sim\mathcal{N}(0,\sigma^2_\Omega\Sigma_\varphi^{-1})$
+\end{itemize}
+it is easy to obtain
+\[
+    FPE\approx \sigma_\omega^2\left( 1+\displaystyle\frac{p}{N}\right)
+\]
+in practice we need an asymptotically unbiased estimate of $\sigma_\omega^2$ 
+\[
+    \hat{\sigma}_\omega^2 = \displaystyle\frac{1}{N-p}\displaystyle\sum_{t=1}^{N}\varepsilon(t,\hat{\theta}_N)^2 
+\]
+so that
+\[
+    FPE=\hat{\sigma}_e^2 \displaystyle\frac{N+p}{N}=\displaystyle\frac{N+p}{N-p}J(\hat{\theta}_N)=\displaystyle\frac{N\left(1+\displaystyle\frac{p}{N}\right)}{N\left(1-\displaystyle\frac{p}{N}\right)}J(\hat{\theta}_N)J(\hat{\theta}_N)=J(\hat{\theta}_N)+\displaystyle\frac{2\displaystyle\frac{p}{N}}{1-\displaystyle\frac{p}{N}}J(\hat{\theta}_N)
+\]
+Note that for large $N$:
+\[
+    FPE\approx J(\hat{\theta}_N)+\displaystyle\frac{2p}{N}J(\hat{\theta}_N)
+\]
+for large $N$, this criterion belongs to the family of \emph{criteria with complexity terms} (terms that penalise complex models).
+
+\subsection{Criteria with complexity terms}
+These criteria are obtained by penalizing in some way the decrease of $J(\hat{\theta}_N)$with increasing orders. The order giving the smallest value fo the criterion is selected.
+General form:
+\[
+    V(\hat{\theta}_N)=Nlog(\hat{\theta}_N)+f(N,p)
+\]
+where $f(N,p)$ penalizes high order models.
+
+\subsection{Akaike information criterien (AIC)}
+\[
+    AIC=NlogJ(\hat{\theta}_N)+2p
+\]
+AIC and FPE are asymptotically equivalent. They do not give consistend estimates of $n$ (the probability of overestimating the order is non-null). To get consistent estimates, the penalizing funciton must be such that
+\[
+    \begin{cases}
+        f(N,p)=kpg(N)\\
+        \lim_{N\to\infty}g(N)=\infty\\
+        \lim_{N\to\infty}\displaystyle\frac{g(N)}{N}=0
+    \end{cases}
+\]
+\subsubsection{Minimum description lenght (MDL) criterion}
+\[
+    MDL=N logJ(\hat{\theta}_N)+2plog(N)
+\]
+MDL leads. in general, to models of lower complexity wrt AIC and FPE. Even though the derivation is different, the MDL approach is formally equivalent to  the \emph{bayesian information criterion (BIC)}
+
+
+
+
 \chapter{model assesment (validation)}
+
+Consists in evaluating the capability of the identified model to describe the process that has generated the data in a way compatible with its planned use. 
+
+Linear regression models:
+\[
+    y(t)=\varphi^T(t) \theta^*+w(t), \quad w(t) \text{ zero mean and white} \quad E[u(t)w(t-\tau)]=0,\forall \tau
+\]
+The PEM estimate $\hat{\theta}_N$ is consistent, then
+\[
+    \hat{\theta}_N \to \theta^* \text{ for } N\to \infty , \quad \varepsilon(t,\hat{\theta}_N)=y(t)-\varphi^T(t)\hat{\theta}_N \to w(t) \text{ for } N\to\infty
+\]
+If we assume that our real data are well described by a linear regression model, we can make the following assumptions about the residual $\varepsilon(t,\hat{\theta}_N)$:
+\begin{enumerate}
+    \item $\varepsilon(t,\hat{\theta}_N)$ is a zero mean white process
+    \item $\varepsilon(t,\hat{\theta}_N)$ is is uncorrelated with the input signal $u(t)$
+\end{enumerate}
+It is thus possible to perform (on the training set) the following \emph{test on residuals}:
+\begin{itemize}
+    \item test of whiteness of $\varepsilon(t,\hat{\theta}_N)$
+    \item test of cross-correlation between $\varepsilon(t,\hat{\theta}_N)$ and $u(t)$
+\end{itemize}
+
+\section{Whiteness test}
+Sequence of residuals: $\varepsilon(1,\hat{\theta}_N),\varepsilon(2,\hat{\theta}_N),\dots,\varepsilon(N,\hat{\theta}_N)$
+\[
+    \begin{cases}
+        H_0 : \varepsilon(t,\hat{\theta}_N) \text{ is a zero mean white process}\\
+        H_1 : \text{ not } H_0
+    \end{cases}
+\]
+Consider the sample variance $\hat{r}_\varepsilon(0)$ and the first $m$ sample autocorrelations of $\varepsilon(t)$ and define the vector
+\[
+    \hat{r}_\varepsilon = \begin{bmatrix}
+        \hat{r}_\varepsilon(1)\\
+        \hat{r}_\varepsilon(2)\\
+        \vdots\\
+        \hat{r}_\varepsilon(m)
+    \end{bmatrix}
+\]
+Under $H_0$:
+\[
+    \hat{r}_\varepsilon(0)\to \sigma_w^2 \text{ for } N\to\infty,\quad \hat{r}_\varepsilon(\tau)\to 0 \text{ for } N\to\infty, \forall \tau \neq 0
+\]
+and it is possible to prove that
+\[
+    \sqrt{N}\xrightarrow[N\to\infty]\sim \mathcal{N}(0,P), \quad P=\lim_{N\to\infty} E[N\hat{r}_\varepsilon\hat{r}_\varepsilon^T]=\sigma_w^4I \quad (*)
+\]
+as a consequence
+\[
+    x=N\displaystyle\frac{\hat{r}_\varepsilon^T\hat{r}_\varepsilon}{\hat{r}_\varepsilon^2(0)}\xrightarrow[N\to\infty]\sim \chi^2(m)
+\]
+This leads to the statistical test
+\[
+    \begin{cases}
+        x\leq \chi_\alpha^2(m) \implies \text{ accept }H_0
+        x>\chi_\alpha^2(m) \implies \text{ accept }H_1
+    \end{cases}
+\]
+where $\alpha$ is the chosen significance level. Define the normalized text quantities
+\[
+    \hat{\gamma}(\tau)=\displaystyle\frac{\hat{r}_\varepsilon(\tau)}{\hat{r}_\varepsilon(0)}, \quad \tau= 1,2,\dots,m
+\]
+From (*) it follows that:
+\[
+    \sqrt{N}\hat{\gamma}(\tau)\xrightarrow[N\to\infty]\sim \mathcal{N}(0,1), \quad \tau=1,2,\dots,m
+\]
+so that a set of $m$ gaussian tests can also be performed.
+The whiteness model test can be of help in model order estimation. 
+
+\section{Test of cross-correlation}
+\[
+    \begin{cases}
+        H_0: \varepsilon(t\hat{\theta}_N) \text{ and } u(t) \text{ are uncorrelated}\\
+        H_1: \text{ not } H_0
+    \end{cases}
+\]
+Consider the following vector of sample cross correlations:
+\[
+    \hat{r}_{\varepsilon u} = \begin{bmatrix}
+        \hat{r}_{\bar{\tau}+1} \\
+        \hat{r}_{\bar{\tau}+2} \\
+        \vdots\\
+        \hat{r}_{\bar{\tau}+m} 
+    \end{bmatrix}
+\]
+Consider also the vector
+\[
+    \varphi_u(t,m) = \begin{bmatrix}
+        u(t-1) & u(t-2) & \cdots & u(t-m)
+    \end{bmatrix}^T
+\]
+and the sample autocorrelation matrix $\hat{\Sigma}_u(m)$, which is an estimate of $E[\varphi_u(t,m)\varphi_u^T(t,m)]$
+
+It is possible to prove that 
+\[
+    \sqrt{N}\hat{r}_{\varepsilon u}\xrightarrow[N\to\infty] \sim \mathcal{N}(0,P), \quad P= \lim_{N\to\infty}E[N\hat{r}_{\varepsilon u}\hat{r}_{\varepsilon u}^T]=\sigma_w^2\Sigma_u(m)
+\]
+As a consequence
+\[
+    x=N\displaystyle\frac{\hat{r}_{\varepsilon u}^T\hat{\Sigma_u^{-1}}\hat{r}_{\varepsilon u}}{\hat{r}_{\varepsilon u}(0)}\xrightarrow[N\to\infty]\sim\chi^2(m)
+\]
+This leads to the statistical test
+\[
+    \begin{cases}
+        H_0 : x \leq \chi^2_\alpha(m) \implies \text{ accept } H_0
+        H_0 : x >\chi^2_\alpha(m) \implies \text{ accept } H_1
+    \end{cases}
+\]
+where $\alpha$ is the chosen significance level. $\bar{\tau}$ must3 be chosen with care. In some methods  $\hat{r}_{\varepsilon u}(\tau)$ is constrained to be zero for some values of $\tau$ by construction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \chapter{Maximum likelihood estimation}
 
