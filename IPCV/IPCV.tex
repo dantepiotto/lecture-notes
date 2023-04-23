@@ -817,7 +817,16 @@ In the \emph{Sobel operator}, the central pixel is weighted more to further impr
         -1 & 0 & 1 \\
     \end{bmatrix}
 \end{gather*}
+Thresholding is suboptimal for edge localization, therefore we search for maxima of the gradient magnitude. 
+\subsection{Non maxima suppression}
+Maxima are searched along the gradient direction. Pixels that are not maxima are suppressed
+\subsubsection{Discrete formulation}
+The gradient direction is discretized. 2$\pi$ is divided into 8 direction bins 
+\subsubsection{Continuous formulation}
+Is based on gradient interpolation
 
+The overall flow-chart of an edge detecor based on smooth derivatives and NMS ca be sketched as in the figure 
+% [TODO] insert image slide 16
 
 
 
