@@ -825,18 +825,87 @@ The gradient direction is discretized. 2$\pi$ is divided into 8 direction bins
 \subsubsection{Continuous formulation}
 Is based on gradient interpolation
 
-The overall flow-chart of an edge detecor based on smooth derivatives and NMS ca be sketched as in the figure 
+The overall flow-chart of an edge detector based on smooth derivatives and NMS ca be sketched as in the figure 
 % [TODO] insert image slide 16
+\subsection{Canny's Edge Detector}
+Canny proposed a set of criteria to evaluate an edge detector:
+\begin{enumerate}
+    \item Good detection: robustness to noise
+    \item Good localization: edges should be localized with the minimum possible error (distance to the "true" edge)
+    \item One response to one edge: the fildter should detect one single edge point at each "true" edge
+\end{enumerate}
+In the 1D case, the optimal edge detection consists in finding local extrema of the convolution of the signal by a 1st order Gaussian derivative (Gaussian: smoothing, derivative: variations). This theoretical result can also be regarded as proof that the gaussian filter is optimal for smoothing. 
 
+In the 2D case, the optimal filter results to be composed of the sequence of Gaussian smoothing, gradient computation and NMS along the gradient direction. 
+2D convolution by a gaussian can be sped up through separability:
+\begin{align*}
+    \tilde{I}_x(x,y) = \frac{\partial}{\partial x} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial x}\\
+    \tilde{I}_y(x,y) = \frac{\partial}{\partial y} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial y}\\
+    G(x,y)=G(x)G(y)\\
+    \implies \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
+    \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
+\end{align*}
+After NMS an extra thresholding is applied to distinguish true edges and unwanted ones. However, edge streaking may occur when gradient magintude varies along object contours. To address this issue, Canny proposed \emph{hysteresis thresholding}: 2 thresholds are used, a higher ($T_h$) and a lower ($T_l$) one. Pixels are taken as an edge if they are above $T_h$ or if they are higher than $T_l$ and are neighbours to an already detected edge. The overall flow-chart of the Canny edge detector is as follows:
+% [TODO] insert chart slide 21
+\subsection{Edge detection through the second derivative}
+Edges may also be located by looking for zero-crossing of the second derivative of the signal. The second derivative along the gradient direction can be obtained as $n^THn$ where 
+\[
+    n = \frac{\nabla I(x,y)}{\|\nabla I(x,y)\|} \quad \text{and} \quad H = \begin{bmatrix}
+        \frac{\partial^2I(x,y)}{\partial x^2} & \frac{\partial^2I(x,y)}{\partial x \partial y}\\
+        \frac{\partial^2I(x,y)}{\partial y \partial x} & \frac{\partial^2I(x,y)}{\partial y^2}
+    \end{bmatrix}
+\]
+Computing this turns out to be very slow, so instead we can rely on the Laplacian as a second order differential operator 
+\[
+    \nabla^2 I(x,y) = \frac{\partial^2I(x,y)}{\partial x^2}+\frac{\partial^2I(x,y)}{\partial y^2} = I_{xx}+I_{yy}
+\]
+\subsubsection{Discrete Laplacian}
+One can use forward and backward differences to approximate the first and second order derivatives respectively:
+\[
+    I_xx \simeq I_x(i,j)-I_x(i,j-1)=I(i,j-1) - 2I(i,j)+I(i,j+1)
+\]
+$I_yy$ analogous. This leads to the following convolution kernel:
+\[
+    \nabla^2 = \begin{bmatrix}
+        0 & 1  & 0 \\
+        1 & -4  & 1 \\
+        0 & 1  & 0 
+    \end{bmatrix}
+\]
+It can be shown that the zero-crossing of the Laplacian typically lies close to those of the second order derivative along the gradient, while being much faster to compute. 
+\subsubsection{Laplacian of Gaussian (LOG)}
+Gaussian smoothing is deployed along edge detection through the Laplacian, forming an edge detector referred to as LOG (Laplacian of Gaussian). Edge detection by the LOG can be summarized conceptually as:
+\begin{enumerate}
+    \item Gaussian smoothing: $\tilde{I}(x,y) = I(x,y) \ast G(x,y)$ 
+    \item Second order differentiation by the Laplacian: $\nabla^2\tilde{I}(x,y)$
+    \item Extraction of the zero-crossing of $\nabla^2\tilde{I}(x,y)$ 
+\end{enumerate}
+\section{Finding Correspondences between images}
+A great variety of computer vision problems can be dealt with by finding \emph{corresponding points} betweeen two or more images of a scene. The task of establishing correspondences is split into 3 successive steps: 
+\begin{enumerate}
+    \item Detection of salient points
+    \item Description - computation of a suitable descriptor based on a neighbourhood around a key point 
+    \item Matching descriptors between images
+\end{enumerate}
+and should be invariant to the transformations that may relate images. 
+\subsubsection{Properties of good detectors/descriptors}
 
-
-
-
-
-
-
-
-
+\begin{itemize}
+    \item Detector \begin{itemize}
+            \item Repeatablity: finding the same salient points in different images 
+            \item Saliency: finding useful points 
+        \end{itemize}
+    \item Descriptor \begin{itemize}
+            \item Distinctiveness vs robustness trade-off
+            \item Compactness: descriptions should be concise
+        \end{itemize}
+\end{itemize}
+Good keypoints should exhibit a large variation along all directions. 
+\subsection{Moravec Corner Detector}
+\[
+    C(p) = \min_{q\in n_8(p)} \|N(p)-N(q)\|^2 
+\]
+The cornerness at $p$ is given by the minimum squared difference between the patch centered at $p$ and those centered at its 8 neighbours
 
 
 

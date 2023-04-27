@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1682259783 "IPCV.tex" "IPCV.pdf" "IPCV" 1682259783
-  "/etc/texmf/web2c/texmf.cnf" 1682259611 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+["pdflatex"] 1682605295 "IPCV.tex" "IPCV.pdf" "IPCV" 1682605296
+  "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -71,13 +71,11 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty" 1636758526 12694 6c23725d50ab9d1e2d3ce482c58ffcf3 ""
   "/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty" 1622581934 7147 5ac8a9ef36411064b1a501137af0fa54 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
-  "/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1636152094 2900 1537cc8184ad1792082cd229ecc269f4 ""
-  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb" 1636152094 138258 6525c253f16cededa14c7fd0da7f67b2 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1682259684 4379155 98693266ff65f58d9f98aff394de12d2 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1682259736 2802997 bd85d1d0e1ec2ed7f2def8144b84b432 ""
-  "IPCV.aux" 1682259783 7445 2b2ef19e3090d73b26328ca5ca6b8b46 "pdflatex"
-  "IPCV.tex" 1682259761 38080 23c13c0e675f0b3a30d1aedadcf022b6 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675936951 1435907 97a00d7e08adfc64a574474b78cba8e2 ""
+  "IPCV.aux" 1682605296 8324 41631ec8eb96a50f98cf849f0dd3e8dc "pdflatex"
+  "IPCV.tex" 1682605294 43177 7138e973732b90b2a071b511ba3ba165 ""
   (generated)
   "IPCV.aux"
   "IPCV.log"

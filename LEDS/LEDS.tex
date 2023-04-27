@@ -1,6 +1,8 @@
 \documentclass{book}
 \usepackage{amsmath, amsthm, graphicx, amssymb, mathtools}
 \usepackage[english]{babel}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \title{Learnig and Estimation of Dynamical Systems}
 \author{Dante Piotto}
@@ -1006,59 +1008,96 @@ This leads to the statistical test
         H_0 : x >\chi^2_\alpha(m) \implies \text{ accept } H_1
     \end{cases}
 \]
-where $\alpha$ is the chosen significance level. $\bar{\tau}$ must3 be chosen with care. In some methods  $\hat{r}_{\varepsilon u}(\tau)$ is constrained to be zero for some values of $\tau$ by construction.
+where $\alpha$ is the chosen significance level. $\bar{\tau}$ must be chosen with care. In some methods  $\hat{r}_{\varepsilon u}(\tau)$ is constrained to be zero for some values of $\tau$ by construction.
+Let us consider the quantity 
+%\[
+ %   \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)\varepsilon(t)= \begin{bmatrix}
+  %      \hat{r}_{\varepsilon y}(1) \\
+   %     \vdots \\
+    %    \hat{r}_{\varepsilon y}(n) \\
+     %   \hat{r}_{\varepsilon u}(1) \\
+      %  \vdots \\
+       % \hat{r}_{\varepsilon u}(n) \\
+    %\end{bmatrix}
+%\]
+it follows that 
+%\[
+ %   \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)\varepsilon(t)=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}\varpgi(t)(y(y)-\varphi^T(t)\hat{\theta}_N) = \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)- \displaystyle\frac{1}{N}\left(\displaystyle\sum_{t=1}^{N}\varphi^T(t)\varphi(t)\right)\hat{\theta}_N = \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)-\displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)=0
+%\]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+We define the normalized test quantities 
+\[
+    \hat{\gamma}(\tau) = \displaystyle\frac{\hat{r}_{\varepsilon u}(\tau)}{\sqrt{\hat{r}_\varepsilon(0)\hat{r}_u(0)}}, \quad \tau=1,2,\dots,m 
+\]
+It follows that 
+\[
+    \sqrt{N}\hat{\gamma}\xrightarrow[N\to\infty]\sim \mathcal{N}(0,1), \quad \tau = 1,2,\dots,\dots,m  
+\]
+so that a set of $m$ gaussian tests can also be performed. Once the significance level $\alpha$ has been chosen, $m$ gaussian tests are performed and the final decision is taken by considering the Anderson test.
 
 
 \chapter{Maximum likelihood estimation}
+
+Let $y(t)$ be an observed stochastic process whose distribution depends on an uknown parameter vector $\theta$. The \emph{likelihood function} $L(\theta)$ is the pdf of $y(t)$ given $\theta$: 
+\[
+    L(\theta)=f(y(t)|\theta)
+\]
+The maximum likelihood estimate of $\theta$ is 
+\[
+    \hat{\theta}_{ML}=\argmax_\theta L(\theta)
+\]
+\begin{itemize}
+    \item $\hat{\theta}_{ML}$ is the vector $\theta$ that makes the a posteriori probability of the observations as large as possible 
+    \item ML estimates require the knowledge of the conditional pdf and are often difficult to calculate analytically
+    \item In the gaussian case the problem often becomes more tractable. For dynamic systems, the problem can be simplified if the effect of initial conditions is neglected.
+\end{itemize}
+\section{the gaussian case}
+\[
+    y(t) = G(z^{-1})u(t) + H(z^{-1})w(t) \quad w(t) \sim \mathcal{N}(0,\sigma_w^2)
+\]
+Neglecting the effect of the initial conditions, the pdf $f(y(t)|\theta)$ can be replaced with $f(w(t)|\theta)$. By introducing also the approximation $\varepsilon(t,\theta)\approx w(t)$ we can write 
+\[
+    L(\theta)=\displaystyle\frac{1}{\sqrt(2\pi\sigma_\varepsilon^2)^N}\exp\left(-\displaystyle\frac{1}{2\Omega_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)\right)
+\]
+By considering the logarithmic likelihood function (log-likelihood function)
+\[
+    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}\log \sigma_\varepsilon^2-\displaystyle\frac{1}{2\sigma_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2/t,\theta) \quad (*)
+\]
+Assume now that $\sigma_\varepsilon^2$ is an additional parameter to be estimated $\implies \log L(\theta,\sigma_\varepsilon^2)$. First miximize wrt $\sigma_\varepsilon^2$ by solving 
+\[
+    \displaystyle\frac{\partial \log L(\theta,\sigma_\varepsilon^2)}{\partial \sigma_\varepsilon^2}=0
+\]
+We get 
+\[
+    \sigma_\varepsilon^2=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)=J(\theta)
+\]
+The inserting the above expression in (*) we find 
+\[
+    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}-\displaystyle\frac{N}{2}\log J(\theta)
+\]
+$\hat{\theta}_{ML}$ is thus obtained by minimizing $J(\theta)\implies$ the PEM estimate can be interpreted as the ML estimate providede that $w(t)$ is gaussian distributed 
+\begin{itemize}
+    \item As a consequence, the least squares estimate of static models, FIR models, ARX models and AR models, can be interpreted as the ML estimate provided that $w(t)$ is gaussian distributed
+    \item Strictly speaking, forn dynamic models $L(\theta)$ is not the exact likelihood function, because of the effecy of the initial conditions. 
+    \item When the number of sampples is large, the difference between the exact and the approximated likelihood functions becomes small.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \chapter{Classification: probabilistic models}
 
