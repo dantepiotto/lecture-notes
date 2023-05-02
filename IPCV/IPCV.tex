@@ -891,21 +891,120 @@ and should be invariant to the transformations that may relate images.
 \subsubsection{Properties of good detectors/descriptors}
 
 \begin{itemize}
-    \item Detector \begin{itemize}
-            \item Repeatablity: finding the same salient points in different images 
-            \item Saliency: finding useful points 
-        \end{itemize}
-    \item Descriptor \begin{itemize}
-            \item Distinctiveness vs robustness trade-off
-            \item Compactness: descriptions should be concise
-        \end{itemize}
+  \item Detector \begin{itemize}
+      \item Repeatablity: finding the same salient points in different images 
+      \item Saliency: finding useful points 
+    \end{itemize}
+  \item Descriptor \begin{itemize}
+      \item Distinctiveness vs robustness trade-off
+      \item Compactness: descriptions should be concise
+    \end{itemize}
 \end{itemize}
 Good keypoints should exhibit a large variation along all directions. 
 \subsection{Moravec Corner Detector}
 \[
-    C(p) = \min_{q\in n_8(p)} \|N(p)-N(q)\|^2 
+  C(p) = \min_{q\in n_8(p)} \|N(p)-N(q)\|^2 
 \]
-The cornerness at $p$ is given by the minimum squared difference between the patch centered at $p$ and those centered at its 8 neighbours
+The cornerness at $p$ is given by the minimum squared difference between the patch centered at $p$ and those centered at its 8 neighbours. The cornerness of the whole image is computed, then thresholding and NMS are applied to identify corners.
+\subsection{Harris Corner Detector}
+The Harris corner detector is a continuous formulation of the Moravec corner detector. Denoting as $(\Delta x,\Delta y)$ a generic infinitesimal shift, the error function may be written as:
+\begin{align*}
+  E(\Delta x, \Delta y ) = \displaystyle\sum_{x,y}^{}w(x,y)(I(x+\Delta x, y + \Delta y)-I(x,y))^2
+\end{align*}
+Where $w(t)$ is $1$ inside the chosen neighbourhood and $0$ elsewhere
+Due to the shift being infinitesimal, we may take advantage of Taylor series expansion of the intensity function at $(x,y)$:
+\[
+  I(x+\Delta x, y+ \Delta y)-I(x,y) \simeq \displaystyle\frac{\partial I(x,y)}{\partial x}\Delta x + \displaystyle\frac{\partial I(x,y)}{\partial y}\Delta y = I_x(x,y)\Delta x + I_y (x,y) \Delta y
+\]
+\begin{flalign*}
+  E(\Delta x, \Delta y ) = \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)\Delta x + I_y(x,y)\Delta y )^2=\\
+  \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)^2\Delta x^2 + I_y(x,y)^2\Delta y^2 + 2I_x(x,y)I_y(x,y)\Delta x \Delta y )=\\
+  =\displaystyle\sum_{x,y}^{}w(x,y)\left( \begin{bmatrix}
+      \Delta x \Delta y
+      \end{bmatrix} \begin{pmatrix}
+      I_x^2 & I_xI_y \\
+      I_yI_x & I_y^2
+      \end{pmatrix} \begin{bmatrix}
+      \Delta x \\ \Delta y
+  \end{bmatrix}\right) \\
+  E(\Delta x, \Delta y) = \begin{bmatrix}
+    \Delta x & \Delta y
+    \end{bmatrix} M \begin{bmatrix}
+    \Delta x \\ \Delta y
+  \end{bmatrix}
+\end{flalign*}
+wlog we can assume $M$ to be diagonal, as it is real and symmetric, thus always diagonalizable:
+\[
+  M=\begin{pmatrix}
+    \lambda_1 & 0 \\ 0 & \lambda_2
+  \end{pmatrix} \implies E(\Delta x, \Delta y) = \lambda_1 \Delta x^2 + \lambda_2 \Delta y^2
+\]
+we have that if: 
+\begin{itemize}
+  \item $\lambda_1, \lambda_2 \simeq 0$: we are in a flat region 
+  \item $\lambda_1 >> \lambda_2 $: we are on an edge
+  \item $\lambda_1, \lambda_2 >> 0$: we are in a corner
+\end{itemize}
+The previous considerations also hold with $M$ not diagonal by diagonalization:
+\[
+  M = R \begin{pmatrix}
+    \lambda_1 & 0 \\ 0 & \lambda_2
+  \end{pmatrix} R^T
+\]
+where the columns of $R$ are the orthonormal eigenvectors of $M$, and  $R^T$ is the rotation matrix that alignes the image axes to the eigenvectors of M
+Computing the eigenvalues of $M$ may be slow, thus a more efficient cornereness function is proposed: 
+\[
+  C= det(M)-k \cdot tr(M)^2 = \lambda_1\lambda_2 -k (\lambda_1+\lambda_2)^2
+\]
+With this new function we have 
+\begin{itemize}
+  \item $C \simeq 0$: Flat region
+  \item $C > 0$: Corner
+  \item $C < 0$: Edge
+\end{itemize}
+It is worth noting that the weighing function used is actually not a box function but rather Guassian shaped to assing more wight to closer pixels. Corner detection follows the usual steps of 
+\begin{itemize}
+  \item computing the cornerness $C$ 
+  \item Thresholding the values of $C$ 
+  \item perform NMS on the thresholded values of $C$
+\end{itemize}
+\subsection{Shi-Tomasi Corner Detector}
+A popular variant to the Harris corner detector, providing better results when tracking corner points across  video frames. The cornerness function is:
+\[
+  C=\min(\lambda_1,\lambda_2)
+\]
+It results particularly useful in tracking corner points in videos. 
+\subsection{Invariance properties of the Harris corner detector}
+\subsubsection{Rotation}
+Yes, as the eignevalues of matrix $M$ are invariant to rotation of the image axes
+\subsubsection{Intensity changes}
+\begin{itemize}
+  \item yes, to additive bias $(I'=I+b)$ due to the use of derivatives
+    \item no to a linear chang $(I' = aI)$ as derivatives undergo the same change
+\end{itemize}
+so overall, no invariance to affine intensity changes. 
+\subsubsection{Scale}
+No, due to fixed detection window size (impossible to detect homologous features when they appear at different scales in images). Images contain features at different scales, thsu a multiscale feature detector is necessary. A point may show up as salient at different scales. The \emph{characteristic scale} of a feature is the scale at which it's more salient. In order to mathc descriptors, large scale features need to be smoothed in order to eliminate details that do not appear across the range of scales. A fixed size detection tool is used on increasingly down-sampled and smoothed versions of the input image. 
+
+\section{Scale-Space}
+A Scale-Space is a one-parameter family of images created from the original so that the structures at smaller scales are successively suppressed by smoothing operations. Moreover, the scale-space should not introduce artifacts. From studies it has been shown that Gaussian smoothing is the only viable solution: 
+\[
+  L(x,y,\sigma) = G(x,y,\sigma)\ast I (x,y)
+\]
+Thus, a scale-space is created by repeatedly smoothing with larger and larger Gaussian kernels, or equivalently, by solving a 2D diffusion PDE over time starting from the original image: 
+\[
+  \frac{\partial I(x,y,t) }{\partial t} = k\nabla^2I(x,y,t) \implies \sigma=\sqrt{2kt}
+\]
+In order to detect features and select their characteristic scale, we can find the extrema of certain combinations of scale-normalized derivatives of the Guassian Scale-Space. 
+
+
+
+
+
+
+
+
+
 
 
 
