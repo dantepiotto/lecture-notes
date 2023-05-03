@@ -1057,11 +1057,11 @@ The maximum likelihood estimate of $\theta$ is
 \]
 Neglecting the effect of the initial conditions, the pdf $f(y(t)|\theta)$ can be replaced with $f(w(t)|\theta)$. By introducing also the approximation $\varepsilon(t,\theta)\approx w(t)$ we can write 
 \[
-    L(\theta)=\displaystyle\frac{1}{\sqrt(2\pi\sigma_\varepsilon^2)^N}\exp\left(-\displaystyle\frac{1}{2\Omega_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)\right)
+    L(\theta)=\displaystyle\frac{1}{\sqrt(2\pi\sigma_\varepsilon^2)^N}\exp\left(-\displaystyle\frac{1}{2\sigma\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)\right)
 \]
 By considering the logarithmic likelihood function (log-likelihood function)
 \[
-    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}\log \sigma_\varepsilon^2-\displaystyle\frac{1}{2\sigma_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2/t,\theta) \quad (*)
+    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}\log \sigma_\varepsilon^2-\displaystyle\frac{1}{2\sigma_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta) \quad (*)
 \]
 Assume now that $\sigma_\varepsilon^2$ is an additional parameter to be estimated $\implies \log L(\theta,\sigma_\varepsilon^2)$. First miximize wrt $\sigma_\varepsilon^2$ by solving 
 \[
@@ -1082,24 +1082,173 @@ $\hat{\theta}_{ML}$ is thus obtained by minimizing $J(\theta)\implies$ the PEM e
     \item When the number of sampples is large, the difference between the exact and the approximated likelihood functions becomes small.
 \end{itemize}
 
-
-
-
-
-
-
-
-
-
-
-
-
+\subsection{the Cramér-Rao lower bound}
+Let Y be a stochastic vector and $L(\theta^*)=g(Y|\theta)$. For an arbitrary unbiased estimate $\hat{\theta}(Y)$ of $\theta^*$ determined from $Y$ we have 
+\[
+    cov (\hat{\theta}(Y))\geq \left[E\left(\displaystyle\frac{\partial \log L(\theta^*)}{\partial \theta^*}^T  \right)\displaystyle\frac{\partial \log L(\theta^*)}{\partial \theta^*} \right]^{-1} = \left[E\displaystyle\frac{\partial^2\log L(\theta^*) }{\partial \theta^{*2}}\right]^{-1}=F^{-1}
+\]
+Where $F$ is called the \emph{Fisher information matrix}. The matrix $F^{-1}$ is thus a lower bound on the covariance matrix of the estimate and is called \emph{Cramér-Rao lower bound (CRLB)}. 
+\begin{itemize}
+    \item if an estimate attains the CRLB, it is efficient
+    \item the maximum likelihood estimator is (in geneal) consistent and efficient 
+    \item The least squares estimate of static models, FIR models, ARX models and AR models is (asymptotically) efficient provided that $w(t)$ is gaussian distributed 
+    \item the PEM estimate of ARMAX, ARMA and ARARX models is asymptotically efficient provided that $w(t)$ is gaussian distributed.
+\end{itemize}
 
 
 
 
 
 \chapter{Classification: probabilistic models}
+Classification: assigning the input $u(t)\in \mathcal{U}$ to one of $M$ classes $C_1,C_2,\dots,C_M$. The input is numerical and the output is categorical. 
+Available data: 
+\[
+    (u(1),y(1)),(u(2),y(2)),\dots,(u(N),y(N))
+\]
+A possible way to represent class labels numerically is 
+\[
+    y(t) = y^i \quad \text{if} \quad u(t)\in C_i
+\]
+where $y^i$ is a $M\times 1$ vector whose elements are zero except for the $i$-th element, which is equal to 1. For a two-class problem we will use 
+\[
+    y(t) = \begin{cases}
+        1 \quad \text{if } u(t) \in C_1
+        0 \quad \text{if } u(t) \in C_2
+    \end{cases}
+\]
+The input space $\mathcal{U}$ is divided into $M$ regions labeled according to the classification rule. The boundaries of these regions are called \emph{decision boundaries}.
+
+Deterministic models: the decision boundaries are explicitly modeled. This involves the construction of a \emph{discriminant function} that directly assigns each input $u(t)$ to a specific class. 
+
+Probabilistic models: first, the posterior probabilities $P(C_i|u(t)) = P(y(t)=y^i|u(t)), i= 1,2,\dots,M$ are estimated. Then, these probabilities are used to decide to which class a given input $u(t)$ belongs. 
+
+The performance fo a classifier can be evaluated by computing the error rate: 
+\[
+    Er = \displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}I(y(t),\hat{y}(t))
+\]
+where $hat{y}(t)$ is the prediction of $y(t)$ provided by the classifier and $I(y(t)\hat{y}(t))$ is an \emph{indicator variable} 
+\[
+    I(y(t)\hat{y}(t)) = \begin{cases}
+        1 \quad \text{if } y(t)\neq \hat{y}(t)
+        0 \quad \text{if } y(t) = \hat{y}(t)
+    \end{cases}
+\]
+The error rate is thus the fraction of misclassified observations. 
+\begin{itemize}
+    \item The error rate can be evaluated on the training set (training error rate), on the validation set (validation error rate) and on the etst set (test error rate)
+        \item A good classifier is one for which the validation (test) error rate is small 
+            \item As for regression problems, choosing the model complexity by using the training error rate leads to overfitting. 
+\end{itemize}
+
+\section{The Bayes classifier}
+The Bayes classifier assigns each input to the most likely class. Given an input $u(t)\in \mathcal{U}$, it will be assigned to the class $C_i$ with largest posterior probability. 
+\[
+    C_i : \argmax_{i=1,2,\dots,M}\{P(C_i|u(t))=P(y(t)=y^i|u(t)) \}
+\]
+It maximizes the conditional probability that $y(t)=y^i$ given the observed input value $u(t)$. 
+\begin{itemize}
+    \item In a two-class problem, the Bayes classifier consists in assigning $u(t)$ to class $C_1$ if $P(C_1|u(t))>0.5$ and to class $C_2$ otherwise 
+    \item It is possible to show that this classifier leads to the minimum classification (prediction) error on a future unseen dataset (validation or test set)
+    \item When dealing with real data, the conditional distribution of $\mathcal{Y}$ given $\mathcal{U}$ is usually uknown so that the Bayes classifier cannot be used in practice 
+    \item Probabilistic models use estimated probabilities $\hat{P}(C_i|u(t)),i=1,2,\dots,M$ rather than the true ones
+\end{itemize}
+\section{Logistic regression}
+Consider a two-class classification problem with $r$ inputs $(u(t)=[u_1(t)\dots u_r(t)]^T)$ and assume a linear decision boundary. This boundary is a hyperplane in $\mathbb{R}^r$ described by the equation 
+\[
+    \beta_0+ \beta_1 u_1(t) + \beta_2u_2(t) +\dots + \beta_ru_r(t) = 0
+\]
+that is 
+\[
+    \varphi^T(t)\theta=0
+\]
+with $\varphi(t)=\begin{bmatrix}
+    1 & u_1(t) & u_2(t) & \cdots & u_r(t)
+\end{bmatrix}^T $ and $\theta=\begin{bmatrix}
+    \beta_0 & \beta_1 & \cdots & \beta_r
+\end{bmatrix}^T$
+How to model $P(C_1|u(t))$?
+We need a function $f(z(t))$, where $z(t) = \varphi^T(t)\theta$, such that 
+\begin{itemize}
+    \item $f(z)$ takes values in the range $(0,1)$
+    \item $f(0)=0.5$ 
+    \item $f(z)>0.5(f(z)<0.5)$ when $z>0 (z>0)$
+    \item $f(z)\to 1$ when $z\to\infty$
+    \item $f(z)\to 0$ when $z\to-\infty$
+\end{itemize}
+Logistic sigmoid function: 
+\[
+    f(z)=\displaystyle\frac{e^z}{1+e^z}=\displaystyle\frac{1}{1+e^{-z}}
+\]
+% [TODO] insert graph
+We have
+\[
+    P(C_1|u(t))=f(z(t)), \quad P(C_2|u(t))=1-f(z(t))=\displaystyle\frac{1}{1+e^z}
+\]
+and
+\[
+    z(t)=\log \displaystyle\frac{P(C_1|u(t))}{P(C_2|u(t))}=\log \displaystyle\frac{f(z)}{1-f(z)}
+\]
+How to estimate $\theta$?
+
+Find the estimate $\hat{\theta}$ that maximizes the posterior probability of the observation $Y=\begin{bmatrix}
+    y(1) & y(2) & \cdots & y(N)
+\end{bmatrix}^T \implies$ maximum likelihood estimation 
+\[
+    P(Y|\theta) = \prod_{t=1}^N P(C_1|u(t))^{y(t)}P(C_2|u(t))^{1-y(t)} = \prod_{t=1}^N f(z(t))^{t(t)} (1-f(z(t)))^{1-y(t)}
+\]
+Log-likelihood function:
+\[
+    \log P(Y|\theta) = \displaystyle\sum_{t=1}^{N}[y(t)\log f(z(t))+(1-y(t))\log(1-f(z(t)))]
+\]
+Maximizing the above function is equivalent to minimizing its negative, so we have to find the estimate $\hat{\theta}$ minimizing
+\[
+    J(\theta)=-\log P(Y|\theta)
+\]
+To solve this optimization problem we can use the Newton-Raphson algorithm:
+\[
+    \hat{\theta}^{k+1}=\hat{\theta}^K-\eta^kJ''(\hat{\theta}^k)^{-1}J'(\hat{\theta}^k)^T
+\]
+By using 
+\[
+    \displaystyle\frac{\partial f(z)}{\partial z}=f(z)(1-f(z))
+\]
+It is possible to show that 
+\[
+    J'(\theta)=\displaystyle\frac{J(\theta)}{\partial \theta} = \displaystyle\sum_{t=1}^{N}[f(z(t))-y(t)]\varphi(t)=\Phi^T (F(\theta)-Y)
+\]
+where
+\[
+    \Phi = \begin{bmatrix}
+        1 & u_1(1) & \cdots & u_r(1) \\
+        1 & u_1(2) & \cdots & u_r(2) \\
+        \vdots & \vdots & \ddots & \vdots \\
+        1 & u_1(N) & \cdots & u_r(N) 
+        \end{bmatrix} \quad Y=\begin{bmatrix}
+        y(1) \\ y(2) \\ \vdots \\ y(N)
+        \end{bmatrix} \quad F(\theta)= \begin{bmatrix}
+        f(z(1)) \\ f(z(2)) \\ \vdots \\ f(z(N))
+    \end{bmatrix}
+\]
+and 
+\[
+    J''(\theta)= \displaystyle\frac{\partial^2 J(\theta)}{\partial \theta^2}=\displaystyle\sum_{t=1}^{N}f(z(t))(1-f(z(t)))\varphi(t)\varphi^T(t) = \Phi^T W(\theta)\Phi
+\]
+where $W(\theta)$ is the diagonal matrix 
+\[
+    W(\theta)=diag \begin{bmatrix}
+        f(z(1))(1-f(z(1))) & f(z(2))(1-f(z(2))) & \cdots & f(z(N))(1-f(z(N)))
+    \end{bmatrix}
+\]
+The iterative algorithm is 
+\[
+    \hat{\theta}^{k+1}=\hat{\theta}^k -\eta^k(\Phi^TW(\theta)\Phi)^{-1}\Phi^T(F(\theta)-Y)
+\]
+\begin{itemize}
+    \item the elements of $W(\theta)$ are in the range $(0,1)$, therefore the hessian $\Phi^TW(\theta)\Phi$ is positive definite and the loss function $J(\theta)$ has a unique minumum. 
+    \item $\hat{\theta}^0$ is ofthen chosen as a vector of zeros. It can also be chosen randomly.
+\end{itemize}
+
+
 
 
 
