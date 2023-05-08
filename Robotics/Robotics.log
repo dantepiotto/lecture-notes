@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.9)  28 APR 2023 13:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.9)  5 MAY 2023 13:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -266,80 +266,24 @@ Chapter 4.
 
 ]
 Chapter 5.
-[27] [28] [29]
-
-./Robotics.tex:1478: LaTeX Error: Bad math environment delimiter.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1478 \[
-         
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-./Robotics.tex:1480: Missing \endgroup inserted.
-<inserted text> 
-                \endgroup 
-l.1480 \]
-         
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-
-./Robotics.tex:1480: LaTeX Error: \begin{document} ended by \end{equation*}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1480 \]
-         
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-./Robotics.tex:1480: Missing $ inserted.
-<inserted text> 
-                $
-l.1480 \]
-         
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-./Robotics.tex:1480: Extra \endgroup.
-<recently read> \endgroup 
-                          
-l.1480 \]
-         
-Things are pretty mixed up, but I think the worst is over.
-
-[30] [31] [32
+[27] [28] [29] [30] [31] [32
 
 ]
 Chapter 6.
-[33] (./Robotics.aux) ) 
+[33] [34] [35] (./Robotics.aux) ) 
 Here is how much of TeX's memory you used:
- 3702 strings out of 480171
- 58470 string characters out of 5894490
+ 3703 strings out of 480171
+ 58486 string characters out of 5894490
  384163 words of memory out of 5000000
- 21625 multiletter control sequences out of 15000+600000
+ 21626 multiletter control sequences out of 15000+600000
  480309 words of font info for 69 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  55i,16n,62p,613b,324s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Robotics.pdf (33 pages, 321470 bytes).
+Output written on Robotics.pdf (35 pages, 330386 bytes).
 PDF statistics:
- 206 PDF objects out of 1000 (max. 8388607)
- 132 compressed objects within 2 object streams
+ 212 PDF objects out of 1000 (max. 8388607)
+ 136 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

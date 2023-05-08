@@ -1474,7 +1474,7 @@ The discrete time repetitivecompensator has a closed loop transfer function
 \[
     \displaystyle\frac{z^{-N}}{\-z^{-N}}
 \]
-the poles of this system are those complex numbers such that $z^{-N}=1$. By setting $z=\rho e^{-j\theta N} it results 
+the poles of this system are those complex numbers such that $z^{-N}=1$. By setting $z=\rho e^{-j\theta N}$ it results 
 \[
     \rho e^{j\theta N} = 1 = e^{j2k\pi}
 \]
@@ -1499,12 +1499,162 @@ mechanical devices properly installed on the wrist of the robot, able to react t
 \end{itemize}
 The center of compliance is a point in space where linear forces correspond to pure linear displacements and torques correspond to pure rotation.
 
+
 \section{Active Compliance}
 Achieved my means of suitable control laws: the robot reacts in a programmed manner to external forces applied to the end-effector (a force sensor is usually requirede). 
 \begin{itemize}
     \item advantages: high operational flexibility
     \item drawbacks: computational complexity, an envirnment model could be required
 \end{itemize}
+
+Different techniques are available: 
+\begin{itemize}
+    \item Pure force control: (theoretically) used in quasi-static applications 
+    \item Active stiffness control: control of interaction forces is obtained on the basis of position control with an elastic model of the environment 
+    \item Impedance control: a desired dynamic behaviour of the end-effector is imposed (mechanical impedance: ratio between force and velocity)
+    \item Hybride position/force control: the directions in the operational space are separated in position-controlled and force-controlled directions (on the basis of kinematic models of the task and of the dynamic model of the robot)
+\end{itemize}
+
+\subsection{Stiffness control}
+Basic idea: \\
+Force on the environment: $f_e = k_e(x-x_e)$\\
+system dynamics: $m\ddot{x}+k_e(x-x_e)=f$
+where $x_e$ is the original position of the contact point of the environment, and $x$ is the actual position of the contact. We choose to use a PD control:
+\begin{gather*}
+    m\ddot{x}+k_e(x-x_e)=f=k_p(x_d-x)-k_v\dot{x}\\
+    m\ddot{x}+k_v\dot{x}+(k_p+k_e)x=k_px_d+k_ex_e
+\end{gather*}
+In steady state 
+\[
+    x=\displaystyle\frac{k_px_d+k_ex_e}{k_p+k_e}
+\]
+and then
+\[
+    f_e = k_e\left[\displaystyle\frac{k_px_d+k_ex_e}{k_p+k_e}-x_e\right] = \displaystyle\frac{k_e}{k_p+k_e}k_p(x_d-x_e)
+\]
+which is equivalent to two springs in series, a robot "spring" + and environment "spring"
+\begin{itemize}
+    \item if $k_e \gg k_p$ then $f_e\approx k_p(x_d-x_e)$ (compliant robot)
+    \item if $k_p \gg k_e$ then $f_e\approx k_e(x_d-x_e)$ (compliant environment)
+\end{itemize}
+We obtain force control by means of position control. The stiffness of the system is defined by the gain $k_p$
+
+Let us consider now a $n$ dof robot: Elastic environment:
+\[
+    w=\begin{bmatrix}
+        f \\ n
+    \end{bmatrix}= \begin{bmatrix}
+    K_f & 0 \\ 0 & K_v
+    \end{bmatrix}\begin{bmatrix}
+        dp \\ \omega dt
+    \end{bmatrix} = K\begin{bmatrix}
+        dp \\ \omega dt
+    \end{bmatrix}
+\]
+By using work-space coordinates (RPY,\dots)
+\[
+    w = KT_A(x)dx = KT_A(x)(x_e-x)
+\]
+With the analytic expression of the jacobian we have (from $J=T_AJ_A$ and $\tau=J^Tw=J_A^Tw_A$)
+\[
+    w_A=T_A^T(x)KT_A(x)dx=K_A(x)(x_e-x)
+\]
+$K_A$ is the (positive semi-definite) \emph{stiffness matrix}: the environment may not be able to generate forces along all the directions. Note that this matrix is not constant as it depends on the position $x$ In case it may be defined, $K_A^{-1}$ is the \emph{compliance matrix}. The range space of matrix $K_A$, i.e. $\mathcal{R}(K_A)$, defines the directions in the work space along which forces may be applied. \\
+Dynamic model of the robot: $M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=u+J^T(q)w$ \\
+Control $\quad$ PD+g(q): $u=g(q)+J_A^T(q)K_P\tilde{x}-J_A^TK_DJ_A(q)\dot{q}$\\
+This control is obtained by transforming the standard PD+g(q) control into the joint space by the analytic Jacobian. As veolcities in the workspace are not measured, we make use of the equivalence $\dot{x}_A=J_A\dot{q}$.\\
+in steady-state:
+\[
+    ^T(q)K_P\tilde{x}=-J^T(q)w \quad (=-J_A^T(q)w_A=-J_A^T(q)T_A^Tw)
+\]
+and, if the inverse of the Jacobian exists
+\[
+    \tilde{x}=-K_P^{-1}T_A^T(x)w = -K_P^{-1}w_A
+\]
+The compliance is defined by $K_P^{-1}$. If it is diagonal, the compliance referred to forces is linear and configuration-independent; this is not true for the torques due to the presence of $T_A$. 
+We have
+\[
+    \tilde{x}=-K_P^{-1}K_A(x)(x_e-x)
+\]
+\subsubsection{Stiffness control in joint space}
+
+
+\subsection{Impedance control}
+The goal is not to track specific desired position/veolcity or force trajectories, but rather to define a dynamic relationship between velocities and forces. We define a desired work-space dynamics. We have:
+\[
+    \displaystyle\frac{w(s)}{\dot{x}(s)}=Z(s) \quad \text{or} \quad \displaystyle\frac{w(s)}{x(s)}=sZ(s)
+\]
+By defining
+\[
+    sZ(s)=-(M_ds^2+D_ds+K_d)
+\]
+where $M_d$ is the desired inertia matrix, $D_d$ is the desired damping and $K_d$ is the desired stiffness, we have
+\[
+    M_d\ddot{x}+D_d\dot{x}+K_dx=-w
+\]
+that defines the desired behaviour of the manipulator
+
+We have a two-step design procedure:
+\subsubsection{1) Linearization in the work-space}
+\[
+    \hat{M}(x)\ddot{x}+\hat{C}(x,\dot{x})\dot{x}+\hat{g}(x)=F+F_a
+\]
+where
+\begin{gather*}
+    \hat{M} = (JM^{-1}J^T)^{-1}=J^{-T}MJ^{-1}\\
+    \hat{C} = \hat{M}(JM^{-1}CJ^{-1}-dot{J}J^{-1})=J^{-T}CJ^{-1}-\hat{M}\dot{J}J^{-1}\\
+    \hat{g} = \hat{M}JM^{-1}g = J^{-T}g
+\end{gather*}
+by defining 
+\[
+    F = [\hat{M}(x)y+\hat{C}(x,\dot{x})\dot{x}+\hat{g}(x)-F_a] = [\hat{M}(x)y+\hat{n}(x,\dot{x})-F_a]
+\]
+we obtain the linear model 
+\[
+    \ddot{x}=y
+\]
+\subsubsection{2) Definition of the desired impedance bhaviour}
+\[
+    y=\ddot{x}_d+M_d^{-1}[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]
+\]
+from Which
+\[
+    M_d(\dot{x}_d-\ddot{x})+D_d)\dot{x}_d-\dot{x})+K_d(x_d-x)=-F_a
+\]
+or 
+\[
+    M_d\ddot{\tilde{x}}+D_d\dot{\tilde{x}}+K_d\tilde{x}=-F_a
+\]
+$F_a$ must be added because if it is not, the robot will go to $\tilde{x}=0$ ignoring external forces, leaind to potential damage
+In conclusion, the overall control input $F$ is:
+\[
+    F = \hat{M}\ddot{x}_d +\hat{M}M_d^{-1}[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]+\hat{n}(x,\dot{x})-F_a
+\]
+note that if we choose $M_d=\hat{M (=J^{-T}MJ^{-1})}$ then the control law is greatly simplified since 
+\[
+    F = \hat{M}\ddot{x}_d+[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]+\hat{n}(x,\dot{x})
+\]
+and it does not even need a F/T sensor to be implemented. Since typically the control actino is applied at the joint level, we have 
+\[
+    u=J^TF
+\]
+\subsubsection{Choice of the desired impedance}
+The robot should:
+\begin{itemize}
+    \item avoid high impact forces due to uncertainties on position/shape of the environment 
+    \item adapt to the stiffness properties of the environment 
+    \item mimic a "human" behaviour: fast and rigid in free-space motion, slow and compliant iduring the approaching and contact phases 
+\end{itemize}
+Then:
+\begin{itemize}
+    \item high values of $M_{d,i}$ and small values of $K_{d,i}$ along directions in the work space where contacts are expected 
+    \item high values of $K_{d,j}$ and small values of $M_{d,j}$ along free directions in the woek space (no contacts) 
+    \item if the environment is stiff, small values of $K_{d,i}$ 
+    \item the values of $D_{d,k}$ are used to modify the transient phases
+\end{itemize}
+
+
+
 
 
 
