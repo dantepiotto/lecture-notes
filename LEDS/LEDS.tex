@@ -1,5 +1,5 @@
 \documentclass{book}
-\usepackage{amsmath, amsthm, graphicx, amssymb, mathtools}
+\usepackage{amsmath, amsthm, graphicx, amssymb, mathtools, float}
 \usepackage[english]{babel}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -1247,6 +1247,156 @@ The iterative algorithm is
     \item the elements of $W(\theta)$ are in the range $(0,1)$, therefore the hessian $\Phi^TW(\theta)\Phi$ is positive definite and the loss function $J(\theta)$ has a unique minumum. 
     \item $\hat{\theta}^0$ is ofthen chosen as a vector of zeros. It can also be chosen randomly.
 \end{itemize}
+\subsubsection{How to classify a new input $u(t)$?}
+Once an estimate $\hat{\theta}$ has been computed and a new input $u(t)$ becomes available:
+\begin{enumerate}
+    \item Compute $\hat{z}(t)=\varphi^T(t)\hat{\theta}$ 
+    \item Compute $f(\hat{z}(t))=\hat{P}(C_1|u(t)) = \frac{e^{\hat{z}}}{1+e^{\hat{z}}}$, which is an estimate of $P(C_1|u(t))$ 
+    \item If $f(\hat{z}(t))>0.5$ assign $u(t)$ to class $C_1$ ($\hat{y}(t)=1$), otherwise assign it to class $C_2$ ($\hat{y}(t)=0$)
+\end{enumerate}
+Depending on the specific classification proble, the decision criterion could be different from that described in the above step 3
+\subsection{The gradient descent algorithm}
+\[
+    \hat{\theta}^{k+1} = \hat{\theta}^k-\eta^kJ'(\hat{\theta}^k)
+\]
+\begin{itemize}
+    \item It only requires computation of the gradient of the loss function 
+    \item At each step $\hat{\theta}^k$ is moved in the direction of the greatest rate of decrease of the loss function $J(\theta)$ 
+    \item The step size $\eta^k$ (also called \emph{learning rate}) plays a very important role. Both very large and very small values can lead to inefficiency. A variable step size is often adopted 
+    \item The algorithm can converge to a local minimum 
+    \item The procedure can be repeated by starting from different initial guesses  
+    \item \emph{Stopping criterion}: $\|\hat{\theta}^{k+1}-\hat{\theta}^k\|<\delta$ or $|J(\hat{\theta}^{k+1})-J(\hat{\theta}^k)|<\delta$ or $\|J'(\hat{\theta}^k)\|<\delta$ where $\delta$ is a small positive number 
+\end{itemize}
+For the logistic regressino problem, the iterative algorithm is 
+\[
+    \hat{\theta}^{k+1} = \hat{\theta}^k-\eta^k \Phi^T(F(\theta)-Y)
+\]
+\subsubsection{Stochastic gradient descent}
+Instead of using all samples, a smaller number of samples is randomly picked for gradient computation at each iteration. 
+
+\subsubsection{Confusion matrix}
+Suppose a training set is used to obtain an estimate on a two-class classification problem, and a validation set is used to verify the predictive capabilities of the model, with 5000 samples corresponding to class $C_1$ (H) and 1000 samples belonging to class $C_2$ (F) the confusion matrix is:
+\begin{table}[H]
+\begin{tabular}{llll}
+                           & H                         & F                         & Total                     \\ \cline{2-4} 
+\multicolumn{1}{l|}{H}     & \multicolumn{1}{l|}{4950} & \multicolumn{1}{l|}{250}  & \multicolumn{1}{l|}{5200} \\ \cline{2-4} 
+\multicolumn{1}{l|}{F}     & \multicolumn{1}{l|}{50}   & \multicolumn{1}{l|}{750}  & \multicolumn{1}{l|}{800}  \\ \cline{2-4} 
+\multicolumn{1}{l|}{Total} & \multicolumn{1}{l|}{5000} & \multicolumn{1}{l|}{1000} & \multicolumn{1}{l|}{6000} \\ \cline{2-4} 
+\end{tabular}
+\end{table}
+The error rate is:
+\[
+    Er = \displaystyle\frac{300}{6000}=5\%
+\]
+The error rate concerning the first class is 
+\[
+    Er_H = \displaystyle\frac{50}{5000}=1\%
+\]
+The error rate concerning the second class is 
+\[
+    Er_H = \displaystyle\frac{250}{1000}=25\%
+\]
+If these errors are tolerable, we may keep the chosen decision rule, otherways we may change it. New decision rule: $\hat{P}(C|u(t))>0.75 \implies u(t)\in C_1$ leading to a new confusion matrix: 
+\begin{table}[H]
+\begin{tabular}{llll}
+                           & H                         & F                         & Total                     \\ \cline{2-4} 
+\multicolumn{1}{l|}{H}     & \multicolumn{1}{l|}{4750} & \multicolumn{1}{l|}{110}  & \multicolumn{1}{l|}{4860} \\ \cline{2-4} 
+\multicolumn{1}{l|}{F}     & \multicolumn{1}{l|}{250}  & \multicolumn{1}{l|}{890}  & \multicolumn{1}{l|}{1140} \\ \cline{2-4} 
+\multicolumn{1}{l|}{Total} & \multicolumn{1}{l|}{5000} & \multicolumn{1}{l|}{1000} & \multicolumn{1}{l|}{6000} \\ \cline{2-4} 
+\end{tabular}
+\end{table}
+The error rate is:
+\[
+    Er = \displaystyle\frac{360}{6000}=6\%
+\]
+The error rate concerning the first class is 
+\[
+    Er_H = 5\%
+\]
+The error rate concerning the second class is 
+\[
+    Er_H = 11\%
+\]
+\subsection{Multiclass problems}
+One-vs-all: the multiclass problem is split into $M$ two-class problems. The generic $i$-th binary problem involves the classes $C_i$ and $\bar{C}_i = \{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, $M$ conditional probabilities $\hat{P}(C_i|u(t)),i=1,2,\dots,M$ are estimated. A new input $u(t)$ is assigned to the class $C_k$ such that 
+\[
+    k = \argmax_{i\in \{1,2,\dots,M\}}\hat{P}(C_i|u(t))
+\]
+Note that the sum of the posterior probabilities $\hat{P}(C_i|u(t))$ is not 1 as multiple two-class classification problems are being considered.
+Multiclass logistic regression: the posterior probabilities are modelled using the \emph{normalized exponential} (or \emph{softmax function})
+\[
+    P(C_i|u(t))=\displaystyle\frac{e^{z_i(t)}}{e^{z_1(t)}+e^{z_2(t)}+\dots+e^{z_M(t)}}, \quad i=1,2,\dots,M
+\]
+where 
+\[
+    z_i(t)=\varphi^T(t)\theta_i, \quad i=1,2,\dots,M
+\]
+Note that $\sum_{i=1}^{M}P(C_i|u(t))=1$
+
+The input space $\mathcal{U}=\mathbb{R}^r$ can thus be devided into $M$ regions defined by a set of $M$ hyperplanes. Each hyperplane represents the linear decision boundary between two classes. More precisely, the hyperplane separating classes $k$ and $j$ is described by the equation 
+\[
+    (z_k(t)-z_j(t)) = 0 \quad \text{that is} \quad \varphi^T(t)(\theta_k-\theta_j)=0
+\]
+An alternative consists in selecting a single class as the baseline. If we select the $M$-th class the posterior probabilities are given by:
+\[
+    P(C_i|u(t)) = \displaystyle\frac{e^{z_i(t)}}{1+e^{z_1(t)}+e^{z_2(t)}+\dots+e^{z_{M-1}(t)}}, \quad i=1,2,\dots, M-1
+\]
+and
+\[
+    P(C_M|u(t)) = \displaystyle\frac{1}{1+e^{z_1(t)}+e^{z_2(t)}+\dots+e^{z_{M-1}(t)}}
+\]
+Both alternatives lead to the same results. For both metods, the parameter vectors $\theta_i,\theta_2,\dots$ are estimated by using maximum likelihood and Newton's method (or gradient descent).
+\subsection{Dealing with nonlinear boundaries}
+By means of a nonlinear transformation in the input space
+\[
+    u(t)\in\mathcal{U}\rightarrow \bar{u}(t)=g(u(t))\in\bar{\mathcal{U}}
+\]
+a nonlinear boundary in $\mathcal{U}$ can be mapped into a linear one in $\bar{\mathcal{U}}$. The logistic regression is then applied to the transformed inputs. 
+\begin{itemize}
+    \item In general, the dimension of $\bar{\mathcal{U}}$ is greater than that of the original input space $\mathcal{U}$ and the complexity of the model increases 
+    \item Nonlinear transformations cannot remove class overlap. They can increase the level of overlap or create overlap where none existed in $\mathcal{U}$
+\end{itemize}
+
+\subsection{Linear discriminant analysis}
+The posteior probabilities are estimated through the Bayes theorem:
+\[
+    P(C_i|u(t)) =\displaystyle\frac{p(u(t)|C_i)P(C_i)}{P(u(t))}=\displaystyle\frac{p(u(t)|C_i)P(C_i)}{\sum_{k=1}^{M}P(u(t)|C_k)p(C_k)}
+\]
+if $u(t)$ is a continuous random variable, $P(u(t)|C_i)$ is replaced with the conditional pdf $f_u(u|C_i)$. In fact, $f_u(u|C_i)du$ is the probability that $u(t)\in[u,u+du]$.
+\\How does it work? 
+\begin{itemize}
+    \item Assume a specific probability density function for $P(u(t)|C_i),i=1,2,\dots,M$ and estimate the parameters characterizing such distribution 
+    \item Estimate the prior probabilities $P(C_1),P(C_2),\dots,P(C_M)$. 
+    \item Compute estimates of the posterior probabilities $P(C_i|u(t)),i=1,2,\dots,M$ 
+    \item Assign a new input $u(t)$ to the class $C_k$ for which $\hat{P}(C_i|u(t)),i=1,2,\dots, M$ is largest
+\end{itemize}
+
+\subsection{Gaussian class densities with commmon covariance matrix}
+Two class classification problem 
+\[
+    f_u(u|C_i)=\displaystyle\frac{1}{\sqrt{(2\pi)^rdet(\Sigma)}}\exp \left(-\displaystyle\frac{(u(t)-\mu_i)^T\Sigma^{-1}(u(t)-\mu_i)}{2}\right), \quad i=1,2
+\]
+It follows that 
+\[
+    P(C_1|u(t))=\displaystyle\frac{f_u(u|C_1)P(C_1)}{f_u(u|C_1)P(C_1)+f_u(u|C_2)P(C_2)}=\displaystyle\frac{1}{1+e^{-z(t)}}
+\]
+where
+\[
+    z(t)=u^T(t)\Sigma^{-1}(\mu_1-\mu_2)+\displaystyle\frac{1}{2}\mu_2^T\Sigma^{-1}\mu_2-\displaystyle\frac{1}{2}\mu_1^T\Sigma^{-1}\mu_1+\log\displaystyle\frac{P(C_1)}{P(C_2)}=\varphi^T(t)\theta
+\]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

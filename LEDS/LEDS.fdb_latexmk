@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1683123710 "LEDS.tex" "LEDS.pdf" "LEDS" 1683123711
+["pdflatex"] 1683546873 "LEDS.tex" "LEDS.pdf" "LEDS" 1683546874
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -70,6 +70,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/base/bk10.clo" 1636758526 8288 a164cb4ac374c509b151821492778450 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/book.cls" 1636758526 23268 2b549a0e88d4c803f33b9b907020a582 ""
   "/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty" 1579991033 13886 d1306dcf79a944f6988e688c1785f9ce ""
+  "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1465944070 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def" 1601931164 19103 48d29b6e2a64cb717117ef65f107b404 ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty" 1622581934 18399 7e40f80366dffb22c0e7b70517db5cb4 ""
@@ -87,8 +88,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675936951 1435907 97a00d7e08adfc64a574474b78cba8e2 ""
-  "LEDS.aux" 1683123710 7328 33320a660b736506793ba6dc3e3ab02e "pdflatex"
-  "LEDS.tex" 1683123709 51405 6205bcf1e049463a746379ae1a280a74 ""
+  "LEDS.aux" 1683546874 8296 4530b3512e524063443d12f6a94fcc54 "pdflatex"
+  "LEDS.tex" 1683546872 59828 0c97bc282c9081ac0f0d31f8935c9ea0 ""
   (generated)
   "LEDS.aux"
   "LEDS.log"
