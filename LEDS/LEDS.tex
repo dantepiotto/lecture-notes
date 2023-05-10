@@ -1433,6 +1433,94 @@ In this case, the input space $\mathcal{U}$ can be divided into $M$ regions defi
 \]
 For this reasonm in this case the approach is called \emph{quadratic discriminant analysis}
 
+\chapter{Classification: deterministic models}
+The decision boundaries are explicitly modeled. This involves the construction of a discriminant function that directly assigns each input $u(t)$ to a specific class 
+
+Assumptions:
+\begin{enumerate}
+    \item two-class classification problems
+    \item Linear decision boundaries 
+\end{enumerate}
+Because of 2, the discriminant function $z(t)$ is such that 
+\[
+    z(t)=\varphi^T(t)\theta=u^T(t)\beta+\beta_0
+\]
+where $u(t) =\begin{bmatrix}
+    u_1(t) & u_2(t) & \cdots & u_r(t)
+\end{bmatrix}^T$ and $\beta = \begin{bmatrix}
+    \beta_1 & \beta_2 & \cdots & \beta_r
+\end{bmatrix}^T$.
+For the output $y(t)$ we will use 
+\[
+    y(t) = \begin{cases}
+        1 \quad \text{if } u(t)\in C_1 \quad (z(t)>0)\\
+        -1 \quad \text{if } u(t)\in C_2 \quad (z(t)<0)
+    \end{cases}
+\]
+The equation $z(t)=0$, i.e. 
+\[
+    u^T(t)\beta+\beta_0=0
+\]
+defines a hyperplane $\mathcal{H}\in\mathcal{U}=\mathbb{R}^r$
+$u_A,u_B \in \mathcal{H} \implies \beta^T(u_A-u_B)=0$ imples that $\beta$ is orthogonal to $\mathcal{H}$ 
+\[
+    ui\in\mathcal{H}\implies u^T\beta+\beta_0=0
+\]
+so that  
+\[
+    \displaystyle\frac{\beta^Tu}{\|\beta\|}=-\displaystyle\frac{\beta_0}{\|\beta\|}
+\]
+is the perpendicular distance of $\mathcal{H}$ from the origin 
+\[
+    u\in\mathcal{U}\implies z(t) =\beta^Tu+\beta_0
+\]
+so that 
+\[
+    \displaystyle\frac{z(t)}{\|\beta\|}
+\]
+is the signed distance of $u(t)$ to $\mathcal{H}$
+finally, note that, due to the classification rule 
+\[
+    y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geq 0
+\]
+is the distance (unsigned) of $u(t)$ to the hyperplane $\mathcal{H}$ ($y(t)z(t)\geq 0 \forall t$)
+\subsection{Separating hyperplanes}
+A dateset whose classes can be separated exactly by linear decision boundaries are said to be linearly separable. These linear decision boundaries are called separating hyperplanes. In general, if the dataset is linearly separable, there exists an infinite number of separating hyperplanes. Once a separating hyperplane $z(t)=0$ has been found, a new input $u(t)$ is classified as follows:
+\[
+    u(t) \in \begin{cases}
+        C_1 \quad \text{if } z(t)>0\\
+        C_2 \quad \text{if } z(t)<0
+    \end{cases} \implies y(t) = \begin{cases}
+    1 \quad \text{if } z(t)>0\\
+    2 \quad \text{if } z(t)<0
+   \end{cases}
+\]
+\subsection{the maximum margin classifier}
+Margin: the smallest distance from the observations to the separating hyperplane\\
+Optimal (maximum margin) hyperplane: it is the separating hyperplane for which the margin is largest.
+It is found by solving the optimization problem
+\[
+    \argmax_{\beta_0,\beta}\left\{\min_t\left[y(t)\displaystyle\frac{z(t)}{\|\beta\|} \right] \right\}  = \argmax_{\beta_0,\beta}\left\{\min_t\left[y(t)\displaystyle\frac{\beta_0+u^T(t)\beta}{\|\beta\|} \right] \right\}
+\]
+that, in turn, is equivalent to 
+\[
+    \max_{\beta_0,\beta}D \text{ subject to } y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geq D, \quad t=1,2,\dots,N
+\]
+The optimal hyperplane can be seen as the mi-line of the widest "slab" that can be inserted between two classes. Although the identification of the maximum margin requires all the available data, the optimal hyperplane depends directly on only a small subset of the data points, known as \emph{support vectors}. 
+
+If we make the rescaling $\beta\to k\beta$ and $\beta_0 \to k\beta_0$, the distance from any point $u(t)$ to the decision boundary is unchanged, therefore, we can arbitrarily set $\|\beta\|=1/D$. As a consequence, the optimization problem is equivalent to 
+\[
+    \max_{\beta_0,\beta}D \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
+\]
+that is
+\[
+    \min{\beta_0,\beta}\|\beta\|^2 \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
+\]
+This is a convex optimization problem with $N$ linear inequality constraints. The constraints define an empty slab around the linear decision boundary of thickness $2D=2\|\beta\|$ 
+
+
+
+
 
 
 
