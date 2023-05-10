@@ -1360,7 +1360,7 @@ a nonlinear boundary in $\mathcal{U}$ can be mapped into a linear one in $\bar{\
 \subsection{Linear discriminant analysis}
 The posteior probabilities are estimated through the Bayes theorem:
 \[
-    P(C_i|u(t)) =\displaystyle\frac{p(u(t)|C_i)P(C_i)}{P(u(t))}=\displaystyle\frac{p(u(t)|C_i)P(C_i)}{\sum_{k=1}^{M}P(u(t)|C_k)p(C_k)}
+    P(C_i|u(t)) =\displaystyle\frac{P(u(t)|C_i)P(C_i)}{P(u(t))}=\displaystyle\frac{P(u(t)|C_i)P(C_i)}{\sum_{k=1}^{M}P(u(t)|C_k)p(C_k)}
 \]
 if $u(t)$ is a continuous random variable, $P(u(t)|C_i)$ is replaced with the conditional pdf $f_u(u|C_i)$. In fact, $f_u(u|C_i)du$ is the probability that $u(t)\in[u,u+du]$.
 \\How does it work? 
@@ -1384,6 +1384,61 @@ where
 \[
     z(t)=u^T(t)\Sigma^{-1}(\mu_1-\mu_2)+\displaystyle\frac{1}{2}\mu_2^T\Sigma^{-1}\mu_2-\displaystyle\frac{1}{2}\mu_1^T\Sigma^{-1}\mu_1+\log\displaystyle\frac{P(C_1)}{P(C_2)}=\varphi^T(t)\theta
 \]
+with 
+\[
+    \varphi(t)=\begin{bmatrix}
+        1 & u_1(t) & u_2(t) & \cdots & u_r(t)
+    \end{bmatrix}^T, \quad \theta=\begin{bmatrix}
+        \beta_0 & \beta_1 & \cdots & \beta_r
+    \end{bmatrix}^T=\begin{bmatrix}
+        \beta_0 \beta^T
+    \end{bmatrix}^T
+\]
+and
+\[
+    \beta_0=\displaystyle\frac{1}{2}\mu_2^T\Sigma^{-1}\mu_2-\displaystyle\frac{1}{2}\mu_1^T\Sigma^{-1}\mu_1+\log \displaystyle\frac{P(C_1)}{P(C_2)},\quad \beta=\Sigma^{-1}(\mu_1-\mu_2)
+\]
+As for the logistic regression, the decision boundary is given by the hyperplane 
+\[
+    z(t)=0 \quad \text{that is} \quad \varphi^T(t)\theta=0
+\]
+The estimates required in steps 1 and 2 can be computed as 
+\[
+    \hat{\mu}_1=\displaystyle\frac{1}{N_1}\displaystyle\sum_{t=1}^{N}y(t)u(t) \quad \hat{\mu}_1=\displaystyle\frac{1}{N_2}\displaystyle\sum_{t=1}^{N}y(t)u(t)\\
+\]
+\[
+    \hat{\Sigma}=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}y(t)(u(t)-\hat{\mu}_1)(u(t)-\hat{\mu}_1)^T+\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}y(t)(u(t)-\hat{\mu}_2)(u(t)-\hat{\mu}_2)^T
+\]
+\[
+    \hat{P}(C_1)=\displaystyle\frac{N_1}{N_1+N_2},\quad\hat{P}(C_2)=1-\hat{P}(C_1)
+\]
+where $N_1$ is the number of inputs belonging to class $C_1$ and $N_2=N-N_1$ is the number of inputs belonging to class $C_2$. A new input $u(t)$ is assigned to class $C_1$ if $\hat{P}(C_1|u(t))>0.5$ and to class $C_2$ otherwise. As for logistic regression, a different decision critetrion can be used. 
+\subsubsection{Multiclass problem}
+% [TODO] insert formulae slide 18 and do computations (left to the student for joy)
+The input space $\mathcal{U}=\mathbb{R}^r$ can thus be divided into $M$ regions defined by a set of $M$ hyperplanes. Each hyperplane represents the linear decisiion boundary between two classes. More precisely, the hyperplane separating classes $k$ and $j$ is described by the equation 
+\[
+    (z_k(t)-z_j(t))=0 \quad \text{that is} \quad \varphi^T(t)(\theta_k-\theta_j)=0
+\]
+The required estimates are computed as follows 
+% [TODO] insert from slide 19
+A new input $u(t)$ is assigned to the class $C_k$ such that 
+\[
+    k=\argmax_{i\in\{1,2,\dots,M\}}\hat{P}(C_i|u(t))
+\]
+\subsection{Gaussian class denisities with different covariance matrices}
+% [TODO] insert formulae slide 20
+In this case, the input space $\mathcal{U}$ can be divided into $M$ regions defined by $M$ quadratic decision boundaries. The quadratic boundary separatingk classes $k$ and $j$ is described by the equation 
+\[
+    (z_k(t)-z_j(t))=0 \quad \text{that is} \quad \varphi^T(t)(\theta_k-\theta_j)=0
+\]
+For this reasonm in this case the approach is called \emph{quadratic discriminant analysis}
+
+
+
+
+
+
+
 
 
 
