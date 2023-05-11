@@ -1653,10 +1653,93 @@ Then:
     \item the values of $D_{d,k}$ are used to modify the transient phases
 \end{itemize}
 
+\section{Hybrid position/force control}
+When a task involves at the same time both motion and force application, it often happens that directions along which forces are applied are different with respect to directions along which motion takes place.
 
+It is always possible to deifine, in a proper reference frame 
+\begin{itemize}
+    \item Natural constraints: directions along which the task gives constraints in position (velocity) and force 
+    \item Artificial constraints: directions along which it is possible to assign desired constraints with the control system. 
+\end{itemize}
+These constraints are complementary and altogether define the 12 dofs of a given task: 6 dof in terms of position/velocity and 6 dof in terms of forces/torques. 
 
+The artificial constraints define directions in the workspace along which it is possible to assign desired values of a given variable (velocity or force). It is then simple to design a "hybrid" control structure able to impose proper values alonog these directions only. 
 
+Consider now the velocity domain $v$. Given the natural and artificial constraints, it is possble to decompose $v$ in two components:
+\[
+    v=v_a+v_d
+\]
+where the "free" directions (velocities) $v_a$ are complementary to the directions in $v_n$, that is 
+\[
+    v_a^Tv_n=0
+\]
+Note that the vectors cannot be said to be orthogonal as their norm cannot be defined, due to them being comprised of both linear and angular parts, leading to the vector space of the velocities $v$ not having a norm. Given a desired task, it is possible to define a base matrix $A_v$ that describes all the free velocities $v_a$:
+\[
+    A_v\in\mathbb{R}^{6\times n_a} \quad \text{such that} \quad v_a=A_vy 
+\]
+and a base matrix $N_v$ that describes all the remaining components 
+\[
+    N_v\in\mathbb{R}^{6\times 6-n_a} \quad \text{such that} \quad v_n=N_vy 
+\]
+with
+\[
+    A_v^TN_v=0    
+\]
+Given the matrix $A_v$, the goal is to control motions in $\mathcal{R}(A_v)$
 
+Therefore, it is desired to control the components of a generic velocity vector $v$ satisfying 
+\[
+    A_v^Tv=A_v^TA_vy+A_vN_vz
+\]
+from which by setting $v_n=0$  
+\[
+    v_a = A_vy=A_v(A_v^TA_v)^{-1}A_v^Tv=\Sigma_vv
+\]
+Matrix $\Sigma_v$ is known as the \emph{selection matrix} and, if defined with respect to the contact reference frame, results a diagonal matrix with elements "1" and "0" on the diagonal\\
+NB: $\Sigma_v$ is a projector matrix from $\mathbb{R}^6$ in $\mathcal{R}(A_v)$
+
+Similarly, in the force domain it is possible to define a base matrix $A_f$ of the artificial contstrainsts, and the force components that it is possible to control are described by 
+\[
+    \Sigma_f=A_f(A_f^TA_f=^{-1})A_f^T
+\]
+In order to establish a Euclidean scalar product in the force/velocity vector spaces it is necessary to define specific metrics in these spaces. 
+Once the selection matrices $\Sigma_v,\Sigma_f$ have been defined, it is possible to use these general control schemes: 
+\begin{itemize}
+    \item Control in joint space: 
+        % [TODO] insert image slide 50
+    \item Control in work space 
+        % [TODO] insert image slide 51
+\end{itemize}
+
+\chapter{Trajectory planning for Robot Manipulation}
+The planning modalities for trahectories may be quite different: 
+\begin{itemize}
+    \item point-to-point 
+    \item with pre-defined path 
+\end{itemize}
+Or:
+\begin{itemize}
+    \item in the joint space
+    \item  in the work space, either defining some points of interest (initial and final points, via points) or the whole geometric pat $x=x(t)$
+\end{itemize}
+For planning a desired trajectory, it is necessary to specify two aspects:
+\begin{itemize}
+    \item geometric path 
+    \item motion law 
+\end{itemize}
+wiht constraints on the continuity of the trajectory and on its time derivatives up to a given degree. 
+
+\subsection{Geometric path and motion law}
+The geometric path can be defined in the work-space or in the joint-space. Usually, it is expressed in a parametric form as 
+\begin{gather*}
+    p=p(s) \qquad \text{work-space}\\
+    q=q(\sigma)\qquad \text{joint-space}
+\end{gather*}
+Together, the geometric path and the motion law adefine the trajectory $p(s(t))$, or in short  $p=p(t)$. Note that, with the chain rule, 
+\begin{gather*}
+    \dot{p}=\displaystyle\frac{dp}{ds}\dot{s}\\
+    \ddot{p}=\displaystyle\frac{dp}{ds}\ddot{s}+\displaystyle\frac{d^2p}{ds^2}\dot{s}^2
+\end{gather*}
 
 
 
