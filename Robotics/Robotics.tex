@@ -1740,6 +1740,154 @@ Together, the geometric path and the motion law adefine the trajectory $p(s(t))$
     \dot{p}=\displaystyle\frac{dp}{ds}\dot{s}\\
     \ddot{p}=\displaystyle\frac{dp}{ds}\ddot{s}+\displaystyle\frac{d^2p}{ds^2}\dot{s}^2
 \end{gather*}
+Input data to an algorithm for trajectory planning are: 
+\begin{itemize}
+    \item data defining the path 
+    \item geometrical constraints on the path 
+    \item constraints on the mechanical dynamics 
+    \item constraints due to the actuation system 
+\end{itemize}
+Output: the trajectory in the joint or work-space, given as a sequence (in time) of the position, velocity and acceleration values. 
+\subsubsection{1. Kinematic constraints}
+Constraints on the minimum/maximum values for the derivatives up to a given order:
+\[
+    q^{(i)}_{min}\leq q^{(i)}\leq q_{max}^{(i)} \quad i=1,\dots,n
+\]
+in some cases $|q_{min}^{(i)}|\neq |q_{max}^{(i)}$
+Constraints on torque may be "converted" into kinematic constraints. Cosntraining jerk physically means limiting vibrations. 
+\subsubsection{2. Constraints on the order of continuity}
+We have to choose a proper order $n$ of continuity for the motion law, i.e. 
+\[
+    q(t)\in C^n
+\]
+that is the $n$-th derivative $q^{(n)}(t)$ of function $q(t)$ is continuous, and $q^{(n+1)}(t)$ is composed of constant segments
+\begin{itemize}
+    \item the higher $n$, the "smoother" the profile: the frequency bandwidth will be reduced (better for vibration effects) 
+    \item For control purposes (ff) the continuity of the trajectory should guarantee a limited control action 
+    \item in high dynamics mechanical system, continuity of (at least) acceleration is required
+\end{itemize}
+\subsubsection{3. Dynamic consraints}
+These constraints aim to reduce possible vibration effects on the mechanical load. 
+
+\section{Joint-space trajectories}
+Trajectories are specified by defining some characteristic points:
+\begin{itemize}
+    \item directly assigned by some specifications
+    \item assigned by defining desired configurations $x$ in the woek-space, which are the converted in the joint-space using the inverse kinematic model.
+\end{itemize}
+The algorithm that computes a function $q(t)$ interpolating the given points is characterized by the following features:
+\begin{itemize}
+    \item trajectories must be computationally efficient 
+    \item the positino and velocity profiles must be continuous functions of time 
+    \item undesired effects (such as non regular curvatures) must be minimized or completely avoided. 
+\end{itemize}
+Single joint trajectories may be classified as 
+\begin{itemize}
+    \item Polynomial trajectories 
+    \item Trigonometric trajectories (cycloidal, harmonic)
+    \item Trajectories based on Fourier series expansion 
+    \item Composed trajectories (Trapezoidal velocity, double s, \dots)
+    \item Spline (B-Splines, NURBS,\dots)
+    \item Trajectories based on FIR (Finite Impulse Response) filters
+\end{itemize}
+
+\subsection{Polynomial trajectories}
+In the most simple cases, a trajectoru is specified by assigning initial and final conditions on: time (duration), position, velocity, acceleration, \dots Then, the problem is to determine a function 
+\[
+    q=q(t) \quad \text{or} \quad q=q(\sigma), \quad \sigma=\sigma(t)
+\]
+so that those conditions are satisfied 
+
+This is a boundary condition problem, that can be easily solved by considering polynomial functions such as: 
+\[
+    q(t)=a_0+a_1t+a_2t^2+\dots+a_nt^n
+\]
+The degree $n$ (3,5,\dots) of the polynomial depends on the number of boundary conditions that must be verified and on the desired "smoothness of the trajectory"
+
+In general, besides the initial and final values, other constraints could be specified on the values of some time-derivatives in generic instans $t_j\in[t_i,t_f]$. In other terms, one could be interested in defining a polynomial function $q(t)$ whose $k$-th derivative has a specified value $q^k(t_j)$ at a given time instant $t_j$. Mathematically, these conditions are expressed as: 
+\[
+    k!a_k+(k+1)!a_{k+1}t_j+\dots+\displaystyle\frac{n!}{(n-k)!}a_nt_j^{n-k}=q^k(t_j)
+\]
+or, expressing all condiitions in matrix form: 
+\[
+    Ma=b
+\]
+
+\subsubsection{Third-order polynomial trajectories}
+Given an initial and final instant, $t_i,t_f$, a trajectory may be specified by assigning initial and final conditions on: 
+\begin{itemize}
+    \item initial position and veloccity 
+        \item final position and velocity 
+\end{itemize}
+There are four boundary conditions, and therefore a polynomial of degree (at least) 3 must be considered
+\[
+    q(t)=a_0+a_1t+a_2t^2+a_3t^3
+\]
+in order to solve these equations, let us assume for the time being that $t_i=0$. Therefore: 
+\begin{gather*}
+    a_0=q_i \\
+    a_1  = \dot{q_i}\\
+    a_2 = \displaystyle\frac{-3(q_i-q_f)-(2\dot{q}_i+\dot{q}_f)t_f}{t_f^2}\\
+    a_2 = \displaystyle\frac{2(q_i-q_f)-(\dot{q}_i+\dot{q}_f)t_f}{t_f^3}
+\end{gather*}
+The results obtained can be generalized tot he case in whic $t_i\neq0$ :
+\[
+    q(t)=a_0+a_1(t-t_i)+a_2(t-t_i)^2+a_3(t-t_i)^3
+\]
+% [TODO] finish copying computations slide 35
+Often, a trajectory is assigned by specifying a sequence of desired points (via-points)
+without indication on the velocity in these points.
+In these cases, the “most suitable” values for the velocities must be automatically
+computed.
+This assignment is quite simple with heuristic rules such as:
+\begin{gather*}
+    \dot{q}_1 = 0\\
+    \dot{q}_k= \begin{cases}
+        0 \quad sign(v_k)\neq sign(v_{k+1})\\
+        \displaystyle\frac{1}{2}(v_k+v_k+1) \quad sign(v_k)=sign(v_k+1)
+    \end{cases}\\
+    \dot{q}_n=0
+\end{gather*}
+being 
+\[
+    v_k = \displaystyle\frac{q_k-q_{k-1}}{t_k-t_{k-1}}=\displaystyle\frac{K_k}{T_k}
+\]
+the slope of the $k$-tj tract $\begin{bmatrix}
+    t_k-1 & t_k
+\end{bmatrix}$
+
+\subsubsection{Fifth-order polynomial trajectories}
+From the above examples, it may be noticed that both the position and velocity profiles are continuous functions of time. This is not true for acceleration, that presents discontinuities among different segments. Moreover, it is not possible to specify for this signal suitable initial/final values in each segment. In many applications, these aspects do not constitute a problem, being the trajectories "smooth" enough.  On the other hand, if it is requested to specify initial and final values for the
+acceleration (e.g. for obtaining continuous acceleration profiles), then (at least)
+fifth-order polynomial functions should be considered
+\[
+    q(t)=a_0+a_1t+a_2t^2+a_3t^3+a_4t^4+a_5t^5
+\]
+In general, the smoother the function, the higher the values of velocity and acceleration need to be applied. This may be an issue with respect to motor constraints. 
+
+Among many other combinations, a possbile approach for planning a trajectory is to use linear segments joined with parabolic blends. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
