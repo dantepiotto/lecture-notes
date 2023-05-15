@@ -4,6 +4,14 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,237mm},
+ left=20mm,
+ top=30mm,
+ }
+
 \title{Learnig and Estimation of Dynamical Systems}
 \author{Dante Piotto}
 \date{Spring semester 2023}
@@ -1514,11 +1522,182 @@ If we make the rescaling $\beta\to k\beta$ and $\beta_0 \to k\beta_0$, the dista
 \]
 that is
 \[
-    \min{\beta_0,\beta}\|\beta\|^2 \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
+    \max_{\beta_0,\beta}\|\beta\|^2 \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
 \]
 This is a convex optimization problem with $N$ linear inequality constraints. The constraints define an empty slab around the linear decision boundary of thickness $2D=2\|\beta\|$ 
 
+\subsubsection{Constrained optimization problems: the Lagrange multipliers}
+Consider the following optimization problem with equality constraint: 
+\[
+    \min_xf(x)\quad\text{subject to}\quad g(x)=0
+\]
+where $x\in \mathbb{R}^p$. The constraint $g(x)=0$ represents a $8p-1)$-dimensional hypersurface
+$\mathcal{S}\in \mathbb{R}^p$. We denote the gradients of $f(x)$ and $g(x)$ as $\nabla f(x), \nabla g(x)$\\
+Since 
+\begin{enumerate}
+    \item at any pont $x\in\mathcal{S}$ the gradient $\nabla g(x)$ is orthogonal to $\mathcal{S}$ 
+    \item for a point $x^*\in \mathcal{S}$ that minimizes $f(x),\nabla f(x^*)$ is orthogonal to $\mathcal{S}$\footnote{this is due to the fact that if the gradient were not orthogonal to $S$ by moving in the direction given by the opposite of the gradient projected onto $S$ we would reach a lower point for $f(x)$ belonging to $S$}
+\end{enumerate}
+the gradient $\nabla f(x^*)$ and $\nabla g(x^*)$ are parallel or anti-parallel. Then, ther exists a scalar $\lambda$ called \emph{Lagrange multiplier} such that 
+\[
+    \nabla f(x^*)=\lambda\nabla g(x^*)
+\]
+We introduce the Lagrangian function 
+\[
+    L(x,\lambda)=f(x)-\lambda g(x)
+\]
+The original problem can be reformulated as 
+\[
+    \min_x L(x,\lambda)
+\]
+in fact: 
+\begin{gather*}
+    \displaystyle\frac{\partial L(x,\lambda)}{\partial x}=0 \implies \nabla f(x)-\lambda\nabla g(x)=0\\
+    \displaystyle\frac{\partial L(x,\lambda)}{\partial x}=0 \implies g(x)=0
+\end{gather*}
+The minimization problem with $N_e$ equality constraints 
+\[
+    \min_x f(x) \quad \text{subject to}\quad g_j(x)=0, \quad j=1,2,\dots,N_e
+\]
+can be reformulated as 
+\[
+    min_x L(x,\lambda)
+\]
+where $L(x,\lambda)$ is the Lagrangian function 
+\[
+    L(x,\lambda)= f(x)-\displaystyle\sum_{j=1}^{N_e}\lambda_jg_j(x)
+\]
+and $\lambda_1,\lambda_2,\dots,\lambda_{N_e}$ are Lagrange multipliers.
 
+Consider the follwing optimization problem with inequaility constraints:
+\[
+    \min_x f(x)\quad\text{subject to}\quad g(x)\geq 0
+\]
+where $x\in\mathbb{R}^p$. Again the solution will be based on a Lagrange multiplier $\lambda$b and the associated Lagrangian funciton. Let $x^*$ be a solution of the problem. Two possibilties exist: 
+\begin{enumerate}
+    \item $g(x^*)>0$: In this case the constraint is \emph{inactive} and the solution is found by setting $\nabla f(x)=0$ so that $g(x)$ plays no role $\implies \lambda=0$
+    \item $g(x^*)=0$: In this case the constraint is \emph{active} so that $\lambda=0$. Moreover, the descending direction $-\nabla f(x^*)$ mus be oriented away from the region $g(x)>0$ otherwise $f(x^*)$ does not correspond to a minimum. Consequently, we have $\nabla f(x^*)=\lambda\nabla g(x^*)$ for some $\lambda>0$
+\end{enumerate}
+Note that both the above cases lead to $\lambda g(x)=0$ We also have that $\lambda\geq 0$.
+The original problem can be reformulated as follows: 
+\[
+    \min_x L(x,\lambda)=f(x)-\lambda g(x) \quad \text{subject to}\quad \begin{cases}
+        g(x) \geq 0\\
+        \lambda \geq 0 \\
+        \lambda g(x) = 0
+    \end{cases}
+\]
+The above constraints are known as the Karush-Kuhn-Tucker (KKT) conditions. 
+\begin{itemize}
+    \item Note that $L(x,\lambda)$ has to be minimized wrt $x$ and maximized wrt $\lambda$ to prevent $L(x,\lambda)\to-\infty$
+\end{itemize}
+Consider now the more general optimization problem with $N_i$ inequality constraints 
+\[
+    \min_x f(x) \quad \text{subjet to}\quad g_j(x)\geq 0\quad j=1,2,\dots,N_i
+\]
+Define the Lagrangian function 
+\[
+    L(x,\lambda)= f(x)-\displaystyle\sum_{j=1}^{N_i}\lambda_jg_j(x)
+\]
+where $\lambda=\begin{bmatrix}
+    \lambda_1 & \lambda_2 & \dots & \lambda_{N_i}
+\end{bmatrix}^T$
+The problem can be reformulated as
+\[
+    \min_x L(x,\lambda)=f(x)-\lambda g(x) \quad \text{subject to}\quad \begin{cases}
+        g_j(x) \geq 0 \quad j=1,\dots,N_i\\
+        \lambda_j \geq 0 \quad j=1,\dots,N_i\\
+        \lambda_j g_j(x) = 0 \quad j=1,\dots,N_i
+    \end{cases}
+\]
+The number of KKT conditions is thus $3N_i$. The Lagrangian function $L(x,\lambda)$ has to be minimized wrt $x$ and maximized wrt $\lambda$
+
+\subsubsection{Finding the maximum margin classifier by using the Lagrange multipliers}
+The problem 
+\[
+    \min_{\beta_0,\beta}\displaystyle\frac{1}{2}\|\beta\|^2 \quad \text{subject to} \quad y(t)z(t) \geq 1, \quad t=1,2,\dots,N
+\]
+becomes
+\[
+    \min_{\beta_0,\beta}J(\beta_0,\beta,\lambda)= \displaystyle\frac{1}{2}\|\beta\|^2-\displaystyle\sum_{t=1}^{N}\lambda_t(y(t)z(t)-1)=\displaystyle\frac{1}{2}\|\beta\|^2-\displaystyle\sum_{t=1}^{N}\lambda_t[y(t)(\beta_0+u^T(t)\beta)-1]
+\]
+subject to the constraints 
+\begin{gather*}
+    y(t)z(t)-1 \geq 0\\
+    \lambda_t \geq 0 \quad t=1,2,\dots,N\\
+    \lambda_t(y(t)z(t)-1)=0
+\end{gather*}
+\begin{itemize}
+    \item the points for which $\lambda_t=0$ do not contribute to the estimated model $\hat{\theta}=\begin{bmatrix}
+            \hat{\beta}_o & \hat{\beta}^T
+        \end{bmatrix}^T$. The remaining points, for which $y(t)z(t)=1$, are the \emph{support vectors} and lie on the edges of the margin. This means that the estimated function $\hat{z}(t)$ will depend only on a small part of the training data.
+\end{itemize}
+Setting to zero the derivatives of $J$ wrt $\beta,\beta_0$ we get 
+\begin{gather} \label{Jderiv}
+    \displaystyle\frac{\partial J}{\partial \beta}=0 \implies \beta=\displaystyle\sum_{t=1}^{N}\lambda_ty(t)u(t)\\
+    \displaystyle\frac{\partial J}{\partial \beta_0}=0 \implies 0=\displaystyle\sum_{t=1}^{N}\lambda_ty(t)
+\end{gather}
+Substituting the above relations in $J(\beta_0,\beta,\lambda)$ we obtain the \emph{dual objective function}
+\[
+    J(\lambda)=\displaystyle\sum_{t=1}^{N}\lambda_t-\displaystyle\sum_{t=1}^{N}\displaystyle\sum_{k=1}^{N}\lambda_t\lambda_ky(t)y(k)u^T(t)u(k)
+\]
+to be maximized wrt $\lambda$ only subject to 
+\[
+    \lambda_t \geq 0, \quad t=1,2,\dots,N
+\]
+\[
+    \displaystyle\sum_{t=1}^{N}\lambda_ty(t)=0
+\]
+This is a simpler convex optimization problem, involving a quadratic function of $\lambda$.
+
+By replacing \ref{Jderiv} in $z(t)=\beta_0+u^T(t)\beta$ we get 
+\[
+    z(t)=\beta_0 + u^T(t)\displaystyle\sum_{k=1}^{N}\lambda_ky(k)u(k)=\beta_0+\displaystyle\sum_{k=1}^{N}\lambda_ky(k)u^T(t)u(k)
+\]
+Since only the support vectors have $\lambda_k\neq 0$ we have
+\[
+    z(t)=\beta_0+\displaystyle\sum_{k\in\mathcal{S}_v}^{}\lambda_ky(k)u^T(t)u(k)
+\]
+where $\mathcal{S}_v$ is the set of indices of the support vectors. 
+
+Once the estimate $\hat{\theta},\hat{\lambda}$ has been determined, a new input $u(t)$ is classified as in slide 3 by using 
+\[
+    \hat{z}(t)=\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}}^{}\hat{\lambda}_ky(k)u^T(t)u(k)
+\]
+The above relation shows how the obtained solution only depends on a limited number of scalar products $u^T(t)u(k)$
+
+\begin{itemize}
+    \item Although none of the training inputs are misclassified by construction, this will not necessarily be the case for future unseen data points. Hopefully, a large margin on the training data will lead to a good separation on the validation (test) data
+    \item The distance of a point from the pyperplane can be seen as a measure of the conficdence that the observation was correctlu classified. 
+    \item The maximum margin huperplane can be extremely sensitive to changes in the available data. Even a change in a single observation could lead to a dramatic change in the optimal hyperplane. 
+    \item If the training set is not linearly separable, the optimization problem has no feasible solution
+\end{itemize}
+
+\subsection{Support vector machine}
+Support vector (soft margin) classifier: the previous approach is modified so that some of the training points are allowed to be on the "wrong" side of the margin or even on the wrong side of the hyperplane but with a penalty that increases with the distance from the hyperplane. In this way, the non separable case can also be tackled. 
+
+To solve this problem we introduce a set of \emph{slack variables} $\xi_1,\xi_2,\dots,\xi_N$ with $\xi_t\geq0, \forall t$ More precisely, each input $u(t)$ is associated with a slack variable as follows:
+\[
+    \xi_t = \begin{cases}
+        0 \quad \text{for data points that are on the correct side of the margin or on the correct edge of the margin}\\
+        |y(t)-z(t)| \quad \text{for other points}
+    \end{cases}
+\]
+It follows that 
+\begin{itemize}
+    \item $\xi_t=0 \implies u(t)$ is correctly classified with distance $\geq D$
+    \item $0<\xi_t<1\implies u(t)$ is correctly clasified with distanec $<D$
+    \item $\xi_t=1 \implies u(t)$ is on the decision boundary
+    \item $\xi_t>1 \implies u(t)$ is misclassified
+\end{itemize}
+The optimization problem is 
+\[
+    \max_{\beta_0,\beta,\xi}D \quad \text{subject to} \begin{cases}
+        y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geqD(1-\xi)\\
+        \xi_t\geq0\\
+        \displaystyle\sum_{t=1}^{N}\xi_t\leq K
+    \end{cases} \quad t=1,2,\dots,N
+\]
 
 
 
