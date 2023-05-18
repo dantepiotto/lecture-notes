@@ -1865,22 +1865,94 @@ fifth-order polynomial functions should be considered
 \]
 In general, the smoother the function, the higher the values of velocity and acceleration need to be applied. This may be an issue with respect to motor constraints. 
 
+\subsection{Trapezoidal trajectories}
+
 Among many other combinations, a possbile approach for planning a trajectory is to use linear segments joined with parabolic blends. 
 
+In the linear tract, the velocity is constant while, in the parabolic blends, it is a linear function of time:  \emph{trapezoidal velocity profiles}, typical of this type of trajectory, are then obtained. In trapezoidal trajectories, the duration is divided into three parts: 
+\begin{enumerate}
+  \item in the first part, a constant acceleration is appiled, then the velocity is linear and the position results a parabolic function of time 
+  \item in the second, the acceleration is null, the velocity is constant and the position is linear in time 
+  \item in the last part a (negative) acceleration is applied, then the velocity is a negative ramp and the position is a parabolic function
+\end{enumerate}
+Usually, the acceleration and the deceleration phases have the same duration ($t_a=t_d$). Therefore, symmetric profiles, wrt a central instant $(t_f-t_i)/2$ are obtained. 
 
+The trajectory is computed according to the following equations:
+\subsubsection{Acceleration phase, $t\in[0\div t_a]$}
+The position, velocity and acceleration are described by: 
+\begin{gather*}
+  q(t) = a_0+a_1t+a_2t\\
+  \dot{q}(t)=a_1+2a_2t\\
+  \ddot{q}(t)=2a_2
+\end{gather*}
+The parameters are defined by constraints on the initial position $q_i$ and velocity $\dot{q}_i$, and on the desired constant velocity $\dot{q}_v$ that must be obtained at the end of the acceleration period. Assuming a null initial velocity $(\dot{q}_i=0)$ one obtains 
+\begin{gather*}
+  a_0 = q_i\\
+  a_1 = 0\\
+  a_2 = \displaystyle\frac{\dot{q}_v}{2t_a}
+\end{gather*}
+In this phase, the acceleration is constant and equal to $\dot{q}_v/t_a$
 
+\subsubsection{Constant velocity phase, $t\in[t_a\div t_f-t_a]$}
+% TODO slde 49
+\subsubsection{Deceleration phase, $t\in[t_f-t_a\div t_f]$}
+% TODO slde 50
+Summarizing, the trajectory is computed as 
+\[
+  q(t)=\begin{cases}
+    q_i+\displaystyle\frac{\dot{q}_v}{2t_a}t^2 \qquad 0\leq t<t_a\\
+    q_i + \dot{q}_v(t-\displaystyle\frac{t_a}{2}) \qquad t_a\leq t<t_f-t_a\\
+    q_f-\displaystyle\frac{\dot{q}_v}{t_a}\displaystyle\frac{(t_f-t)^2}{2} \qquad t_f-t_a\leq t \leq t_f
+  \end{cases}
+\]
+Note that in the previous computations two parameters have been assumed to be known: 
+\begin{itemize}
+  \item the constant velocity value $\dot{q}_v$ 
+  \item the acceleration time $t_a$
+\end{itemize}
+We have seen that the parameters $t_a,\dot{q}_v$ have been assumed as known, and indeed they should be specified in order to compute the trajectory. Since $\ddot{q}_at_a=\dot{q}_v$, it is possible to specify any two parameters among $t_a, \dot{q}_v. \ddot{q}_a$. On the other hand, it is not possible to choose any value for these variables, since there are some constraints that should be considered. Define as $L=(q_f-q_i)$ the displacement and $T=(t_f-t_i)$ the duration of the trajectory 
+\begin{enumerate}
+  \item From geometrical considerations, three basic constraints are: 
+    \[
+      t_a\leq \displaystyle\frac{T}{2}, \quad \displaystyle\frac{|L|}{T}<\dot{q}_v\leq\displaystyle\frac{2|L|}{T}, \quad \ddot{q}_a \geq \displaystyle\frac{4|L|}{T^2}
+    \]
+  \item Moreover, from geometrical considerations, the following condition must be verified: 
+    \begin{gather*}
+      \ddot{q}_at_a = \displaystyle\frac{q_m-q_a}{t_m-t_a}\begin{cases}
+        q_a = q(t_a)\\
+        q_m = (q_i+q_f)/2=q_i+L/2\\
+        t_m = T_2
+      \end{cases}\\
+      q_a = q_i + \displaystyle\frac{1}{2}\ddot{q}t_a^2
+    \end{gather*}
+    Therefore, from the previous equations we have
+    \begin{equation} \label{trap1}
+      \ddot{q}_at_a^2-\ddot{q}_a(t_f-t_i)t_a + (q_f-q_i)=0
+    \end{equation}
+    \item Finally, by computing the area below the trapezoidal velocity profile: 
+      \[
+        \dot{q}_v = \displaystyle\frac{q_f-q_i}{T-t_a}=\displaystyle\frac{L}{T-t_a}
+      \]
+\end{enumerate}
+Any pair of values $(\ddot{q}_a,t_a)$ verifying \ref{trap1} can be considered. In general, it is possible to:
+\begin{enumerate}
+  \item assign a value to $t_a$ $(\leq T/2)$ and compute $\ddot{q}_a$ 
+  \item assign a value to $\ddot{q}_a$ $(\geq 4|L|/T^2)$ and compute $t_a$ 
+  \item if $T$ is not given, assigne a value to $\ddot{q},\dot{q}_v$ (e.g. the maximum values) and compute $t_a,T$
+\end{enumerate}
 
+% [TODO] slide 56-57-58-59
 
-
-
-
-
-
-
-
-
-
-
+Note that with this last modality for computing the trajectory, the time duration of the motion from qi to qf is not specified in advance. In fact, the period T is computed on the basis of the imposed maximum acceleration and velocity values.
+\subsubsection{Synchronization of more joints}
+Assume that more joints $q_i,i=1,\dots,n$ must be coordinated, and that the same constraints on the maximum acceleration and velocity apply to all the joints. In this situation:
+\begin{enumerate}
+  \item the joint $q_k$ with the largest displacement $|L_k|$ must be individuated. For this joint, the maximum values $\dot{q}_{max}, \ddot{q}_{max}$ for the velocity and acceleration are assigned, and then the corresponding values $t_a$ and $T$ are computed according to %TODO 
+    \item for the remaining joints, the acceleration and velocity values must be computed (from (8)) on the basis of these values of $t_a$ and $T$ and on the basis of the given displacement $L_i$
+      \[
+        \ddot{q}_i=\displaystyle\frac{L_i}{t_a(T-t_a)}, \quad \displaystyle\frac{L_i}{T-t_a},\quad i=1,\dots,n \quad i\neq k
+      \]
+\end{enumerate}
 
 
 
