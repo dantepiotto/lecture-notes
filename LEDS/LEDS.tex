@@ -20,6 +20,8 @@
 
 \maketitle
 
+\tableofcontents
+
 \chapter{Introduction}
 Goal of the course: build matemathical models of dynamical systems from data\\
 Password of slides: LEDS\$2023\\
@@ -773,7 +775,7 @@ The PEM estimate is also asymptotically efficient, therefore $P$ is the lowest c
 
 \chapter{Statistical hypothesis testing}
 
-\chapter{Model complexity selection and regulariztion}
+\chapter{Model complexity selection and regularization}
 
 Model complexity selection: given a model class $\mathcal{M}(\theta)$, estimate the model complexity $p$, i.e. choose the best model class $\mathcal{M}_p(\theta)$
 
@@ -1673,7 +1675,7 @@ The above relation shows how the obtained solution only depends on a limited num
     \item If the training set is not linearly separable, the optimization problem has no feasible solution
 \end{itemize}
 
-\subsection{Support vector machine}
+\section{Support vector machine}
 Support vector (soft margin) classifier: the previous approach is modified so that some of the training points are allowed to be on the "wrong" side of the margin or even on the wrong side of the hyperplane but with a penalty that increases with the distance from the hyperplane. In this way, the non separable case can also be tackled. 
 
 To solve this problem we introduce a set of \emph{slack variables} $\xi_1,\xi_2,\dots,\xi_N$ with $\xi_t\geq0, \forall t$ More precisely, each input $u(t)$ is associated with a slack variable as follows:
@@ -1693,26 +1695,171 @@ It follows that
 The optimization problem is 
 \[
     \max_{\beta_0,\beta,\xi}D \quad \text{subject to} \begin{cases}
-        y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geqD(1-\xi)\\
+        y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geq D(1-\xi)\\
         \xi_t\geq0\\
         \displaystyle\sum_{t=1}^{N}\xi_t\leq K
     \end{cases} \quad t=1,2,\dots,N
 \]
+where $\xi=\begin{bmatrix}
+  \xi_1 & \xi_2 & \cdots & \xi_N
+\end{bmatrix}^T$ and $K>0$ is a tuning parameter that controls the trade-off between the slack variable penalty and the margin. It is an upper bound on the number of misclassified points. As $K$ increases, the margin increases.
 
+The problem can be rewritten as 
+\[
+  \max_{\beta_0,\beta,\xi}D \quad \text{subject to} \quad \begin{cases}
+    y(t)z(t)\geq (1-\xi_t)\\
+    \xi_t \geq 0 \\
+    \displaystyle\sum_{t=1}^{N}\xi_t \leq K
+  \end{cases}\quad t=1,2,\dots,N
+\]
+by rescaling $\beta_0$ by a factor $\eta$ such that $\|\beta\|=1/D$ 
+Computationally, it is convenient to exploit the equivalent form 
+\[
+  \min_{\beta_0,\beta,\xi}\{\displaystyle\frac{1}{2}\|\beta\|^2+C\displaystyle\sum_{t=1}^{N}\xi_t\} \quad \text{subject to}\quad \begin{cases}
+    y(t)z(t) \geq (1-\xi_t)\\
+    \xi_t \geq 0
+  \end{cases} \quad t=1,2,\dots,N
+\]
+Where the tuning parameter $C>0$ plays the role of $1/K$ in the previous form (as $C$ increases the margin narrows). The scalar $1/2$ has been included for later convenience. Once again, we have a convex optimization problem that can be solved by using the method of Lagrange multipliers. By introducing the vectors $\lambda=\begin{bmatrix}
+  \lambda_1 & \lambda_2 & \cdots & \lambda_N
+\end{bmatrix}^T$ and $\mu=\begin{bmatrix}
+  \mu_1 & \mu_2 & \cdots & \mu_N
+\end{bmatrix}^T$, the above problem can be seen as the optimization of the loss function 
+\[
+  J(\beta_0,\beta,\xi,\lambda,\mu)=\displaystyle\frac{1}{2}\|\beta\|^2+C\displaystyle\sum_{t=1}^{N}\xi_t-\displaystyle\sum_{t=1}^{N}\lambda_t(y(t)z(t)-1+\xi_t)-\displaystyle\sum_{t=1}^{N}\mu_t\xi_t
+\]
+subject to the constraints (KKT conditinos): 
+\begin{gather*}
+  y(t)z(t)-1+\xi_t \geq 0\\
+  \lambda_t \geq 0\\
+  \lambda_t(y(t)z(t)-1+\xi_t)=0\\
+  \xi_t \geq0\\
+  \mu_t \geq 0 \\
+  \mu_t\xi_t = 0
+\end{gather*}
+As before, the points for which $\lambda_t=0$ do not contribute to the estimated model $\hat{\theta}$. The remaining points, for which $y(t)z(t)=1-\xi_t$ are the support vectors. They may have $\xi_t=0$ (lie on the edges of the margin), $0<\xi_t\leq 1$ (lie inside the margin) or $\xi_t>1$ (misclassified)
 
+Setting to zero the derivatives of $J$ wrt $\beta,\beta_0$ and $\xi_t(t=1,\dots,N)$ we get 
+\begin{gather} \label{Jpartials}
+  \displaystyle\frac{\partial J}{\partial \beta}= 0 \implies \beta=\displaystyle\sum_{t=1}^{N}\lambda_ty(t)u(t)\\
+  \displaystyle\frac{\partial J}{\partial \beta_0}= 0 \implies 0=\displaystyle\sum_{t=1}^{N}\lambda_ty(t)\\
+  \displaystyle\frac{\partial J}{\partial \xi_t}= 0 \implies \lambda_t=C-\mu_t, \quad t=1,\dots,N
+\end{gather}
+Subsituting the above relations in $J(\beta_0,\beta,\xi,\lambda,\mu)$ we obtain the \emph{dual objective function}
+\[
+  J(\lambda)=\displaystyle\sum_{t=1}^{N}\lambda_t-\displaystyle\frac{1}{2}\displaystyle\sum_{t=1}^{N}\displaystyle\sum_{k=1}^{N}\lambda_t\lambda_ky(t)y(k)u^T(t)u(k)
+\]
+to be maximized wrt $\lambda$ subject to 
+\[
+  0\leq \lambda_t \leq C, \quad t=1,2,\dots,N
+\]
+\[
+  \displaystyle\sum_{t=1}^{N}\lambda_ty(t)=0
+\]
+By looking at \ref{Jpartials}, it is clear that the solution of the optimization problem depends on input samples only through the scalar products 
+\[
+  u^T(t)u(k), \quad t,k=1,2,\dots,N
+\]
+By replacing \ref{Jpartials} in $z(t)=\beta_0+u^T(t)\beta$ we get 
+\[
+  z(t) = \beta_0+u^T(t)\displaystyle\sum_{k=1}^{N}\lambda_ky(k)u(z)=\beta_0+\displaystyle\sum_{k=1}^{N}\lambda_ky(k)u^T(t)u(k)
+\]
+Since only the support vectors have $\lambda_k\neq 0$ we have 
+\[
+  z(t)=\beta_0+\displaystyle\sum_{k\in\mathcal{S}_v}^{}\lambda_ky(k)u^T(t)u(k)
+\]
+Where $\mathcal{S}_v$ is the set of indices of the support vectors. Once that $\hat{\lambda}$ and $\hat{\beta}_0$ have been computed, a new input $u(t)$ is classified by using 
+\[
+  \hat{z}(t)\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}_v}^{}\hat{\lambda}_ky(k)u^T(t)u(k)
+\]
+Again, all we need is scalar products. 
+\subsection{Dealing with nonlinear boundaries: the kernel trick}
+Nonlinear decision boundaries can be tackled by introducing a generalization of the scalar product 
+\[
+  \Psi(u(t),u(k))
+\]
+where $\Psi(x,y)=\Psi(y,x)$ is a symmetric function called kernel, that involves nonlinear functions of the input samples. The scalar product $\Psi(x,y)=x^Ty$ is a linear kernel. 
 
+By using kernels, we can fit a support vector classifier in a higher-dimensional space involving nonlinear functions rather than in the original input space. The risulting classifier is know as \emph{support vector machine}.
+\subsubsection{How does it work?}
+\begin{enumerate}
+  \item Choose a kernel function $\Psi(u(t),u(k))$. 
+  \item Solve the optimization problem 
+    \[
+      \max_k J(\lambda)=\displaystyle\sum_{t=1}^{N}\lambda_t-\displaystyle\frac{1}{2}\displaystyle\sum_{t=1}^{N}\displaystyle\sum_{k=1}^{N}\lambda_t\lambda_k y(t)y(k)\Psi(u(t),u(k))
+    \]
+    subject to 
+    \begin{gather*}
+      0\leq\lambda_t\leq C,\quad t=1,2,\dots,N\\
+      \displaystyle\sum_{t=1}^{N}\lambda_ty(t)=0
+    \end{gather*}
+    and find the estimates $\hat{\lambda}$. Then, find the estimate $\hat{\beta}_0$
+  \item Classify the new inputs by using
+    \[
+      \hat{z}(t)\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}}^{}\hat{\lambda}_ky(k)\Psi(u(t),u(k))
+    \]
+\end{enumerate}
+Two popular choices for the kernel function $\Psi$ are: 
 
+Polynomial kernels 
+\[
+  \Psi(u(t),u(k))=(1+u^T(t)u(k))^q
+\]
 
+Radial basis (gaussian) kernels 
+\[
+  \Psi(u(t),u(k))=\exp(-\gamma\|u(t)-u(k)\|^2)
+\]
+where $\gamma>0$ is a hyperparameter. 
 
+By using kernels, we can determine complex nonlinear decision boundaries without explicitly working in the enlarged feature space. The enlarged feature space can even be implicit and infinite-dimensional. This is the case for the radial basis kernels.
+\subsection{Multiclass problems}
+\subsubsection{One-vs-all approach}
+Consists in solving $M$ two-class SVM problems. The generic $i$-the problem involves the classes $C_i$ and $\bar{C}_i=\{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, we get $M$ different estimates for $\lambda$ and $\beta_0$ and, consequently, $M$ discriminant functions $\hat{z}^1(t),\hat{z}^2(t),\dots,\hat{z}^M(t)$. For any new input $u(t)$, the values $\hat{z}^i(u(t)),i=1,2,\dots,M$ are computed in order to take the final decision. 
 
+This method does not lead to an optimal solution and inconsistent results could be obtained, that is, an input could be assigned to multiple classes simultaneously. For this reason, the most common approach is to assign a new input u(t) to the class k such that 
+\[
+  k=\argmax_{i\in\{1,2,\dots,M\}}\hat{z}^i(t)
+\]
+However, this is a heuristic approach that suffers form the problem that the M obtained classifiers were trained on different tasks.
+\subsubsection{One-vs-one approach}
+Consists in solving $M(M - 1)/2$ two-class SVM problems.
+The generic binary problem involves the classes $C_i$ and $C_k$, so that only part of the training data are used.
+For any new input $u(t)$, the values $\hat{z}^i(u(t)), i = 1,2,...,M(M - 1)/2$ are computed.
+The new input is then classified according to the class that got the highest number of "votes".
+\begin{itemize}
+  \item Again, the obtained solution is not optimal and the approach can lead to ambiguities in the resulting classification
+  \item For large $M$, the required computational effort significantly increases.
+\end{itemize}
 
-
-
-
-
-
-
-
+\chapter{Regularization}
+Consists in adding a penalty term to the loss function 
+\[
+  V(\theta)=J(\theta)+\lambda g(\theta)
+\]
+where $\lambda>0$ is a tuning parameter. The solution of the learning from data problem becomes 
+\[
+  \hat{\theta}=\argmin_{\theta\in\mathcal{M}_p(\theta)}V(\theta)
+\]
+This technique is used both in regression and classification problems. One of the most common form is \emph{quadratic regularization}
+\[
+  V(\theta)=J(\theta)+\lambda\|\theta\|_2^2=J(\theta)+\lambda\theta^t\theta
+\]
+Why regularization?: 
+\begin{itemize}
+  \item To counteract the effects of overfitting 
+  \item To make the optimization problem better conditined
+\end{itemize}
+Note: the tuning parameter $\lambda$ must be determined separately as for the model complexity.
+\section{Regularized least squares: the Ridge regression}
+Consider the static model 
+\[
+  y(t)=\varphi^T(t)\theta+\varepsilon(t),\quad t=1,2,\dots,N
+\]
+and the associated quadratic regularized LS problem 
+\[
+  \min V(\theta): \quad v(\theta)=\displaystyle\sum_{t=1}^{N}\varepsilon^2(t)+\lambda\theta^T\theta=\|Y-\Phi\theta\|^2+\lambda\|\theta\|^2^2
+\]
 
 
 

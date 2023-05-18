@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.9)  15 MAY 2023 13:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.23)  17 MAY 2023 16:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -154,22 +154,18 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 Package: babel 2022/01/26 3.70 The Babel package
 \babel@savecnt=\count277
 \U@D=\dimen160
-\l@unhyphenated=\language7
+\l@unhyphenated=\language87
  (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count278
  (/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
 Language: english 2017/06/06 v3.3r English support from the babel system
-Package babel Info: Hyphen rules for 'british' set to \l@english
-(babel)             (\language0). Reported on input line 82.
-Package babel Info: Hyphen rules for 'UKenglish' set to \l@english
-(babel)             (\language0). Reported on input line 83.
 Package babel Info: Hyphen rules for 'canadian' set to \l@english
 (babel)             (\language0). Reported on input line 102.
-Package babel Info: Hyphen rules for 'australian' set to \l@english
-(babel)             (\language0). Reported on input line 105.
-Package babel Info: Hyphen rules for 'newzealand' set to \l@english
-(babel)             (\language0). Reported on input line 108.
+Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
+(babel)             (\language12). Reported on input line 105.
+Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
+(babel)             (\language12). Reported on input line 108.
 )) (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
  (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
@@ -275,104 +271,109 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
-]
+] (./LEDS.toc [3])
+\tf@toc=\write3
+\openout3 = `LEDS.toc'.
+
+ [4]
 Chapter 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--27
+Underfull \hbox (badness 10000) in paragraph at lines 26--29
 
  []
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 62--66
+[5
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 64--68
 
  []
 
-[4] [5] [6
+[6] [7] [8
 
 ]
 Chapter 2.
-[7] [8
+[9] [10
 
 ]
 Chapter 3.
 
-Underfull \hbox (badness 10000) in paragraph at lines 185--191
+Underfull \hbox (badness 10000) in paragraph at lines 187--193
 
  []
 
-[9] [10
+[11] [12
 
 ]
 Chapter 4.
-[11] [12
+[13] [14
 
 ]
 Chapter 5.
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--256
+Underfull \hbox (badness 10000) in paragraph at lines 256--258
 
  []
 
-[13] [14] [15] [16] [17] [18] [19] [20
+[15] [16] [17] [18] [19] [20] [21] [22
 
 ]
 Chapter 6.
 
 Underfull \vbox (badness 4144) has occurred while \output is active []
 
- [21] [22] [23] [24]
+ [23] [24] [25] [26]
 Chapter 7.
-[25
+[27
 
-] [26
+] [28
 
 ]
 Chapter 8.
-[27] [28] [29] [30
+[29] [30] [31] [32
 
 ]
 Chapter 9.
-[31] [32]
+[33] [34]
 Chapter 10.
-[33
-
-] [34]
-Chapter 11.
 [35
 
+] [36]
+Chapter 11.
+[37
+
 ]
-Overfull \hbox (29.0409pt too wide) in paragraph at lines 1201--1204
+Overfull \hbox (29.0409pt too wide) in paragraph at lines 1203--1206
 []\OT1/cmr/m/n/10 Find the es-ti-mate $[]$ that max-i-mizes the pos-te-rior prob-a-bil-ity of the ob-ser-va-tion $\OML/cmm/m/it/10 Y \OT1/cmr/m/n/10 = [][]  =[]\OMS/cmsy/m/n/10 )
  []
 
-[36] [37] [38] [39] [40]
+[38] [39] [40] [41] [42]
 Chapter 12.
-[41
+[43
 
-] [42] [43] [44]
-./LEDS.tex:1696: Undefined control sequence.
-l.1696 ...\displaystyle\frac{z(t)}{\|\beta\|}\geqD
-                                                  (1-\xi)\\
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
+] [44] [45] [46] [47] [48] [49] [50]
+Chapter 13.
+./LEDS.tex:1861: Double superscript.
+l.1861 ...=\|Y-\Phi\theta\|^2+\lambda\|\theta\|^2^
+                                                  2
+I treat `x^1^2' essentially like `x^1{}^2'.
 
-[45] (./LEDS.aux) ) 
+[51
+
+] (./LEDS.aux) ) 
 Here is how much of TeX's memory you used:
- 4804 strings out of 480171
- 75473 string characters out of 5894490
- 398360 words of memory out of 5000000
- 22713 multiletter control sequences out of 15000+600000
- 479069 words of font info for 65 fonts, out of 8000000 for 9000
- 59 hyphenation exceptions out of 8191
+ 4810 strings out of 478287
+ 75537 string characters out of 5849289
+ 403170 words of memory out of 5000000
+ 22960 multiletter control sequences out of 15000+600000
+ 479368 words of font info for 66 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
  55i,15n,62p,612b,262s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on LEDS.pdf (45 pages, 368627 bytes).
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on LEDS.pdf (51 pages, 391249 bytes).
 PDF statistics:
- 262 PDF objects out of 1000 (max. 8388607)
- 169 compressed objects within 2 object streams
+ 281 PDF objects out of 1000 (max. 8388607)
+ 182 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
