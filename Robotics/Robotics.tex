@@ -11,6 +11,8 @@
  top=30mm,
  }
 
+\newcommand\at[2]{\left.#1\right|_{#2}}
+
 \title{Industrial Robotics M}
 \author{Dante Piotto}
 \date{spring semester 2023}
@@ -1901,7 +1903,7 @@ Summarizing, the trajectory is computed as
 \[
   q(t)=\begin{cases}
     q_i+\displaystyle\frac{\dot{q}_v}{2t_a}t^2 \qquad 0\leq t<t_a\\
-    q_i + \dot{q}_v(t-\displaystyle\frac{t_a}{2}) \qquad t_a\leq t<t_f-t_a\\
+    q_i + \dot{q}_v\left(t-\displaystyle\frac{t_a}{2}\right) \qquad t_a\leq t<t_f-t_a\\
     q_f-\displaystyle\frac{\dot{q}_v}{t_a}\displaystyle\frac{(t_f-t)^2}{2} \qquad t_f-t_a\leq t \leq t_f
   \end{cases}
 \]
@@ -1953,6 +1955,168 @@ Assume that more joints $q_i,i=1,\dots,n$ must be coordinated, and that the same
         \ddot{q}_i=\displaystyle\frac{L_i}{t_a(T-t_a)}, \quad \displaystyle\frac{L_i}{T-t_a},\quad i=1,\dots,n \quad i\neq k
       \]
 \end{enumerate}
+
+\section{Data interpolation via Splines}
+\subsection{Introduction}
+The problem of defining multipoint trajectories. i.e. of functions suitable for the interpolation or approximation of a set of given points $(t_k,q_k)$, $k=0,\dots,n$, is now addressed. The problem is discussed in the case of a single axis of motion: the general problem related to 3D space canbe addressed with a similar approach. For this purpose, many function can be adopted, such as polynomial functions of proper degree, orthogonal and trigonometric polynomials, \dots 
+
+Very effective methods for motion control applications are based on 
+\begin{itemize}
+  \item Spline functions 
+  \item  B-Spline 
+  \item NURBS 
+  \item Bezier functions 
+  \item Nonlinear filters able to generate in real time optimal trajectories satisfying given constraints on maximum velocity, acceleration, and jerk
+\end{itemize}
+The problm of computing a trajectory through $n+1$ points can be solved by means of a polynomial function of degree $n$: 
+\[
+  q(t)=a_0+a_1t+\dots+a_nt^n
+\]
+From a mathematical point of view, the solution of the interpolation problem of $n+1$ points can be obtained by solving a linear system of $n+1$ equations in $n+1$ uknowns. This method is based on the following algorithm: 
+% [TODO] slide 71-72-73-76
+
+In addition to numerical problems, the use of a polynomial of degree $n$ for interpolating $n+1$ points has a number of other drawbacks, since: 
+\begin{enumerate}
+  \item The degree of the polynomial depends on the number of points and, for large values of $n$, the amount of calculations may be remarkable 
+  \item The variation of a single point ($t_k,q_k)$ implies that all the coefficients of the polynomial must be recomputed 
+  \item The insertion of an additional point $(t_{n+1},q_{n+1})$ implies the adoption of a polynomial of higher degree and the calculation of all the coefficients 
+  \item The resulting trajectories are usually characterized by pronounced "oscillations" that are unacceptable in motion profiles for automatic machines
+\end{enumerate}
+Oscillations are present at the boundaries of the trajectory, and their amplitude increases with the order of the polynomial. In numerical analysis, \emph{Runge's phenomenon} is a well known problem of oscillation at the boundaries of an interval occurring with polynomial interpolation with polynomials of high degree over a set of \emph{equispaced interpolation points}
+
+Moreover, standard techniques for polynomial interpolation do not take into account
+further conditions on initial, final or intermediate velocities and accelerations. In this
+case, it is necessary to assume an higher order polynomial function and consider
+additional constraints on the polynomial coefficients. For instance, in order to assign
+initial/final velocities and accelerations (i.e. 4 additional constraints) on a trajectory
+interpolating $n + 1$ given points, the polynomial must be of degree $n + 4$. 
+
+In order to deal with all these problems, as before mentioned, other techniques are available 
+
+\subsection{Cubic Splines}
+When $n+1$ points $q_0,q_1,\dots,q_{n-1},q_n$ are given, in lieu of a unique interpolating polynomial of degree $n$ it is possible to use $n$ polynomials of degree $p$ (usually lower) each one defining a segment of the trajectory. The overall function $s(t)$ defined in this manner is called \emph{spline} of degree $p$.
+
+The value of $p$ is chosen according to the desired degree of continuity of the spline. For instance, in order to obtain continuity of velocities and accelerations at the time instants $t_k$, where the transition between two consecuitve segments occurs, it is possible to assume a polynomial of degree $p=3$ (cubic polynomial) 
+\[
+  q(t)=a_0 + a_1t+a_2t^2+a_3t^3
+\]
+The overall function given by 
+\[
+  s(t) = \{q_k(t), t\in[t_k,t_{k+1}],k=0,\dots,n-1\}
+\]
+\[
+  q_k(t)=a_{k0}+a_{k1}(t-t_k)+a_{k2}(t-t_k)^2+a_{k3}(t-t_k)^3
+\]
+In this way, it is necessary to compute 4 coefficients for each polynomial. Since $n$ polynomial are necessary for the definition of a trajectory thtough $n+1$ points, the total number of coefficients to be determined is $4n$.
+In order to solve this problem, the following conditions must be considered: 
+\begin{itemize}
+  \item $2n$ conditions for the interpolation of the given points, since each cubic function must cross the points at its extremities 
+    \item $n-1$ conditions for the continuity of the velocities at the transition points 
+      \item $n-1$ conditions for the continuity of the accelerations at the transition points.
+\end{itemize}
+In this way, there are $2n+2(n-1)$ conditions and therefore the remaining degrees of freedom are $4n-2n-2(n-1)=2$. Then, two additional constraints must be imposed in order to compute the spline. Among the possible choices, one can assign: 
+\begin{enumerate}
+  \item The initial and final velocity $\dot{s}(t_0)=v_0, \dot{s}(t_n)=v_n$ 
+  \item The initial and final acceleration $\ddot{s}(t_0),\ddot{s}(t_n)$ (when set to zero, these conditions are generally referred to as \emph{natural})
+  \item The conditions $\dot{s}(t_0)=\dot{s}(t_n),\ddot{s}(t_0)=\ddot{s}(t_n)$; these conditions are usually called \emph{cyclic} and are used when it is necessary to define a periodic spline, with period $T=t_n-t_0$
+  \item The continuity of the jerk at time instants $t_1, t_{n-1}$: 
+    \[
+      \at{\displaystyle\frac{d^3s(t)}{dt^3}}{t=t_1^-}=\at{\displaystyle\frac{d^3s(t)}{dt^3}}{t=t_1^+} \qquad \at{\displaystyle\frac{d^3s(t)}{dt^3}}{t=t_{n-1}^-}=\at{\displaystyle\frac{d^3s(t)}{dt^3}}{t=t_{n-1}^+} 
+    \]
+\end{enumerate}
+
+In general, a spline is characterized by the following properties: 
+\begin{itemize}
+  \item $[n(p+1)]$ parameters are sufficient for the definition of a trajectory $s(t)$ of degree $p$, interpolating the given poitns 
+  \item Given $n+1$ points, and given the boundary conditions, the interpolating spline $s(t)$ of degree $p$ is univocally determined. 
+  \item The degree $p$ of the polynomilas used to constuct the spline does not depend on the number of data points 
+  \item The function $s(t)$ has continuous derivatives up to the order $(p-1)$
+  \item By assuming the conditions $\ddot{s}(t_0)=\ddot{s}(t_n)=0$, the cubic spline is, among all the functions $f(t)$ interpolating the given points and with continuous first and second derivatives, the function which minimizes the functional 
+    \[
+      J=\displaystyle\int_{t_0}^{t_n}\left(\displaystyle\frac{d^2f(t)}{dt^2}\right)^2 dt
+    \]
+    that can be interpreted as a sort of deformation energy, proportional to the curvature of $f(t)$
+\end{itemize}
+
+For the definition of a trajectory for an automatic machine, the condition on the continuity of the velocity profile is of fundamental importance. For this reason, a typical choice for the computation of the spline is to assign the initial and final velocities $v_0$ and $v_n$. Therefore, given the points $(t_k,q_k),k=0,\dots,n$ and the boundary conditions on the velocity $v_0,v_n$, the goal is to determine the function 
+\[
+  s(t) = \{q_k(t), t\in[t_k,t_{k+1}],k=0,\dots,n-1\}
+\]
+\[
+  q_k(t)=a_{k0}+a_{k1}(t-t_k)+a_{k2}(t-t_k)^2+a_{k3}(t-t_k)^3
+\]
+with the conditions 
+\begin{gather*}
+  q_k(t_k)=q_k,\quad q_k(t_{k+1})=q_{k+1}, \qquad k=0,\dots,n-1\\
+  \dot{q}_k(t_{k+1})=\dot{q}_{k+1}(t_{k+1})=v_{k-1} \qquad k=0,\dots,n-2\\
+  \ddot{q}_k(t_{k+1})=\ddot{q}_{k+1}(t_{k+1}) \qquad k=0,\dots,n-2
+\end{gather*}
+
+% [TODO] slide 93-94-95-96
+That is 
+\[
+  A(T)v=c(T,q,v_0,v_n)
+\]
+where $T=[T_0,T_1,\dots,T_{n-1}]^T,q=[q_0,q_1,\dots,q_n]^T$ 
+
+The $(n-1)\times(n-1)$ matrix $A$ has a diagonal dominant structure, and therefore it is always invertible if $T_k>0$ $(|a_{kk}>\sum_{j\neq k}|a_{kj}|)$. 
+Moreover, being $A$ tridiagonal, computationally efficient techniques are available for its inversion (\emph{Thomas algorithm}).
+Once the inverse of $A$ has been computed, the velocities $v_1,\dots,v_n-1$ can be calculated from $v=A^{-1}c$ and therefore the problem is solved: the spline coefficients are obtained with % TODO insert ref
+
+Splines are very flexible functions, and different goals can be assigned in their computation. For example, it is possible to design: 
+\begin{itemize}
+  \item Periodic splines 
+  \item Splines computed on the basis of the intermediate acceleration values 
+  \item Smoothing cubic splines: a non-precise interpolation is allowed 
+  \item Choice of the time instants $t_k$ for optimizing cubic splines 
+\end{itemize}
+
+Although a criteria for optimizing the time instants sequence $t_k$ are possible, in the following a method to obtain the minimum total duration $T$ is illustrated. The total duration of a spline is 
+\[
+  T=\displaystyle\sum_{k=1}^{n}T_k=t_n-t_0
+\]
+It is possible to define an optimality problem aiming at minimizing $T$. The values of $T_k$ must be computed so that $T$ is minimized and the constraints on the velocity and acceleration are satisfied. Formally the problem is formulated as 
+\[
+  \begin{cases}
+    \min_{T_k}T=\displaystyle\sum_{k=1}^{n}T_k\\
+    \text{such that} % TODO
+  \end{cases}
+\]
+
+\subsection{synchronization of more motion axes}
+The above procedure for computing the spline is adopted also for more motion axes (joints). Notice that the matrix $A_i(T)=A(T)$ is the same for all the $i=1,\dots,m$ joints (it depends only on the parameters $T_k$), while the vector $c(T,q_i,v_{i1},v_{in})$ depends on the specific $i$-th joint
+
+\subsection{Scaling}
+If 
+\begin{itemize}
+  \item the duration $T_k$ of each interval is multiplied by a constant $\lambda$ 
+    \item the initial and final velocities are null
+\end{itemize}
+one obtains that the new duration $T'$, the velocities and accelerations of the new trajectory are: 
+\begin{gather*}
+  T'= \lambda T \\
+  v_k' = \displaystyle\frac{1}{\lambda} v_k\\
+  a_k' = \displaystyle\frac{1}{\lambda^2} a_k
+\end{gather*}
+The parameter $\lambda$ can then be defined in order to satisfy the constraints on maximum velocities/accelerations and obtain a minumum-time trajectory.
+
+
+\section{Scaling Trajectories}
+Due to several reasons, like limits on the actuation system (torques, accelerations, velocities,\dots) or computational efficiency, it is often requested to \emph{scale} trajectories and motion laws. It is possible to adopt 
+\begin{itemize}
+  \item Kinematic scaling procedures
+  \item Dynamic scaling procedures
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
 
 
 
