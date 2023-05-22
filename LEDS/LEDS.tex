@@ -1858,19 +1858,62 @@ Consider the static model
 \]
 and the associated quadratic regularized LS problem 
 \[
-  \min V(\theta): \quad v(\theta)=\displaystyle\sum_{t=1}^{N}\varepsilon^2(t)+\lambda\theta^T\theta=\|Y-\Phi\theta\|^2+\lambda\|\theta\|^2^2
+  \min V(\theta): \quad v(\theta)=\displaystyle\sum_{t=1}^{N}\varepsilon^2(t)+\lambda\theta^T\theta=\|Y-\Phi\theta\|^2+\lambda\|\theta\|_2^2
 \]
+This estimation method is called Ridge regression. By setting the gradient of $v(\theta)$ to zero it is easy to find the normal equations 
+\[
+    (\Phi^T\Phi+\lambda I_p)\theta=\Phi^TY
+\]
+where $p$ is the complexity of the model. The regularized LS estimator is thus given by 
+\[
+    \hat{\theta}=(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^TY
+\]
+the penalty term $\lambda\|\theta\|_2^2$ is also called a \emph{shrinkage penalty} in statistics because it has the effect of shrinking the estimated parameters towards zero. 
 
+Assume now the existence of the true model 
+\[
+    y(t)=\varphi^T(t)\theta^*+w(t) \quad t=1,2,\dots,N
+\]
+By analyzing the statistical properties of the Ridge estimator we get
+\begin{gather*}
+    E[\hat{\theta}]=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^TY]\\
+    Y=\Phi\theta^*+w\\
+    E[\hat{\theta}]=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T(\Phi\theta^*+w)]=\\
+    =E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*]+E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^Tw]=\\
+    =(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*\neq \theta^*
+\end{gather*}
+and 
+\[
+    cov(\hat{\theta})=\sigma_w^2(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi+\lambda I_p)^{-1}<\sigma_w^2(\Phi^T\Phi)^{-1}=cov(\hat{\theta}_{LS})
+\]
+\begin{itemize}
+    \item The Ridge estimator $\hat{\theta}$ is biased and $cov(\hat{\theta})<cov(\hat{\theta}_{LS})$
+    \item as $\lambda$ increases, the shrinkage of the estimated cocefficients leads to a reduction in the variance of the estimates at the expense of an increase in bias $\implies$ $\lambda$ is a hyperparameter that can manage the bias-variance tradeoff
+    \item If $\Phi^T\Phi$ is ill-conditioned (or even rank deficient), the use of $\lambda$ leads to the better conditioned matrix $\Phi^T\Phi+\lambda I_p$
+\end{itemize}
 
+Regualarization can be exploited also for the identification of dynamic models and for classification problems. In general: 
+\begin{itemize}
+    \item If the model complexity $p$ is high (many parameters) it may not be possible to estimate several of the accurately $\implies$ it is advantageous to pull them towards zero as the ones having the smallest influence on $J(\theta)$ will be affected most by the shrinkage property $\implies$ regularization allows complex models to eb trained on small data sets without severe overfitting. 
+    \item The problem of minimizing $J(\theta)$ may be ill conditioned, especially when the complexity $p$ is high, in the sense that the Hessian $J''(\theta)$ may be ill-conditioned $\implies$ adding the norm penalty will add $\lambda I_p$ to this matrix so that it becomes better conditioned. 
+    \item The choice of $\lambda$ is a crucial issue as we may think of $\lambda$ as a knob to control the bias-variance tradeoff (the larger $\lambda$ the larger the number of parameters that will be close to zero). The best way consists in choosing the values of $\lambda$ leading to the smallest value of the loss function evaluated on the validation set. 
+\end{itemize}
 
-
-
-
-
-
-
-
-
+\subsubsection{Alternative formulation for Ridge regression}
+It is possible to show that the problem 
+\[
+    \argmin_{\theta\in\mathcal{M}_p(\theta)}V(\theta),\quad v(\theta)=J(\theta) + \lambda\theta^T\theta
+\]
+is equivalent to the problem 
+\[
+    \argmin_{\theta\in\mathcal{M}_p(\theta)}J(\theta), \quad \text{subject to}\quad \theta^T\theta\leq K
+\]
+\begin{itemize}
+    \item For every $\lambda$ there is some $K$ such that the solutions $\hat{\theta}$ of the two optimization problems are the same. The two approaches can be related using Lagrange multipliers. 
+    \item The parameter $K$ can be seen as a budget for how large the norm of $\theta$ can be 
+    \item Note that $K$ plays the role of $1/\lambda$. In fact, decreasing $K$ has the effect of shrinking the estimated parameters towards zero.
+\end{itemize}
+Look at prof. notes for geometrical interpretation (The solution will lie on the level curve of $J(\theta)$ that intercepts the constraint curve)
 
 
 

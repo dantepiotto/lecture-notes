@@ -78,3 +78,4 @@
 \contentsline {subsubsection}{One-vs-one approach}{50}{}%
 \contentsline {chapter}{\numberline {13}Regularization}{51}{}%
 \contentsline {section}{\numberline {13.1}Regularized least squares: the Ridge regression}{51}{}%
+\contentsline {subsubsection}{Alternative formulation for Ridge regression}{52}{}%
