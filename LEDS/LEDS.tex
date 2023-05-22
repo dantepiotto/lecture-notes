@@ -1915,6 +1915,29 @@ is equivalent to the problem
 \end{itemize}
 Look at prof. notes for geometrical interpretation (The solution will lie on the level curve of $J(\theta)$ that intercepts the constraint curve)
 
+\chapter{Optimal estimation of random signals}
+
+\subsubsection{The fundamental theorem of estimation theory}
+Let $x(t),y(t)$ be mutually correlated stochastic process, where $y(t)$ is observed and $x(t)$ is uknown. The optimal (\emph{minimal variance}) estimate of $x(t)$ based on $y(t)$ is given by the conditional expectation 
+\[
+    \hat{x}(t)=E[x(t)|y(t)]
+\]
+For any other estimator: 
+\[
+    \hat{x}'(t): E[\|x(t)-\hat{x}(t)\|^2]<E[\|x(t)-\hat{x}'(t)\|^2]
+\]
+if $x(t)$ and $y(t)$ are jointly gaussian, then 
+\[
+    \hat{x}(t)=\mu_x+C_{xy}\Sigma_y^{-1}(y(t)-\mu_y)
+\]
+where $C_{xy}=E[(x(t)-\mu_x)(y(t)-\mu_y)^T]$ and $\Sigma_y=E[(y(t)-\mu_y)(y(t)-\mu_y)^T]$.
+
+Best linear (least mean squares estimator)
+\[
+    \hat{x}(t)_{LMS}=\mu_x+C_{xy}\Sigma_y^{-1}(y(t)-\mu_y)
+\]
+The LMS estimator is the best one within the class of linear estimators $\hat{x}(t)=Ay(t)+b$. When $x(t)$ and $y(t)$ are jointly gaussian $\hat{x}_{LMS}\equiv \hat{x}(t)$
+
 
 
 
