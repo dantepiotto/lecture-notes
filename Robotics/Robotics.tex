@@ -1,4 +1,3 @@
-
 \documentclass{book}
 \usepackage{amsmath, amsthm, graphicx, amsfonts}
 \usepackage[english]{babel}
@@ -10,6 +9,7 @@
  left=20mm,
  top=30mm,
  }
+ \usepackage[hidelinks]{hyperref}
 
 \newcommand\at[2]{\left.#1\right|_{#2}}
 
@@ -21,6 +21,7 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 
 \chapter{Elements of Kinematics and Dynamics of Industrial Robots}
 
@@ -461,31 +462,11 @@ It can be noted that
     K=\sum_{i=1}^{n}K_i \qquad P=\sum_{i=1}{n}P_i
 \]
 
-
-
-
-
 \subsection{obtained model}
 \[
     M(q)\ddot{q} + C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=\tau
 \]
 Non-linear wrt the state. It can be made linear wrt a set of parameters $\mathbf{\alpha}$
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \subsection{Identification of the dynamic parameters}
 From:
@@ -656,7 +637,7 @@ Control schemes:
 \end{itemize}
 Dynamic model of a manipualator:
 \[
-    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D(\dot{q}+g(q) = \tau + J^T(q)F_a
+    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q) = \tau + J^T(q)F_a
 \]
 Control problem: define the generalized forces $\tau$ to be applied to the joints in order to obtain a desired trajectory $q_d(t)$\\
 In non-linear control schemes it is best to choose a sampling frequency as large as possible
@@ -671,28 +652,19 @@ Joints: velocities $\omega(t)$, positions $q$, generalized forces $\tau(t)$
 $K_r$ is a diagonal matrix with elements  $\gg$ 1
 we can observe that:
 \begin{gather*}
-    q0 K_r^{-1}q_m\\
+    q= K_r^{-1}q_m\\
     \dot{q}=K_r^{-1}\dot{q}_m\\
     \ddot{q}=K_r^{-1}\ddot{q}_m\\
     \tau=K_r\tau_m
 \end{gather*}
 we get
 \[
-    M(q)K_r^{-1}\ddot{q}_m + CK_r^{-1}\dot{q}_m+DK_r^{-1}\dot{q}_m+g(q_m)=K_r\tau_m
+    M(q)K_r^{-1}\ddot{q}_m + C(q,\dot{q})K_r^{-1}\dot{q}_m+DK_r^{-1}\dot{q}_m+g(q_m)=K_r\tau_m
 \]
 and therefore
 \[
-    K_r^{-1}M(q)K_r^{-1}\ddot{q}_m + K_r^{-1}CK_r^{-1}\dot{q}_m+K_r^{-1}DK_r^{-1}\dot{q}_m+K_r^{-1}g(q_m)=K_r\tau_m
+  K_r^{-1}M(q)K_r^{-1}\ddot{q}_m + K_r^{-1}C(q,\dot{q})K_r^{-1}\dot{q}_m+K_r^{-1}DK_r^{-1}\dot{q}_m+K_r^{-1}g(q_m)=\tau_m
 \]
-
-
-
-
-
-
-
-
-
 The diagonal of the matrix $M(q)$ is composed by two kinds of elements
 \begin{itemize}
     \item inertia terms that do not depend on the robot's configuration
@@ -709,7 +681,7 @@ where $\bar{M}$ is a diagonal matrix with constant elements (i.e. the mean value
 having renamed
 \begin{gather*}
     D_m=K_r^{-1}DK_r^{-1}\\
-    d=(K_r^{-1}\Delta M(q)K_r^{-1})qddot{q}_m+(K_r^{-1}C(q,\dot{q})K_r^{-1})\dot{q}_m+K_r^{-1}g(q_m)
+    d=(K_r^{-1}\Delta M(q)K_r^{-1})\ddot{q}_m+(K_r^{-1}C(q,\dot{q})K_r^{-1})\dot{q}_m+K_r^{-1}g(q_m)
 \end{gather*}
 $D_m$ is a matrix collecting the motors friction coefficients, $d$ is a term that can be considered as a disturbance that collects nonlinearities and coupling effects. The disturbance terms are divided by $K_r^2$ and therefore greatly reduced (the gravity is only divided by $K_r$)
 Based on this we can design a linear controller, with the hope that $d$ may be small enough. $d$ grows with the speed and acceleration of the robot.
@@ -721,7 +693,7 @@ How to reduce the effects of the disturbance $d$:
 \end{itemize}
 Possible solution: PI controller
 \[
-    C(s)0  K_c\frac{1+sT_c}{s}
+    C(s)=  K_c\frac{1+sT_c}{s}
 \]
 \subsection{possible control scheme}
 A cascade configuration can be employed
@@ -733,7 +705,7 @@ In robotics (and in general in motion control systems), feedwarward control acti
 \end{itemize}
 With ff actions, it is possible to compensate (partially) also some parts of the "distrubance" term $d(t)$. Since $d(t)$ is known from the dynamic model, given the desired position, velocity and acceleration signals it is possible to compute a ff control action to compensate for $d(t)$:
 \[
-    d_d=(K_r^{-1}\Delta M(q_d)K_r^{-1})qddot{q}_{md+}(K_r^{-1}C(q_d,\dot{q_d})K_r^{-1})\dot{q}_{md}+K_r^{-1}g(q_{md})
+    d_d=(K_r^{-1}\Delta M(q_d)K_r^{-1})\ddot{q}_{md+}(K_r^{-1}C(q_d,\dot{q_d})K_r^{-1})\dot{q}_{md}+K_r^{-1}g(q_{md})
 \]
 It is to be noted that in any case $d\neq d_d$
 

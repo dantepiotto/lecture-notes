@@ -1,0 +1,102 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Elements of Kinematics and Dynamics of Industrial Robots}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{5}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Degrees of Freedom of a Manipulator}{5}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Joint Space and Work Space}{5}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Types of Robotic Manipulators}{6}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Kinematic model of a manipulator}{6}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Forward kinematics}{6}{subsection.1.2.1}%
+\contentsline {subsubsection}{Homogenous trasformation matrix}{6}{section*.2}%
+\contentsline {subsubsection}{Denavit-Hartenberg convention}{7}{section*.3}%
+\contentsline {subsection}{\numberline {1.2.2}Inverse kinematics}{7}{subsection.1.2.2}%
+\contentsline {subsubsection}{Algebraic approach}{7}{section*.4}%
+\contentsline {subsubsection}{Geometric approach}{7}{section*.5}%
+\contentsline {subsection}{\numberline {1.2.3}Differential kinematics - the Jacobian}{8}{subsection.1.2.3}%
+\contentsline {subsubsection}{Analytic Jacobian}{8}{section*.6}%
+\contentsline {subsubsection}{Geometric expression}{9}{section*.7}%
+\contentsline {subsubsection}{Force domain}{9}{section*.8}%
+\contentsline {subsubsection}{Singularities}{9}{section*.9}%
+\contentsline {subsubsection}{Inverse differential kinematics}{10}{section*.10}%
+\contentsline {subsubsection}{Inverse kinematics with the Jacobian}{10}{section*.11}%
+\contentsline {subsubsection}{Algorithm 1}{11}{section*.12}%
+\contentsline {subsubsection}{Algorithm 2}{11}{section*.13}%
+\contentsline {subsection}{\numberline {1.2.4}Manipulability Measures}{11}{subsection.1.2.4}%
+\contentsline {subsubsection}{Velocity manipulability ellipsoids}{11}{section*.14}%
+\contentsline {subsubsection}{Force manipulability ellipsoids}{12}{section*.15}%
+\contentsline {chapter}{\numberline {2}Dynamic Model of Robotic Manipulators}{13}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Euler-Lagrange model}{13}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}obtained model}{14}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Identification of the dynamic parameters}{14}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Dynamic model in simulink}{14}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Linearization of the Euler-Lagrange model}{14}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}Symbolic computation of the dynamic model}{15}{subsection.2.1.5}%
+\contentsline {section}{\numberline {2.2}Newton-Euler model}{15}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Dynamic model in the work-space}{16}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Control of robot manipulators}{17}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Nominal case}{17}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Decentralized position control}{18}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}possible control scheme}{18}{subsection.3.2.1}%
+\contentsline {section}{\numberline {3.3}Centralized control}{19}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}PD + gravity compensation}{19}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Inverse dynamics control}{20}{subsection.3.3.2}%
+\contentsline {chapter}{\numberline {4}Advanced Position Control Schemes}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Robust Control}{21}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Variable Structure Control}{21}{subsection.4.1.1}%
+\contentsline {subsubsection}{Example}{21}{section*.16}%
+\contentsline {subsubsection}{Example}{21}{section*.17}%
+\contentsline {subsubsection}{Example}{22}{section*.18}%
+\contentsline {subsubsection}{Continuous time}{22}{section*.19}%
+\contentsline {subsubsection}{Discrete time}{23}{section*.20}%
+\contentsline {subsection}{\numberline {4.1.2}The chattering problem}{23}{subsection.4.1.2}%
+\contentsline {subsubsection}{Boundary Layers}{23}{section*.21}%
+\contentsline {subsubsection}{DIC (Discrete Integral Control)}{23}{section*.22}%
+\contentsline {subsection}{\numberline {4.1.3}Robust control of industrial manipulators}{24}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Adaptive Control}{25}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Robot parameters}{26}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Inverse dynamics feedforward + PD}{26}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}NL control based on fb linearization}{27}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Nonlinear tracking control law without cancelations}{27}{subsection.4.2.4}%
+\contentsline {subsubsection}{To sum up}{28}{section*.23}%
+\contentsline {chapter}{\numberline {5}Learning/Repetitive Control}{29}{chapter.5}%
+\contentsline {section}{\numberline {5.1}PD control without gragity compensation}{29}{section.5.1}%
+\contentsline {subsubsection}{Theorem (sufficient condition for convergence)}{30}{section*.24}%
+\contentsline {subsubsection}{Proof}{30}{section*.25}%
+\contentsline {subsection}{\numberline {5.1.1}Final comments}{30}{subsection.5.1.1}%
+\contentsline {section}{\numberline {5.2}Repetitive control}{30}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Internal Model Principle}{30}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Fourier Decomposition and IMP}{31}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Nyquist-Driven Stability Analysis}{31}{subsection.5.2.3}%
+\contentsline {subsubsection}{Nyquist Stability Criterion}{32}{section*.26}%
+\contentsline {subsubsection}{Possible Remedies}{32}{section*.27}%
+\contentsline {subsection}{\numberline {5.2.4}Modified Repetitive Control System}{33}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Discret Time Repetitive Control}{33}{subsection.5.2.5}%
+\contentsline {chapter}{\numberline {6}Force Control}{35}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Passive Compliance}{35}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Active Compliance}{35}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Stiffness control}{35}{subsection.6.2.1}%
+\contentsline {subsubsection}{Stiffness control in joint space}{36}{section*.28}%
+\contentsline {subsection}{\numberline {6.2.2}Impedance control}{36}{subsection.6.2.2}%
+\contentsline {subsubsection}{1) Linearization in the work-space}{37}{section*.29}%
+\contentsline {subsubsection}{2) Definition of the desired impedance bhaviour}{37}{section*.30}%
+\contentsline {subsubsection}{Choice of the desired impedance}{37}{section*.31}%
+\contentsline {section}{\numberline {6.3}Hybrid position/force control}{38}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Trajectory planning for Robot Manipulation}{39}{chapter.7}%
+\contentsline {subsection}{\numberline {7.0.1}Geometric path and motion law}{39}{subsection.7.0.1}%
+\contentsline {subsubsection}{1. Kinematic constraints}{40}{section*.32}%
+\contentsline {subsubsection}{2. Constraints on the order of continuity}{40}{section*.33}%
+\contentsline {subsubsection}{3. Dynamic consraints}{40}{section*.34}%
+\contentsline {section}{\numberline {7.1}Joint-space trajectories}{40}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Polynomial trajectories}{41}{subsection.7.1.1}%
+\contentsline {subsubsection}{Third-order polynomial trajectories}{41}{section*.35}%
+\contentsline {subsubsection}{Fifth-order polynomial trajectories}{42}{section*.36}%
+\contentsline {subsection}{\numberline {7.1.2}Trapezoidal trajectories}{42}{subsection.7.1.2}%
+\contentsline {subsubsection}{Acceleration phase, $t\in [0\div t_a]$}{42}{section*.37}%
+\contentsline {subsubsection}{Constant velocity phase, $t\in [t_a\div t_f-t_a]$}{43}{section*.38}%
+\contentsline {subsubsection}{Deceleration phase, $t\in [t_f-t_a\div t_f]$}{43}{section*.39}%
+\contentsline {subsubsection}{Synchronization of more joints}{44}{section*.40}%
+\contentsline {section}{\numberline {7.2}Data interpolation via Splines}{44}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Introduction}{44}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Cubic Splines}{45}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}synchronization of more motion axes}{46}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}Scaling}{47}{subsection.7.2.4}%
+\contentsline {section}{\numberline {7.3}Scaling Trajectories}{47}{section.7.3}%
