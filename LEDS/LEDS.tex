@@ -1937,6 +1937,103 @@ Best linear (least mean squares estimator)
     \hat{x}(t)_{LMS}=\mu_x+C_{xy}\Sigma_y^{-1}(y(t)-\mu_y)
 \]
 The LMS estimator is the best one within the class of linear estimators $\hat{x}(t)=Ay(t)+b$. When $x(t)$ and $y(t)$ are jointly gaussian $\hat{x}_{LMS}\equiv \hat{x}(t)$
+\\ Properties of the optimal (linear) estimator
+\begin{itemize}
+    \item Ubiasedness: $E[\hat{x}(t)]=E[x(t)]$
+    \item For any other estimator $\hat{x}'(t)$: 
+        \[
+            E[(x(t)-\hat{x}(t))(x(t)-\hat{x}(t))^T]\leq E[(x(t)-\hat{x}'(t))(x(t)-\hat{x}'(t))^T]
+        \]
+    \item Orthogonality: $E[(x(t)-\hat{x}(t))y^T(t)]=0 \implies\footnote{due to $y$ being a LC of $\hat{x}$} E[(x(t)-\hat{x}(t))\hat{x}^T(t)]=0$ 
+    \item Linearity: $z(t)=\alpha x(t) + \beta y(t) \implies \hat{z}(t)=\alpha\hat{x}(t)+\beta\hat{y}(t)$
+    \item Let $y_1(t),y_2(t),\dots,y_k(t)$ be mutually uncorrelated. It follows that 
+        \begin{multline*}
+            E[x(t)|y_1(t),y_2(t),\dots,y_k(t)]=\\
+            E[x(t)|y_1(t)]+E[x(t)|y_2(t)]+\cdots+E[x(t)|y_k(t)]-(k-1)\mu_x
+        \end{multline*}
+\end{itemize}
+
+Optimal prediction and filtering:\\
+Define $Y_t = \{y(t),y(t-1),y(t-2),\dots,y(1)\}$\\
+Optimal prediction: $\hat{x}(t|t-1)=E[x(t)|Y_{t-1}]$\\
+Optimal filtering: $\hat{x}(t|t)=E[x(t)|Y_t]$
+
+\subsubsection{The innovation sequence}
+Optimal one step ahead prediction of $y(t)$ given $y(t-1),y(t-2),\dots$:
+\[
+    \hat{y}(t|t-1)=E[y(t)|y(t-1)],y(t-2),\dots,y(1)]=E[y(t)|Y_{t-1}]
+\]
+The corresponding prediction error is called the \emph{innovation}
+\[
+    \varepsilon(t)=y(t9))-\hat{y}(t|t-1)
+\]
+Innovation properties 
+\begin{enumerate}
+    \item $\varepsilon(t)$ is a linear function of $y(t).y(t-1),y(t-2)\dots$
+    \item $E[\varepsilon(t)Y^T_{t-1}=0]$
+    \item $\varepsilon(t)$ is a zero mean white process: 
+        \[
+            E[\varepsilon(t)]=0, \quad E[\varepsilon(t+\tau)\varepsilon(t)]=\sigma_\varepsilon^2\delta(\tau)
+        \]
+    \item $\varepsilon(t)$ is the new piece of information in $y(t)$ that was not known at time $t-1$
+\end{enumerate}
+As a consequence, $\varepsilon(t)$ and $y(t)$ have the same information content 
+\[
+    \hat{y}(t|t-1)=E[y(t)|\varepsilon(t-1),\varepsilon(t-2),\dots,\varepsilon(1)]=E[y(t)|\tilde{Y}_{t-1}]
+\]
+where
+\[
+    \tilde{Y}_{t-1}=\{\varepsilon(t-1),\varepsilon(t-2),\dots,\varepsilon(1)\}
+\]
+With reference to the optimal prediction and  filtering problems, we have 
+\[
+    \hat{x}(t|t-1)=E[x(t)|Y_{t-1}]=E[x(t)|\tilde{Y}_{t-1}]\\
+    \hat{x}(t|t) = E[x(t)|Y_t]=E[x(t)|\tilde{Y}_t]
+\]
+
+\section{the Kalman filter}
+\subsection{Deterministic state space models: the Luenberger observer}
+\begin{gather*}
+    x(t+1)=Ax(t)+Bu(t)\\
+    y(t)=Cx(t)
+\end{gather*}
+Problem: given $A,B,C$ determine an estimate of $x(t)$ from past input and output samples $y(t-1),u(t-1),y(t-2),u(t-2),\dots$
+\subsubsection{Luenberger observer}
+\begin{gather*}
+    \hat{x}(t+1)=A\hat{x}(t)+Bu(t)+K(y(t)-C\hat{x}(t)) \quad \hat{x}(t)=\hat{x}_0\\
+    =(A-KC)\hat{x}(t)+Bu(t)+Ky(t)
+\end{gather*}
+$\hat{x}_0$: initial guess for $x_0$
+\begin{itemize}
+    \item $(A,C)$ observable $\implies$ $\lim_{t\to\infty}\hat{x}(t)=x(t)$ with arbitrary dynamics
+    \item $(A,C)$ detectable $\implies$ $\lim_{t\to\infty}\hat{x}(t)=x(t)$ but not with arbitrary dynamics
+\end{itemize}
+
+\subsection{Stochastic state space models}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

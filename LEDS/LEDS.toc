@@ -81,3 +81,8 @@
 \contentsline {subsubsection}{Alternative formulation for Ridge regression}{52}{}%
 \contentsline {chapter}{\numberline {14}Optimal estimation of random signals}{53}{}%
 \contentsline {subsubsection}{The fundamental theorem of estimation theory}{53}{}%
+\contentsline {subsubsection}{The innovation sequence}{54}{}%
+\contentsline {section}{\numberline {14.1}the Kalman filter}{54}{}%
+\contentsline {subsection}{\numberline {14.1.1}Deterministic state space models: the Luenberger observer}{54}{}%
+\contentsline {subsubsection}{Luenberger observer}{54}{}%
+\contentsline {subsection}{\numberline {14.1.2}Stochastic state space models}{54}{}%
