@@ -2080,29 +2080,115 @@ Due to several reasons, like limits on the actuation system (torques, accelerati
   \item Dynamic scaling procedures
 \end{itemize}
 
+\section{Kinematic Scaling of trajectories}
+If a trajectory is expressed in parametric form as a function of a parameter $\sigma=\sigma(t)$, by changing the parametrization it is possible to obtain in a simple manner a trajectory satisfying constraints on velocity or accelerations. 
+For this purpose, it is conveniente to express the trajectory in \emph{normal form}, i.e.: 
+\[
+    p(t)=p_0+(p_1-p_0)s(\tau)=p_0+Ls(\tau)
+\]
+being $s(\tau)$ a proper parameterization, with 
+\[
+    0\leq\sigma\leq 1, \qquad \tau=\displaystyle\frac{t-t_0}{t_1-t_0}=\displaystyle\frac{t-t_0}{T},\quad 0\leq\\tau\leq 1
+\]
+In this manner, it results (the notation $s^{(k)}(\tau) = \displaystyle\frac{d^ks}{d\tau^k}$ is used) 
+\begin{gather*}
+    \displaystyle\frac{dp}{dt}= \displaystyle\frac{L}{T}s'(\tau) \quad \displaystyle\frac{d^2p}{dt^2}=\displaystyle\frac{L}{T^2}s''(\tau) \\
+    \displaystyle\frac{d^3p}{dt^3}=\displaystyle\frac{L}{T^3}s'''(\tau)\\
+    \displaystyle\frac{d^np}{dt^n}=\displaystyle\frac{L}{T^n}s^{(n)}(\tau)
+\end{gather*}
+it follows that the maximum values for the velocity, acceleration, etc. are obtained in correspondence of the mazimum values of the functions $s',s'',\dots$
+These values and the correpsonding time instants $\tau(t)$ are known frmo the chosen parameterization $s(\tau)$. 
 
+Notice that if the duration $T$ of the trajectory is changed, it is possible to satisfy in an exact manner the given constraints or to optimize the trajectory itself (minimum time). Moreover, it is easily possible to co-ordinate more motion axes. 
 
+\subsubsection{Polynomial trajectories of degree 3}
+Consider a parameterization expressed by a cubic polynomial 
+\[
+    s(\tau)=a_0+a_1\tau+a_2\tau^2+a_3\tau^3, \qquad 0\leq s\leq 1, \quad \qquad 0\leq \tau\leq 1, \quad \tau=\displaystyle\frac{t}{T}
+\]
+If the boundary conditions $s_0=0,s_1=1,v_0=0,v_1=0$ are specified, one obtains 
+\[
+    a_0=0, \quad a_1=0, \quad a_2=3, \quad a_3=-2
+\]
+Therefore: 
+\begin{gather*}
+    s(\tau) = 3\tau^2-2\tau^3\\
+    s'(\tau) = 6\tau-6\tau^2\\
+    s''(\tau) = 6-12\tau\\
+    s'''(\tau) = -12
+\end{gather*}
+Then 
+\[
+    s'_{max}=s'(0.5)=\displaystyle\frac{3}{2} \quad \implies \quad \dot{q}_{max}=\displaystyle\frac{3L}{2T}\\
+    s''_{max} = s''(0)=6 \quad \implies \quad \ddot{q}_{max} = \displaystyle\frac{6L}{T^2}
+\]
+\subsubsection{Polynomial trajectories of degree 5 and 7}
+analogous considerations 
 
+It is clear that if the displacement $L$ and the duration $T$ of a motion are specified, the profiles of velocity, acceleration and jerk are defined by the parameterization $s(\tau)$ chosen to generate the motion profile. In particular, the maximum values for these variables are determined (considering $L>0$ for the sake of simplicity)
+% [TODO] insert table slide 122
+\section{Dynamic scaling of trajectories}
+When a trajectory is specified for a complex mechanical system, because of the dynamics of the actuation system, of the robot manipulator or of the load (dynamic couplings), torques non physically achievable by the actuator could be requested. In these cases, it is possible to scale the trajectory taking into account the dynamics of the system in order to obtain a physically achievable motion. 
 
+The dynamic model of a manipulator is (neglecting friction)
+\[
+    M(q)\ddot{q} +C(q,\dot{q})\dot{q}+g(q)=\tau
+\]
+Then, for each joint 
+\[
+    m_i^T(q)\ddot{q}+\displaystyle\frac{1}{2}\dot{q}^TC_i(q)\dot{q}+g_i(q)=\tau_i \quad i=1,\dots,n
+\]
+If 
+\[
+    q=q(\sigma) \qquad \sigma=\sigma(t)
+\]
+is a proper parameterization of the trajectory with a motion law such that 
+\[
+    \dot{q}=\displaystyle\frac{dq}{d\sigma}\dot{\sigma}, \qquad \ddot{q}=\displaystyle\frac{d^2q}{d\sigma^2}\dot{\sigma}^2 + \displaystyle\frac{dq}{d\sigma}\ddot{\sigma}
+\]
+By substitution in the dynamic model: 
+\[
+\left[m_i^T(q(\sigma))\displaystyle\frac{dq}{d\sigma}\right] \ddot{\sigma}+\left[m_i^T(q(\sigma))\displaystyle\frac{d^2q}{d\sigma^2}+\displaystyle\frac{1}{2}\displaystyle\frac{dq^T}{d\sigma}C_i(q(\sigma))\displaystyle\frac{dq}{d\sigma}\right]\dot{\sigma}^2+g_i(q(\sigma))=\tau_i
+\]
+From which 
+\[
+    \alpha_i(\sigma)\ddot{\sigma}+\beta_i(\sigma)\dot{\sigma}^2+\gamma_i(\sigma)=\tau_i
+\]
+Notice that $\gamma_i(\sigma)$ (gravitational terms) depend only on the position $(\sigma)$
 
+Let us suppose to compute the torques $\tau_i$ necessary to achieve the motion defined by $q=q(\sigma),\sigma=\sigma(t)$: 
+\[
+    \tau_i(t)=\alpha_i(\sigma(t))\ddot{\sigma}(t)+\beta_i(\sigma(t))\dot{\sigma}^2(t)+\gamma_i(\sigma(t)),\quad i=1,\dots,n \quad t \in [0,T]
+\]
+If the time-axis is changed (e.g. in a linear fashion $x=kt$), a different parameterization of the trajectory is obtained 
+\[
+    t\to x=kt \quad x\in[0,kT] \quad \sigma(t)\to\hat{\sigma}(x)
+\]
+Notice that in general even a non linear parameterization $x=x(t)$ could be considered. With the new  parameterization, one obtains: 
+\begin{gather*}
+    \hat{\sigma}(x)=\sigma(t)\\
+    \dot{\hat{\sigma}}(x)=\displaystyle\frac{\dot{\sigma}(t)}{k}\\
+    \ddot{\hat{\sigma}}(x)=\displaystyle\frac{\ddot{\sigma}(t)}{k^2}
+\end{gather*}
+Therefore: 
+\begin{itemize}
+    \item if $k<1$ a slower motion is obtained 
+    \item if $k>1$ a faster motion is obtained
+\end{itemize}
+With the new parameterization, the torques compute as: 
+\[
+    \tau_i(t)=\alpha_i(\hat{\sigma}(t))\ddot{\hat{\sigma}}(t)+\beta_i(\hat{\sigma}(t))\dot{\hat{\sigma}}^2(t)+\gamma_i(\hat{\sigma}(t)),\quad \\
+    = \alpha_i(\sigma(t))\displaystyle\frac{\ddot{\sigma(t)}}{k^2}+\beta_i(\sigma(t))\displaystyle\frac{\dot{\sigma}^2(t)}{k^2}+\gamma_i(\sigma(t))
+\]
+% [TODO] finish slide 129-130
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\section{Trajectories in the Workspace}
+If trajectories are defined in the workspace, it is necessary to use the inverse kinematic function to translate the motion specification to the joint space (where actuators operate). Since this increases the computational burden for trajectory planning, the operations of computing the trajectory and translating it to the joint space are made at a lower frequency with respect to the control frequency. Therefore, it is necessary to interpolate the data before assigning them to the low-level controllers: usually, a simple linear interpolation is adopted.
+There are two drawbacks to this approach: 
+\begin{itemize}
+    \item You can only start interpolation once you know the next point, so the system presents a delay equal to the frequence of the trajectory+inverse kinematics (the slower one) 
+    \item The cartesian positions actually achieved during the motion obtained by interpolating the points $q(t_n)$ are not those originally planned, due to points linearly interpolated in the joint space are not linearly interpolated in the work space
+\end{itemize}
 
 
 

@@ -100,3 +100,8 @@
 \contentsline {subsection}{\numberline {7.2.3}synchronization of more motion axes}{46}{subsection.7.2.3}%
 \contentsline {subsection}{\numberline {7.2.4}Scaling}{47}{subsection.7.2.4}%
 \contentsline {section}{\numberline {7.3}Scaling Trajectories}{47}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Kinematic Scaling of trajectories}{47}{section.7.4}%
+\contentsline {subsubsection}{Polynomial trajectories of degree 3}{48}{section*.41}%
+\contentsline {subsubsection}{Polynomial trajectories of degree 5 and 7}{48}{section*.42}%
+\contentsline {section}{\numberline {7.5}Dynamic scaling of trajectories}{48}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Trajectories in the Workspace}{49}{section.7.6}%
