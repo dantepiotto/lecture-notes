@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1685032620 "Robotics.tex" "Robotics.pdf" "Robotics" 1685032621
+["pdflatex"] 1685374041 "Robotics.tex" "Robotics.pdf" "Robotics" 1685374042
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -109,10 +109,12 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675936951 1435907 97a00d7e08adfc64a574474b78cba8e2 ""
-  "Robotics.aux" 1685032621 14833 04ade07e76d65c3d9569a31e905f5737 "pdflatex"
-  "Robotics.out" 1685032621 12791 17135b75f412a9ada8835ea11fa828a4 "pdflatex"
-  "Robotics.tex" 1685032619 111783 13cb5b964442fec6e4ad6f6ec0b61251 ""
-  "Robotics.toc" 1685032621 9126 313dc4d4d50becc8842db805641a55e0 "pdflatex"
+  "Robotics.aux" 1685374042 14833 d5d23b30f3e95e232acdf27cef0b8799 "pdflatex"
+  "Robotics.out" 1685374042 12791 17135b75f412a9ada8835ea11fa828a4 "pdflatex"
+  "Robotics.tex" 1685374039 115535 816b33928a2846ceed0c5e952be8c485 ""
+  "Robotics.toc" 1685374042 9126 07d048ec4e0370e8e8e1e780b0115f1a "pdflatex"
+  "images//adapctrl.png" 1685373434 30755 73517086bed4282d0e77d092f0fb2f1b ""
+  "images//invkin.png" 1685373950 21508 1727a91cfc32fa4fc6676ae7a39e79e4 ""
   (generated)
   "Robotics.aux"
   "Robotics.log"

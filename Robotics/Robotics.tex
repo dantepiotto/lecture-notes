@@ -1,6 +1,7 @@
 \documentclass{book}
 \usepackage{amsmath, amsthm, graphicx, amsfonts}
 \usepackage[english]{babel}
+\graphicspath{ {./images/} }
 
 \usepackage{geometry}
  \geometry{
@@ -12,6 +13,10 @@
  \usepackage[hidelinks]{hyperref}
 
 \newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
 
 \title{Industrial Robotics M}
 \author{Dante Piotto}
@@ -714,7 +719,7 @@ We introduce two centralized control schemes:
 \subsection{PD + gravity compensation}
 Given a desired reference configuration $q_d$, the goal is to define a controller ensuring the global asympototic stability of the nonlienar dynamical system described by:
 \[
-    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D(\dot{q}+g(q) = \tau + J^T(q)F_a
+    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q) = \tau + J^T(q)F_a
 \]
 For this purpose, let us define the error as
 \[
@@ -731,7 +736,7 @@ Let us consider the following candidate Lyapunov function:
 \[
     V(x) = V(\tilde{q},\dot{q}) = \frac{1}{2}\dot{q}^TM(q)\dot{q}+\frac{1}{2}\tilde{q}^TK_P\tilde{q}>0 \quad \forall \dot{q},\tilde{q} \neq 0
 \]
-Where $K_P$ is a square ($n\times n$) positive definite matrix. Usually, it is chosen as a diagonal matrix. Function $V(\tilde{q},\dot{q})$ is composed by two terms, the first expressing the kinetic energy of the system, the second cane be interpreted as eleastic energy stored by springs with stiffness $K_P$. Tehse springs are a physical interpretation of the proportional control.
+Where $K_P$ is a square ($n\times n$) positive definite matrix. Usually, it is chosen as a diagonal matrix. Function $V(\tilde{q},\dot{q})$ is composed by two terms, the first expressing the kinetic energy of the system, the second can be interpreted as eleastic energy stored by springs with stiffness $K_P$. These springs are a physical interpretation of the proportional control.
 
 We compute the time derivative of the candidate Lyapunov function:
 \begin{gather*}
@@ -743,7 +748,7 @@ note that $\frac{1}{2}\dot{q}^T(\dot{M}-2C)\dot{q}=0$ due to the choice of $C$(C
 \[
     u=g(q)+K_P\tilde{q}+K_D\dot{q}
 \]
-where $K_D$ is a positive definite matrix, we obtain a proportional and derivate control with gravity compensation, and we have:
+where $K_D$ is a positive definite matrix, we obtain a proportional and derivative control with gravity compensation, and we have:
 \[
     \dot{V}(x)=-\dot{q}^TD\dot{q}-\dot{q}K_D\dot{q}
 \]
@@ -755,7 +760,7 @@ The PD control scheme can be interpreted as a spring and a damper.
 \]
 So far, we have guaranteed that the system stops, but we do not know where.
 \[
-    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D(\dot{q}+g(q) = K_P\tilde{q}-K_D\dot{q}+g(q) 
+    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q) = K_P\tilde{q}-K_D\dot{q}+g(q) 
 \]
 we observe that all the terms other than the one with $\tilde{q}$, in steady state cancel out:
 \[
@@ -767,7 +772,7 @@ That is, as $K_p$ is positive definite
 \]
 A perfect compensation of the gravity term is necessary, otherwise it is not possible to guarantee the stability of the system.
 
-The "PD+g(q)" approach can be extended to the position control in work-space.
+The "PD+$g(q)$" approach can be extended to the position control in work-space.
 
 
 
@@ -801,6 +806,9 @@ and thus
 \]
 where $y$ is the new input of the system
 % TODO [insert image of control scheme]
+
+\includegraphics[width=\textwidth]{invkin}
+
 The system results to be completely decoupled and linear. However, the resulting system has two poles in the origin and is therefore unstable. In order to stabilyze the system $y$ can be chosen as:
 \[
     y= -K_D\dot{q}-K_Pq+r
@@ -853,7 +861,7 @@ Aims at compensating directly possible errors deriving from model errors and/or 
 \subsubsection{Example}
 Consider a second order dynamic system described by 
 \[
-    \ddot{x}=-\psi x \quad \text{with } \quad \psi= \{a_1^2,a_2^2\} \quad (a_1^2>1>a_2^2)
+    \ddot{x}=-\psi x \quad \text{with } \quad \psi\in \{a_1^2,a_2^2\} \quad (a_1^2>1>a_2^2)
 \]
 % TODO [insert phase plane images slide 10]
 Assuming that $\psi$ is a control input, by using the commutation law:
@@ -890,7 +898,7 @@ In case (B) there are complex conjugate eigenvalues with positive real part give
 By choosing
 \[
     \psi = \begin{cases}
-        -a \quad \text{if} \quad xs<0 \quad (A)
+        -a \quad \text{if} \quad xs<0 \quad (A)\\
         a \quad \text{if} \quad xs>0 \quad (B)
     \end{cases} \quad s = -cx +\dot{x}
 \]
@@ -898,7 +906,7 @@ where
 \[
     c=\frac{\xi}{2}-\sqrt{\frac{\xi^2}{4}+a}<0
 \]
-is the inclination of of the line representing the stable mode in the (A) case. The resulting system is asympotitically stable.
+is the inclination of the line representing the stable mode in the (A) case. The resulting system is asympotitically stable.
 
 This type of control scheme is called Variable structure control or Sliding Mode Control (as the system goes towards a stable mode and "slides" towards the origin) and can be generalized:
 
@@ -914,7 +922,7 @@ We define a \emph{Sliding Surface} $S(x)=0$ based on which we decide which one o
 Two steps are involved in the design of variable structure control:
 \begin{itemize}
     \item choice of the sliding surface $S(x)$ so that the control system has the desired dynamic behaviour 
-    \item choice of the control law $u_i$ $(i=1,\dots,m)$ in order to force the state on the sliding surface $S_i(x)$ evin in case of parameter variations or external disturbances. 
+    \item choice of the control law $u_i$ $(i=1,\dots,m)$ in order to force the state on the sliding surface $S_i(x)$ even in case of parameter variations or external disturbances. 
 \end{itemize}
 \subsubsection{Example}
 Let us consider the second order system
@@ -941,9 +949,9 @@ When the state $x=(y,\dot{y})\in S(x)=0$:
 
 Choice of the control: It is possible to prove that the discontinuous control law
 \[
-    u(t) = -K sgn S(x)
+    u(t) = -K \sgn S(x)
 \]
-is able to force the state towards the sliding surface $S(x)=0$ as long as $K>\Delta_0$, with total disturbance rejection. This control can only take the state of the system to 0. Substituting $y$ and $\dot{y}$ with the tracking error: $x=(e,\dot{e})$, we can track a given trajectory with the chosen dynamics, with $e=y_d-y$. If $y_d\neq 0 $ the set point is to be considered another disturbance to the system as it is an exogenous input to the system, requiring $y_d \times G(0)$ to be compensated. The lower bound on $K$ therefore becomes:
+is able to force the state towards the sliding surface $S(x)=0$ as long as $K>\Delta_0$, with total disturbance rejection. This control can only take the state of the system to 0. Substituting $y$ and $\dot{y}$ with the tracking error: $x=(e,\dot{e})$, we can track a given trajectory with the chosen dynamics, with $e=y_d-y$. If $y_d\neq 0 $ the set point is to be considered another disturbance to the system as it is an exogenous input to the system, requiring $y_d \times G(0)$ control effort to be compensated. The lower bound on $K$ therefore becomes:
 \[
     K>\Delta_0+y_dG(0)
 \]
@@ -960,13 +968,13 @@ If the VS control law is implemented as a discrete-time system we have:
     \item a finite commutation frequency
     \item a residual oscillation on the output variable $y(t)$ (\emph{chattering})
 \end{itemize}
-The amplitude of the residual oscillaition is proportional to the sampling period $T$ and the value of $K$ of the control action
+The amplitude of the residual oscillation is proportional to the sampling period $T$ and the value of $K$ of the control action
 \[
     |y(t)|\leq KT
 \]
 Therefore, it is not possible to force the state "exactly" on the surface $S(x)=0$, but it is rather possible to keep it within a sufficiently small neighbourhood of it (\emph{discrete sliding mode})
 \subsection{The chattering problem}
-From a practical point of view, it is not possible to commute the control between the two values $u^+,u^-$ at an infinite frequency. Therefore, "oscillations" are generated in the controlled system (or in the actuator), typically in a frequency range within the system's bandwidth\footnote{if the control input is discontinuous, all the frequencies are excited and the natural frequencies of the system are necessarily excited}. Then, non modelled dynamics may be excited and undesired behaviours bay e obtained. Some methods have been proposed to avoid this problem, among them:
+From a practical point of view, it is not possible to commute the control between the two values $u^+,u^-$ at an infinite frequency. Therefore, "oscillations" are generated in the controlled system (or in the actuator), typically in a frequency range within the system's bandwidth\footnote{if the control input is discontinuous, all the frequencies are excited and the natural frequencies of the system are necessarily excited}. Then, non modelled dynamics may be excited and undesired behaviours may be obtained. Some methods have been proposed to avoid this problem, among them:
 \begin{itemize}
     \item Boundary layers
     \item DIC (Discrete Integral Control)
@@ -979,11 +987,11 @@ Let us assme that the disturbance is bounded with bounded first derivative:
 \[
     |\psi|<\Delta_0 \qquad |\dot{\psi}|<\Delta_1
 \]
-In addition to the standard VS control term ($-k sgnS(x)$), two additional contributions are used: a term proportional to the error $-\lambda S(x)$ and one proportional to the integral of its sign
+In addition to the standard VS control term ($-k \sgn S(x)$), two additional contributions are used: a term proportional to the error $-\lambda S(x)$ and one proportional to the integral of its sign
 \[
     \begin{cases}
-        u(t) = -\lambda S(x) -ksngS(x)-\tilde{\psi}(t)\\
-        \dot{\tilde{\psi}} (t) = h sgn S(x)
+        u(t) = -\lambda S(x) -k\sgn S(x)-\tilde{\psi}(t)\\
+        \dot{\tilde{\psi}} (t) = h \sgn S(x)
     \end{cases}
 \]
 It is possible to prove the following: \\
@@ -991,10 +999,10 @@ If the parameters $k,h$ and $\lambda$ of the control law are chosen such that:
 \[
     k>0, \quad h>\Delta_1, \quad h\lambda k > \Delta_1^2(1-ln2)
 \]
-then the controlled system is globally asymptotically stable, and the state reaches the sliding surdace $S(x)=0$ in a finite time.
+then the controlled system is globally asymptotically stable, and the state reaches the sliding surface $S(x)=0$ in a finite time.
 Note that there is no lower bound on $k$, and it can therefore be chosen to be quite small to reduce the chattering effect. The lower bound on $h$, means that the implemented controller must be faster than the disturbance (have a higher derivative). 
 
-The resulting controller is composed of a proportional, intergral and a switching component. If the proportional part is not present, i.e. $\lambda = 0$, the control action is still able to sabilize the system, but only for "small" initial conditions. 
+The resulting controller is composed of a proportional, integral and a switching component. If the proportional part is not present, i.e. $\lambda = 0$, the control action is still able to sabilize the system, but only for "small" initial conditions. 
 
 \subsection{Robust control of industrial manipulators}
 In general, it is difficult to compensate exactly the dynamics of a robot manipulator. In practice, what we get is only a partial compensation. Let us consider the inverse dynamics control:
@@ -1009,7 +1017,7 @@ By using the above equation, we have
 \[
     M\ddot{q}+n=\hat{M}+\hat{n}
 \]
-Since matrix $M$ is invertible, we have, (adding and subtracting $y$)
+Since matrix $M$ is invertible, we have (adding and subtracting $y$)
 \begin{gather*}
     \ddot{q} = y + (M^{-1}\hat{M}-I)y+M^{-1}\tilde{n}\\
     =y-\eta
@@ -1027,7 +1035,7 @@ The error dynamics $\tilde{q}$ is given by
 \[
     \ddot{\tilde{q}}+K_D\dot{\tilde{q}} + K_P\tilde{q}=\eta
 \]
-and therefore it is not possible to guaradntee that $\tilde{q}$ goes to zero ($\eta$ depends on the uncertainties of the system)
+and it is therefore not possible to guarantee that $\tilde{q}$ goes to zero ($\eta$ depends on the uncertainties of the system)
 From
 \[
     \ddot{q}=y-\eta
@@ -1050,7 +1058,7 @@ with
         0 \\ I
     \end{bmatrix} \in \mathbb{R}^{2n\times 2n}
 \]
-The problem with tracking a given trajectory ($q_d,\dot{q}_d,\ddot{q}_d$) may be solved by designing a control law $y$ that stabilizes the error dynamics $\xi$, that is nonlinear and time variant (because of $\eta$). Because of the properties of any assigned trajectory (boundedness of veolcity/acceleration) and considering the properties of the dynamic model fo a robot manipulator(boundedness) it is possible to estimate tha range of variablity of the uncertainties $\eta$ affecting the error dynamics. 
+The problem with tracking a given trajectory ($q_d,\dot{q}_d,\ddot{q}_d$) may be solved by designing a control law $y$ that stabilizes the error dynamics $\xi$, that is nonlinear and time variant (because of $\eta$). Because of the properties of any assigned trajectory (boundedness of velocity/acceleration) and considering the properties of the dynamic model fo a robot manipulator(boundedness) it is possible to estimate the range of variablity of the uncertainties $\eta$ affecting the error dynamics. 
 
 In order to compensate for the uncertainty term $\eta$, we define a control law as:
 \[
@@ -1098,7 +1106,7 @@ and, since $\tilde{H}<0$, the equation
 has a unique solution $Q$, symmetric and positive definite. 
 Notice that the first term is negative definite. We need to prove negativity of the second term. The vector $z$ is known, therefore we can choose the control input:
 \[
-    w=\displaystyle\frac{\rho}{\|z\|}z \quad rho>\|\eta\|
+    w=\displaystyle\frac{\rho}{\|z\|}z \quad \rho>\|\eta\|
 \]
 we obtain
 \begin{gather*}
@@ -1146,8 +1154,8 @@ The main goals of an adaptive control scheme may be defined as:
             \tilde{q}=q_d-q\to 0,\quad \dot{\tilde{q}}=\dot{q}_d-\dot{q}\to 0
     \]
     guaranteeing global stability
-    \item paramenter identification (i.e. $\tilde{\alpha}\to 0$) is not of particular concern 
-        if the desired trajectory is persistently exciting, one obtaines parameter identification as a by-product ($\tilde{\alpha}\to 0$)
+    \item paramenter identification (i.e. $\tilde{\alpha}\to 0$) is not of particular concern. 
+        If the desired trajectory is persistently exciting, one obtaines parameter identification as a by-product ($\tilde{\alpha}\to 0$)
     \item indirect adaptive control schemes are more complex, but in principle allow also systematic convergence of dynamic coefficients to their true values
 \end{itemize}
 It is always possible to write the Euler-Lagrange formulation of the dynamics of an $n$ dof robot as 
@@ -1176,7 +1184,7 @@ being $\tilde{q}$ and $\dot{\tilde{q}}$ the position and velocity errors. Since 
 \[
     \ddot{\tilde{q}}+K_d\dot{\tilde{q}}+K_P\tilde{q}=\eta
 \]
-being $\eta$ a nonlinear function of the parameter uncertainties and of the nl dynamics of the robot, so the error does not vainsh asymptotically
+being $\eta$ a nonlinear function of the parameter uncertainties and of the nl dynamics of the robot, so the error does not vanish asymptotically
 \subsection{NL control based on fb linearization}
 
 The error dynamics behaves analogously to the previous case, and does not vanish asymptotically. 
@@ -1189,7 +1197,7 @@ that is a nonlinear trajectory tracking control law having global asymptotic sta
 \[
     \dot{\hat{\alpha}}=\gamma(\hat{\alpha}q,\dot{q},q_d,\dot{q}_d)
 \]
-where $\gamma(\dot)$ is a proper update law for the robot's parameters
+where $\gamma(\cdot)$ is a proper update law for the robot's parameters
 
 It can be shown that with this control law the velocities could track the desired ones (eventually with zero error), but a permanent residual position error may occur if parameters are not exactly known. A possible solution is to modify the velocity reference as 
 \[
@@ -1197,7 +1205,7 @@ It can be shown that with this control law the velocities could track the desire
 \]
 where ofthe the value $\Lambda=K_d^{-1}K_p$ is chosen
 
-In robootics, in order to design an adaptive control law we exploit the property of the dynamic model to be linear wrt the parameters 
+In robotics, in order to design an adaptive control law we exploit the property of the dynamic model to be linear wrt the parameters 
 \[
     Y(q,\dot{q},\ddot{q})\alpha=u
 \]
@@ -1210,7 +1218,7 @@ where
     \dot{q}_r = \dot{q}_d+\Lambda\tilde{q}\\
     \ddot{q}_r = \ddot{q}_d+\Lambda\dot{\tilde{q}}
 \end{flalign*}
-and $K_D$ a positive definite matrix. The term $K_D\sigma$ is equivalent to a PD control action onthe tracking error assuming 
+and $K_D$ a positive definite matrix. The term $K_D\sigma$ is equivalent to a PD control action on the tracking error assuming 
 \[
     \sigma=\dot{q}_r-\dot{q}=\dot{\tilde{q}}+\Lambda\tilde{q}
 \]
@@ -1224,18 +1232,78 @@ To prove stability of the system we use the Lyapunov method. We choose as a cand
     V(\sigma,\tilde{q}) = \displaystyle\frac{1}{2}\sigma^TM(q)\sigma+\displaystyle\frac{1}{2}\tilde{q}^TA\tilde{q}>0 \quad \forall \sigma,\tilde{q} \neq 0 
 \]
 where $A$ is positive definite.
-% [TODO] insert conti slide 76
-
+The time derivative of $V$ is 
+\begin{gather*}
+    \dot{V}=\sigma^TM(q)\dot{\sigma}+\displaystyle\frac{1}{2}\sigma^T\dot{M}(q)\sigma+\tilde{q}^TA\dot{\tilde{q}}\\
+    =\sigma^T[-C\sigma-D\sigma-K_D\sigma]+\displaystyle\frac{1}{2}\sigma^T\dot{M}\sigma+\tilde{q}^TA\dot{\tilde{q}}\\
+    =\displaystyle\frac{1}{2}\sigma^T(\dot{M}-2C)\sigma-\sigma^TD\sigma-\sigma^TK_D\sigma+\tilde{q}^TA\dot{\tilde{q}} \qquad \sigma=\dot{\tilde{q}}+\Lambda\tilde{q} \\
+    =-\sigma^TD\sigma-(\dot{\tilde{q}}+\Lambda\tilde{q})^TK_D(\dot{\tilde{q}}+\Lambda\tilde{q})+\tilde{q}^TA\dot{\tilde{q}} \qquad A=2\Lambda K_D\\
+    =-\sigma^TD\sigma-\dot{\tilde{q}}^TK_D\dot{\tilde{q}}-\tilde{q}^T\Lambda K_D \Lambda \tilde{q}<0
+\end{gather*}
+Therefore $\dot{V}<0$, and $\dot{V}=0$ only when $\tilde{q}=\dot{\tilde{q}}\equiv 0$ $\implies$ $[\tilde{q}^T,\sigma^T]^T=0$ is GAS. The system evolves on $\sigma=0$ without a high.frequency control action.
 
 On the basis of the previous result, let us consider the control law 
 \[
     u = \hat{M}(q)\ddot{q}_r+\hat{C}(q,\dot{q})\dot{q}_r+\hat{D}\dot{q}_r+\hat{g}(q)+K_D\sigma = Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\hat{\alpha}+K_D\sigma
 \]
+computed using the estimation $\hat{\alpha}$ of the parameters of the dynamic model.
 Notice that $Y$ does not depend on $\ddot{q}$. 
 With this control, the overall dynamics are described by:
-% {TODO]
+\begin{gather*}
+    M(q)\dot{\sigma}+C(q,\dot{q})\sigma+D\sigma+K_D\sigma=-\tilde{M}(q)\ddot{q}_r-\tilde{C}(q,\dot{q})\dot{q}_r-\tilde{D}\dot{q}_r-\tilde{g}(q)\\
+    =-Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\tilde{\alpha}
+\end{gather*}
+where
+\[
+    \tilde{M}=\hat{M}-M, \qquad \tilde{C}=\hat{C}-C, \qquad \tilde{g}=\hat{g}-g, \qquad \tilde{g}=\hat{g}-g, \qquad \tilde{\alpha}=\hat{\alpha}-\alpha 
+\]
 In order to prove the stability of the system under this new control law, we once again use the Lyapunov method: 
-% [TODO] Lyapunov results + control scheme slide 78-79-80
+\[
+    V(\sigma,\tilde{q},\tilde{\alpha})=\displaystyle\frac{1}{2}\sigma^TM(q)\sigma+\tilde{q}^T\Lambda K_D\tilde{q}+\displaystyle\frac{1}{2}\tilde{\alpha}^TK_\alpha \tilde{\alpha}>0 \qquad \forall \sigma,\tilde{q},\tilde{\alpha}\neq 0
+\]
+Where $K_\sigma$ is a symmetric positive definite matrix. It can be shown that the time derivative of $V$ is now : 
+\[
+    \dot{V}=-\sigma^TD\sigma-\dot{\tilde{q}}^TK_D\dot{\tilde{q}}-\tilde{q}^T\Lambda K_D \Lambda\tilde{q} + \tilde{\alpha}^T(K_\alpha\dot{\tilde{\alpha}}-Y^T(q,\dot{q},\dot{q}_r,\ddot{q}_r)\sigma)
+\]
+The function $\dot{V}$ is negative if the parameters are "adapted" according to 
+\[
+    \dot{\hat{\alpha}}=K_\alpha^{-1}Y^T(q,\dot{q},\dot{q}_r,\ddot{q}_r)\sigma
+\]
+As a matter of fact, we have 
+\[
+    \dot{V}=-\sigma^TD\sigma-\dot{\tilde{q}}^TK_D\dot{\tilde{q}}-\tilde{q}^T\Lambda K_D\Lambda\tilde{q}<0
+\]
+Therefore, with the control law 
+\[
+    u=Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\hat{\alpha}+K_d(\hat{\tilde{q}+\Lambda\tilde{q}})
+\]
+where the parameters are computed according to 
+\[
+    \dot{\hat{\alpha}}=K_\alpha^{-1}Y^T(q,\dot{q},\dot{q}_r,\ddot{q}_r)\sigma
+\]
+The overall dynamics converges to 
+\[
+    \sigma=0,\quad \tilde{q}=0 \quad (\dot{\tilde{q}}=0)
+\]
+and then $\tilde{q},\dot{\tilde{q}}$ converge to zero and moreover $\hat{\alpha}$ is bounded. Notice that from 
+\[
+    M(q)\dot{\sigma}+C(q,\dot{q})\sigma+D\sigma+K_D\sigma=- Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\tilde{\alpha}
+\]
+in steady state ($\dot{\sigma=\sigma=0)}$) we have 
+\[
+    Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)(\hat{\alpha}-\alpha)=0\quad \notimplies \quad \hat{\alpha}\to\alpha
+\]
+It is not possible to conclude that $\hat{\alpha}=\alpha$, but only that $\tilde{\alpha}\in Null\{Y\}$
+The overall control scheme is 
+
+\includegraphics[width=\textwidth]{adapctrl}
+
+This is an implicit adaptive control. There are three contributions: 
+\begin{enumerate}
+    \item term $Y\hat{@a}$, a control action similar to the inverse dynamics approach 
+        \item term $K_D\sigma$, PD stabilizing action 
+        \item estimated parameter vector $\hat{\alpha}$, updated according to a \emph{gradient} method, matrix $K_\alpha$ defines the speed of convergence of the estimated parameters.
+\end{enumerate}
 % slide 81 skipped 
 \subsubsection{To sum up}
 
@@ -1339,7 +1407,7 @@ Define $\tilde{q}=q_d-q$. At the end of each iteration, because of the update la
 \subsection{Final comments}
 \begin{itemize}
     \item convergence is achieved in few iterations 
-        \item  the condition on the proportional gain is sufficient: 
+    \item  the condition on the proportional gain is sufficient: 
 \end{itemize}
 % [TODO] finish
 
