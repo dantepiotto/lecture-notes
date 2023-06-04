@@ -1,5 +1,5 @@
 \documentclass{book}
-\usepackage{amsmath, amsthm, graphicx, amsfonts}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float}
 \usepackage[english]{babel}
 \graphicspath{ {./images/} }
 
@@ -1328,7 +1328,7 @@ Robust Control:
 
 
 \chapter{Learning/Repetitive Control}
-If a robot has to repeat a given task cyclically, following every time the same trajectory, possible uncertainties in the system may be compensated by adopting learning or repetitive control schemes, by means of which the contrl system, by repeating the task, learns the optimal control input to be applied in order to have zero tracking error. There are learning or repetitive control schemes to solve 
+If a robot has to repeat a given task cyclically, following the same trajectory every time, possible uncertainties in the system may be compensated by adopting learning or repetitive control schemes, by means of which the contrl system, by repeating the task, learns the optimal control input to be applied in order to have zero tracking error. There are learning or repetitive control schemes to solve 
 \begin{itemize}
     \item trajectory tracking problems 
     \item control to steady state configurations.
@@ -1341,7 +1341,7 @@ Two control actions:
 \end{itemize}
 
 
-\section{PD control without gragity compensation}
+\section{PD control without gravity compensation}
 Let us consider the following case:
 \begin{itemize}
     \item Control to arbitrary constant (equilibrium) configuration of a robot subject to gravity \begin{itemize}
@@ -1428,9 +1428,9 @@ In particular, we can express a periodic reference signal $y_{ref}(t)$ with peri
 \]
 In general, in most control applications we deal with (well known) simple signals. Therefore, we assume that the model of any of these (periodic) functions is knwon and represented by a pair of poles on the imaginary axis 
 \[
-    \displaystyle\frac{1}{s^2+(k\omega_\tau)^2} \rightarrow s = \pm jk\omega_\tau
+    \displaystyle\frac{1}{s^2+(k\omega_\tau)^2} \longrightarrow s = \pm jk\omega_\tau
 \]
-According to the IMP, if any of these modes (coming from the Fourir Decomposition of the periodic reference) is embedded in the control systemm, perfect tracking will be achieved by the control system. In practice we need a system that acts as internal model for any periodic signal of period $\tau$, thus a system having infinitely many poles on the imaginary axis at multiple integers of $\omega_\tau$.
+According to the IMP, if any of these modes (coming from the Fourier Decomposition of the periodic reference) is embedded in the control system, perfect tracking will be achieved by the control system. In practice we need a system that acts as internal model for any periodic signal of period $\tau$, thus a system having infinitely many poles on the imaginary axis at multiple integers of $\omega_\tau$.
 The transfer function of such a system can be represented as 
 \[
     \displaystyle\frac{1}{s\prod_{k=1}^\infty (s^2+k^2\omega_\tau^2)}
@@ -1452,16 +1452,16 @@ By setting $s = \sigma+j\omega$ it results
     e^{-\tau\sigma} e ^{-j \omega \tau} = 1 = e^{j2k\pi}
 \]
 from which 
-\begin{align*}
+\begin{gather*}
     \sigma = 0 \\
     \omega = \displaystyle\frac{2k\pi}{\tau} = k \omega_\tau, \quad k \text{ integer}
-\end{align*}
+\end{gather*}
 Thus exactly the infinite number of poles palced where needed. This proves that the repetitive compensator acts as internal model for any periodic signal of period $\tau$. Stability analysis is necessary to evaluate the functionality of the scheme. 
 
 \subsection{Nyquist-Driven Stability Analysis}
 In order to analyse the stabilty properties, we can consider the following system which has the same characteristic equations (and consequently the same poles) of the previous one. As a matter of fact, the overall transfer fucntion is given by 
 \[
-    G_0(s) = \displaystyle\frac{e^{-\tau s}(P(s)) }{1+e^{-\tau s(P(s)-1)}}
+    G_0(s) = \displaystyle\frac{e^{-\tau s}(P(s)) }{1+e^{-\tau s}(P(s)-1)}
 \]
 and therefore, the characteristic equation is 
 \[
@@ -1473,7 +1473,7 @@ with the same characteristic equation as $G_0(s)$
     H_0(s) = \displaystyle\frac{e^{-\tau s}(P(s)-1) }{1+e^{-\tau s(P(s)-1)}}
 \]
 \subsubsection{Nyquist Stability Criterion} 
-The Nyquist Stavility Criterion is a very effective tool to determine whether a closed loop system is stable or not without computing explicitly the closed loop poles of the system, i.e. the roots of $1+L(s)=0$
+The Nyquist Stability Criterion is a very effective tool to determine whether a closed loop system is stable or not without computing explicitly the closed loop poles of the system, i.e. the roots of $1+L(s)=0$
 
 The criterion states that the closed loop system with open loop tf $L(s)$ (stable), is stable iff the polar plot of $L(jw)$ does not encircle or touch the critical point $-1$ on the complex plane. 
 \begin{itemize}
@@ -1481,7 +1481,7 @@ The criterion states that the closed loop system with open loop tf $L(s)$ (stabl
     \item the overall plot will always form a closed curve because it derives from a mapping that has a closd curve as domain (called \emph{Nyquist Path}) 
     \item The Nyquist path is a curve that has as interior the whole right half plane 
 \end{itemize}
-If the loop transfer function is not rational but contains some delay term it is still worth to apply the Nyquist criterion for stability analysis of the closed loop systems. Let's consider a system with loop transfer function 
+If the loop transfer function is not rational but contains some delay term it is still worth to apply the Nyquist criterion for stability analysis of the closed loop systems. Let us consider a system with loop transfer function 
 \[
     L(s) = e^{-\delta s} L'(s)
 \]
@@ -1497,24 +1497,24 @@ This condition is never satisfied unless P is biproper (rel degree 0). However, 
 \subsubsection{Possible Remedies}
 The nonexistence of a repetitive controller for a strictly proper pant is not surprsing: if $P(s)$ has non null relative degee it "integrates" the input at least once, and hence the output will be smoothed out to some extent making it impossible to track a signal with an infintely sharp edge. To overcome this problem two solutions have been found:
 \begin{enumerate}
-    \item Introduction fo a filter in the delay (often called Modified Repetitive Control Scheme)
+    \item Introduction of a filter in the delay (often called Modified Repetitive Control Scheme)
     \item Make it a discrete time system, that provides a natural upper bound to the maximum meaningful frequency value 
 \end{enumerate}
 \subsection{Modified Repetitive Control System}
 The modified RC system presents a low-pass filter Q(s) that multiplies the pure delay in the repetitive compensator. 
 \begin{itemize}
     \item Exact internal model is lost: the repetitive compensator acts as internal model for any periodic signal of period $\tau$ within a certain frequency range 
-    \item problems in high freq tracking 
+    \item problems in high frequency tracking 
     \item the poles escape away from the imaginary axis for high values of $\omega$ 
 \end{itemize}
 
-\subsection{Discret Time Repetitive Control}
-The most commonly adopted solution is to make the system a digital system. Any periodic signal with period N (N samples) can be generated by an \emph{N-step delay with positive feedback loop}. This means that such a system must represent the repetitive compensator in discrete time version. We can interpret fthe complex function $z^{-1}$ as the one-step delay operator. 
+\subsection{Discrete Time Repetitive Control}
+The most commonly adopted solution is to make the system a digital system. Any periodic signal with period N (N samples) can be generated by an \emph{N-step delay with positive feedback loop}. This means that such a system must represent the repetitive compensator in discrete time version. We can interpret the complex function $z^{-1}$ as the one-step delay operator. 
 % what are you doing step-delay?
 
-The discrete time repetitivecompensator has a closed loop transfer function 
+The discrete time repetitive compensator has a closed loop transfer function 
 \[
-    \displaystyle\frac{z^{-N}}{\-z^{-N}}
+    \displaystyle\frac{z^{-N}}{1-z^{-N}}
 \]
 the poles of this system are those complex numbers such that $z^{-N}=1$. By setting $z=\rho e^{-j\theta N}$ it results 
 \[
@@ -1525,28 +1525,30 @@ from which
     \rho = 1 \\
     \theta = \displaystyle\frac{2k\pi}{N}, \quad k \text{ integer}
 \end{align*}
-Thus exactly N poles on the unit circle in the z-plane. In discrete time signal analysis these poles represent the simple oscillation modes whose linear combination can produce any periodic signal of period N (Discrete Fourier Decomposition). This proves that the discrete time repetitiev compensator acts as internal model for any periodic signal of period N. 
+Thus exactly N poles on the unit circle in the z-plane. In discrete time signal analysis these poles represent the simple oscillation modes whose linear combination can produce any periodic signal of period N (Discrete Fourier Decomposition). This proves that the discrete time repetitive compensator acts as internal model for any periodic signal of period N. 
 Note that tracking is only achievable at the sample points. 
 
 Repetitive Control applied in a nonlinear system framework has been studied and in some cases satisfactory results have been achieved. Since in most industrial robotics applications cyclic operations are needed, RC can be a robust solution for the accomplishment of these tasks considering the lack of knowledge of the parameters can be seen as a periodic disturbance as the reference is periodic. 
 
 
 \chapter{Force Control}
-Force control is rather difficult whith very stiff obects, therefore it is appropriate to introduce some compliance between the robot and the environment. 
+Force control is rather difficult whith very stiff objects, therefore it is appropriate to introduce some compliance between the robot and the environment. 
 \section{Passive Compliance}
-mechanical devices properly installed on the wrist of the robot, able to react to external forces (RCC: Remote Center of Compliance)
+Mechanical devices properly installed on the wrist of the robot, able to react to external forces (RCC: Remote Center of Compliance)
 \begin{itemize}
     \item advantages: low cost, simple devices
     \item low flexibility, use limited to specific applications
 \end{itemize}
 The center of compliance is a point in space where linear forces correspond to pure linear displacements and torques correspond to pure rotation.
+% [TODO] insert images from slides
 
 
 \section{Active Compliance}
-Achieved my means of suitable control laws: the robot reacts in a programmed manner to external forces applied to the end-effector (a force sensor is usually requirede). 
+Achieved by means of suitable control laws: the robot reacts in a programmed manner to external forces applied to the end-effector (a force sensor is usually required). 
+
 \begin{itemize}
     \item advantages: high operational flexibility
-    \item drawbacks: computational complexity, an envirnment model could be required
+    \item drawbacks: computational complexity, an environment model could be required
 \end{itemize}
 
 Different techniques are available: 
@@ -1554,7 +1556,7 @@ Different techniques are available:
     \item Pure force control: (theoretically) used in quasi-static applications 
     \item Active stiffness control: control of interaction forces is obtained on the basis of position control with an elastic model of the environment 
     \item Impedance control: a desired dynamic behaviour of the end-effector is imposed (mechanical impedance: ratio between force and velocity)
-    \item Hybride position/force control: the directions in the operational space are separated in position-controlled and force-controlled directions (on the basis of kinematic models of the task and of the dynamic model of the robot)
+    \item Hybrid position/force control: the directions in the operational space are separated into position-controlled and force-controlled directions (on the basis of kinematic models of the task and of the dynamic model of the robot)
 \end{itemize}
 
 \subsection{Stiffness control}
@@ -1601,13 +1603,15 @@ With the analytic expression of the jacobian we have (from $J=T_AJ_A$ and $\tau=
 \[
     w_A=T_A^T(x)KT_A(x)dx=K_A(x)(x_e-x)
 \]
-$K_A$ is the (positive semi-definite) \emph{stiffness matrix}: the environment may not be able to generate forces along all the directions. Note that this matrix is not constant as it depends on the position $x$ In case it may be defined, $K_A^{-1}$ is the \emph{compliance matrix}. The range space of matrix $K_A$, i.e. $\mathcal{R}(K_A)$, defines the directions in the work space along which forces may be applied. \\
-Dynamic model of the robot: $M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=u+J^T(q)w$ \\
-Control $\quad$ PD+g(q): $u=g(q)+J_A^T(q)K_P\tilde{x}-J_A^TK_DJ_A(q)\dot{q}$\\
-This control is obtained by transforming the standard PD+g(q) control into the joint space by the analytic Jacobian. As veolcities in the workspace are not measured, we make use of the equivalence $\dot{x}_A=J_A\dot{q}$.\\
-in steady-state:
+$K_A$ is the (positive semi-definite) \emph{stiffness matrix}: the environment may not be able to generate forces along all the directions. Note that this matrix is not constant as it depends on the position $x$. In case it may be defined, $K_A^{-1}$ is the \emph{compliance matrix}. The range space of matrix $K_A$, i.e. $\mathcal{R}(K_A)$, defines the directions in the work space along which forces may be applied. \\
+Dynamic model of the robot: 
+\[M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=u+J^T(q)w\] 
+Control (PD+gravity compensation): 
+\[u=g(q)+J_A^T(q)K_P\tilde{x}-J_A^T(q)K_DJ_A(q)\dot{q}\]
+This control is obtained by transforming the standard PD+gravity control into the joint space by the analytic Jacobian. As velocities in the workspace are not measured, we make use of the equivalence $\dot{x}_A=J_A\dot{q}$.\\
+In steady-state:
 \[
-    ^T(q)K_P\tilde{x}=-J^T(q)w \quad (=-J_A^T(q)w_A=-J_A^T(q)T_A^Tw)
+    J_A^T(q)K_P\tilde{x}=-J^T(q)w \quad (=-J_A^T(q)w_A=-J_A^T(q)T_A^Tw)
 \]
 and, if the inverse of the Jacobian exists
 \[
@@ -1619,10 +1623,10 @@ We have
     \tilde{x}=-K_P^{-1}K_A(x)(x_e-x)
 \]
 \subsubsection{Stiffness control in joint space}
-
+% [TODO] maybe
 
 \subsection{Impedance control}
-The goal is not to track specific desired position/veolcity or force trajectories, but rather to define a dynamic relationship between velocities and forces. We define a desired work-space dynamics. We have:
+The goal is not to track specific desired position/velocity or force trajectories, but rather to define a dynamic relationship between velocities and forces. We define a desired work-space dynamics. We have:
 \[
     \displaystyle\frac{w(s)}{\dot{x}(s)}=Z(s) \quad \text{or} \quad \displaystyle\frac{w(s)}{x(s)}=sZ(s)
 \]
@@ -1644,7 +1648,7 @@ We have a two-step design procedure:
 where
 \begin{gather*}
     \hat{M} = (JM^{-1}J^T)^{-1}=J^{-T}MJ^{-1}\\
-    \hat{C} = \hat{M}(JM^{-1}CJ^{-1}-dot{J}J^{-1})=J^{-T}CJ^{-1}-\hat{M}\dot{J}J^{-1}\\
+    \hat{C} = \hat{M}(JM^{-1}CJ^{-1}-\dot{J}J^{-1})=J^{-T}CJ^{-1}-\hat{M}\dot{J}J^{-1}\\
     \hat{g} = \hat{M}JM^{-1}g = J^{-T}g
 \end{gather*}
 by defining 
@@ -1655,11 +1659,11 @@ we obtain the linear model
 \[
     \ddot{x}=y
 \]
-\subsubsection{2) Definition of the desired impedance bhaviour}
+\subsubsection{2) Definition of the desired impedance behaviour}
 \[
     y=\ddot{x}_d+M_d^{-1}[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]
 \]
-from Which
+from which
 \[
     M_d(\dot{x}_d-\ddot{x})+D_d)\dot{x}_d-\dot{x})+K_d(x_d-x)=-F_a
 \]
@@ -1667,16 +1671,16 @@ or
 \[
     M_d\ddot{\tilde{x}}+D_d\dot{\tilde{x}}+K_d\tilde{x}=-F_a
 \]
-$F_a$ must be added because if it is not, the robot will go to $\tilde{x}=0$ ignoring external forces, leaind to potential damage
+$F_a$ must be added because if it is not, the robot will go to $\tilde{x}=0$ ignoring external forces, leading to potential damage.
 In conclusion, the overall control input $F$ is:
 \[
     F = \hat{M}\ddot{x}_d +\hat{M}M_d^{-1}[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]+\hat{n}(x,\dot{x})-F_a
 \]
-note that if we choose $M_d=\hat{M (=J^{-T}MJ^{-1})}$ then the control law is greatly simplified since 
+note that if we choose $M_d=\hat{M} (=J^{-T}MJ^{-1})$ then the control law is greatly simplified since 
 \[
     F = \hat{M}\ddot{x}_d+[D_d(\dot{x}_d-\dot{x})+K_d(x_d-x)+F_a]+\hat{n}(x,\dot{x})
 \]
-and it does not even need a F/T sensor to be implemented. Since typically the control actino is applied at the joint level, we have 
+and it does not even need a F/T sensor to be implemented. Since typically the control action is applied at the joint level, we have 
 \[
     u=J^TF
 \]
@@ -1685,12 +1689,12 @@ The robot should:
 \begin{itemize}
     \item avoid high impact forces due to uncertainties on position/shape of the environment 
     \item adapt to the stiffness properties of the environment 
-    \item mimic a "human" behaviour: fast and rigid in free-space motion, slow and compliant iduring the approaching and contact phases 
+    \item mimic a "human" behaviour: fast and rigid in free-space motion, slow and compliant during the approach and contact phases 
 \end{itemize}
 Then:
 \begin{itemize}
     \item high values of $M_{d,i}$ and small values of $K_{d,i}$ along directions in the work space where contacts are expected 
-    \item high values of $K_{d,j}$ and small values of $M_{d,j}$ along free directions in the woek space (no contacts) 
+    \item high values of $K_{d,j}$ and small values of $M_{d,j}$ along free directions in the work space (no contacts) 
     \item if the environment is stiff, small values of $K_{d,i}$ 
     \item the values of $D_{d,k}$ are used to modify the transient phases
 \end{itemize}
@@ -1698,18 +1702,18 @@ Then:
 \section{Hybrid position/force control}
 When a task involves at the same time both motion and force application, it often happens that directions along which forces are applied are different with respect to directions along which motion takes place.
 
-It is always possible to deifine, in a proper reference frame 
+It is always possible to define, in a proper reference frame 
 \begin{itemize}
     \item Natural constraints: directions along which the task gives constraints in position (velocity) and force 
     \item Artificial constraints: directions along which it is possible to assign desired constraints with the control system. 
 \end{itemize}
 These constraints are complementary and altogether define the 12 dofs of a given task: 6 dof in terms of position/velocity and 6 dof in terms of forces/torques. 
 
-The artificial constraints define directions in the workspace along which it is possible to assign desired values of a given variable (velocity or force). It is then simple to design a "hybrid" control structure able to impose proper values alonog these directions only. 
+The artificial constraints define directions in the workspace along which it is possible to assign desired values of a given variable (velocity or force). It is then simple to design a "hybrid" control structure able to impose proper values along these directions only. 
 
 Consider now the velocity domain $v$. Given the natural and artificial constraints, it is possble to decompose $v$ in two components:
 \[
-    v=v_a+v_d
+    v=v_a+v_n
 \]
 where the "free" directions (velocities) $v_a$ are complementary to the directions in $v_n$, that is 
 \[
@@ -1742,15 +1746,27 @@ NB: $\Sigma_v$ is a projector matrix from $\mathbb{R}^6$ in $\mathcal{R}(A_v)$
 
 Similarly, in the force domain it is possible to define a base matrix $A_f$ of the artificial contstrainsts, and the force components that it is possible to control are described by 
 \[
-    \Sigma_f=A_f(A_f^TA_f=^{-1})A_f^T
+    \Sigma_f=A_f(A_f^TA_f)^{-1}A_f^T
 \]
 In order to establish a Euclidean scalar product in the force/velocity vector spaces it is necessary to define specific metrics in these spaces. 
 Once the selection matrices $\Sigma_v,\Sigma_f$ have been defined, it is possible to use these general control schemes: 
 \begin{itemize}
     \item Control in joint space: 
         % [TODO] insert image slide 50
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=0.95\textwidth]{hybridjspace}
+            \end{center}
+            \label{fig:}
+        \end{figure}
     \item Control in work space 
         % [TODO] insert image slide 51
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=0.95\textwidth]{hybridwspace}
+            \end{center}
+            \label{fig:}
+        \end{figure}
 \end{itemize}
 
 \chapter{Trajectory planning for Robot Manipulation}

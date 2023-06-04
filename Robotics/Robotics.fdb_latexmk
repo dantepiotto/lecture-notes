@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1685374041 "Robotics.tex" "Robotics.pdf" "Robotics" 1685374042
+["pdflatex"] 1685809080 "Robotics.tex" "Robotics.pdf" "Robotics" 1685809081
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -84,6 +84,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/base/bk10.clo" 1636758526 8288 a164cb4ac374c509b151821492778450 ""
   "/usr/share/texlive/texmf-dist/tex/latex/base/book.cls" 1636758526 23268 2b549a0e88d4c803f33b9b907020a582 ""
   "/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty" 1579991033 13886 d1306dcf79a944f6988e688c1785f9ce ""
+  "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty" 1578002852 41601 9cf6c5257b1bc7af01a58859749dd37a ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1465944070 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def" 1601931164 19103 48d29b6e2a64cb717117ef65f107b404 ""
@@ -108,12 +109,14 @@
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675936951 1435907 97a00d7e08adfc64a574474b78cba8e2 ""
-  "Robotics.aux" 1685374042 14833 d5d23b30f3e95e232acdf27cef0b8799 "pdflatex"
-  "Robotics.out" 1685374042 12791 17135b75f412a9ada8835ea11fa828a4 "pdflatex"
-  "Robotics.tex" 1685374039 115535 816b33928a2846ceed0c5e952be8c485 ""
-  "Robotics.toc" 1685374042 9126 07d048ec4e0370e8e8e1e780b0115f1a "pdflatex"
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1685606232 1435903 5a9769c21b3612151472dacc9da1a381 ""
+  "Robotics.aux" 1685809081 14981 5e75183efaa4b5df131852f6a6f745ed "pdflatex"
+  "Robotics.out" 1685809081 12796 db882c81c824d29e097941c43b6e0534 "pdflatex"
+  "Robotics.tex" 1685809079 116012 91455ff06216ee1937899f4865420021 ""
+  "Robotics.toc" 1685809081 9128 7bba5d231f435b2b4f682dc57de01eba "pdflatex"
   "images//adapctrl.png" 1685373434 30755 73517086bed4282d0e77d092f0fb2f1b ""
+  "images//hybridjspace.png" 1685808509 28585 f9873b2106e4f4b016b0ee70fb7c765c ""
+  "images//hybridwspace.png" 1685808591 24143 ae85cafcc1671272d6c1eb6c43398b12 ""
   "images//invkin.png" 1685373950 21508 1727a91cfc32fa4fc6676ae7a39e79e4 ""
   (generated)
   "Robotics.aux"

@@ -104,7 +104,7 @@ Assumption: sign of $b$ is known ($b>0$) and $\exists b_0>0:b\geq b_0$
 \subsubsection{Matching conditions }
 \begin{gather*}
     \dot{y}_r=-\alpha_my_r+\beta_mr\\
-    \dot{y}=-ay+bu
+    \dot{y}=-ay+bu\\
     e=y-y_r
 \end{gather*}
 Change of coordinates: 
@@ -123,7 +123,7 @@ If only the first term on the right was present we wuold have an exponentially d
 \[
     u=k_1y+k_2r
 \]
-the first term being a fb and the second being ff we obtain 
+the first term being a fb and the second being ff. We obtain 
 \[
     \dot{e}=-\alpha_me+(\alpha_m-a+bk_1)y+(bk_2-\beta_m)r
 \]
@@ -137,18 +137,19 @@ Because $a$ and $b$ are not known, we must use estimates for the control:
 u=\hat{k}_1(t)y + \hat{k}_2(t)r 
 \]
 leading to
-\[
+\begin{gather*}
     \dot{e}=-\alpha_me+(\alpha_m-a+b\hat{k}_1)y+(b\hat{k}_2-\beta_m)r=\\
     =-\alpha_me+(\alpha_m-a+b\hat{k}_1+bk_1^*-bk_1^*)y+(b\hat{k}_2-\beta_m+bk_2^*-bk_2^*)r=\\
     =-\alpha_me+b(\hat{k}_1-k_1^*)y+b(\hat{k}_2-k_2^*)r = \\
     =-\alpha_me+b\tilde{k}_1y + b\tilde{k}_2r
-\]
+\end{gather*}
 \subsubsection{desing of $\tau$}
 We must find $\tau_1,\tau_2$ s.t. for $\dot{\hat{k}}_1=\tau_1,\dot{\hat{k}}_2=\tau_2$, $\tilde{k}_1,\tilde{k}_1$ converge. Directly assigning the dynamics is impossible as knowledge of $k_1^*,k_2^*$ is necessary. We rewrite the error derivative as 
 \[
     \dot{e}=-\alpha_me+b\Phi^T(y,r)\tilde{k} \qquad \Phi^T(y,r)=(y\quad r) \qquad \tilde{k}=(\tilde{k}_1 \quad \tilde{k}_2)^T
 \]
 The second term on the right is a regressor. The system is non linear, as any adaptive system. 
+
 \subsubsection{Stability analysis}
 We use a Lyapunov approach as the system is non-linear. 
 \begin{gather*}
@@ -180,20 +181,77 @@ leading to
 which is not negative definite as it is identically 0 for $e=0$ and any value of $\tilde{k}$, it is therefore negative semi-definite. However the system $(e,\tilde{k})=(0,\vec{0})$ is stable in the Lyapunov sense.
 This means that, take arbitrarirly $e_0,\tilde{k}_0$ initial conditions, the derivative of the lyapunov function of the corresponding solution $e(t),\tilde{k}(t)$ is negative semi-definite, meaning the energy of the system is non increasing, meaning $V(e(t),\tilde{k}(t))\leq V(e_0,\tilde{k}_0)=M_0$, giving us global boundedness of the system. 
 
-What happens to $e(t) and \tilde{k}(t)$ as $t\to\infty$? Wec cannot apply the La Salle criterion as the system is time variant and the La Salle criterion only applies to time invariant or periodic systems. We use the La Salle-Yoshizawa criterion 
-\subsubsection{La Salle-Yoshizawa criterion}
-An extension of La Salle
+What happens to $e(t) and \tilde{k}(t)$ as $t\to\infty$? Wec cannot apply the La Salle criterion as the system is time variant(due to $r$ being an external time varying signal) and the La Salle criterion only applies to time invariant or periodic systems. We use the La Salle-Yoshizawa criterion 
+\subsubsection{La Salle-Yoshizawa theorem}
+An extension of the La Salle criterion that applies to time variant systems. \\
+\begin{gather*}
+    \dot{x}=f(t,x) \qquad x(0)=x_0 \qquad f:\mathbb{R}\times \mathbb{R}^n \to\mathbb{R}^n \quad f(\cdot,x) \text{is piecewise continuous } \forall x \in \mathbb{R}^n \\
+    f(t,\cdot) \forall t \in \mathbb{R} \text{ is locally Lipschitz in the variant argument}
+\end{gather*}
+We assume that the origin is an equilibrium ($x=\vec{0}$)\\
+We start with a lyapunov function candidate $V:\mathbb{R}\times\mathbb{R}^n\to \mathbb{R}^n$ with the following properties: 
+\begin{itemize}
+    \item $V\in\mathcal{C}^1$ (continuously differentiable)
+    \item positive definite 
+    \item radially unbounded 
+    \item decrescent
+\end{itemize}
+Let us start with a Lyapunov function 
+\[
+    V(t,x)=\displaystyle\frac{1}{2}e^2+\displaystyle\frac{b}{2\gamma}\tilde{k}^T\tilde{k} \quad
+\]
+this respects the assumptions made so far 
+\\Assumption 2: 
+\[
+    \dot{V}(t,x)=\displaystyle\frac{\partial V}{\partial t}+\displaystyle\frac{\partial V }{\partial x}f(t,x) \leq -w_3(x) \quad w_3(x)\geq 0 \forall x\in\mathbb{R}^n
+\]
+meaning it is negative semi-definite.\\
+The following is the result of the thm: 
+\begin{enumerate}
+    \item The equilibrium $x=0$ is globally stable 
+        \[
+            \forall R>0 \exists M_R:\forall x_0\in \mathcal{B}_R(0) text{the solution } x(t,x_0) |x(t,x_0)|\leq M_R \forall t \geq0
+        \]
+        \item \[
+                \forall x_0\in\mathbb{R}^n \quad \lim_{t\to\infty}w_3(x(t,x_0))=0
+        \]
+\end{enumerate}
+By La Salle-Yoshizawa $\alpha_me^2(t)\to 0 $ as $t\to\infty$ so $\lim_{t\to\infty}|e(t)|=0$
+\\We have achieved convergence of the error to 0 and boundedness of the state (verified for $\tilde{k}$ through Lyapunov analysis and for the other states because the system is linear)
 
+\subsubsection{Theorem of total stability}
+Suppose you have a NL time-varying system $\dot{x}=f(t,x)$ with the same assumptions on $f$ as La Salle-Yoshizawa. Now assume that \[
+    f(t,\vec{0})=\vec{0} \forall t\in\mathbb{R}
+\]
+and assume that the origin $x=\vec{0}$ is a uniformly locally asymptotically stable equilibrium. Then, for the perturbed system 
+\[
+    \dot{x}=f(t,x)+g(t,x) \quad x(t_0)=x_0
+\]
+the following holds: 
+\begin{gather*}
+    \forall \varepsilon>0 \quad \exists \delta_1(\varepsilon), \delta_2(\varepsilon)>0 \qquad \text{st} \forall x_0\in\mathcal{B}_{\delta_1}=\{x_0:|x_0|<\delta_1\}\\
+    \forall g(t,x): |g(t,x)|<\delta_2(\varepsilon), \forall \geq 0, \forall x\in\mathcal{B}_\varepsilon then |x(t,x_0)|\leq \varepsilon \quad \forall t \geq 0
+\end{gather*}
+% poor people's robustness
+So far we have proven that $e=0$ is attractive, however we do not know aobut $\tilde{k}=0$. In general, it is not attractive. 
 
-
-
-
-
-
-
-
-
-
+\subsection{How robust is adaptive control?}
+\begin{gather*}
+    \dot{e}=-\alpha_me+b\Phi^T(e+y_r,r)\tilde{k}\\
+    \dot{\tilde{k}}=-\gamma\Phi(e+y_r,r)e
+\end{gather*}
+We know that the equilibrium $(e,\tilde{k})=(0,\vec{0})$ is uniformly stable. Is it attractive? $e(t)\to 0$ as $t\to\infty$. What about $\tilde{k}(t)$? It depends. 
+\[
+    \begin{pmatrix}
+        \dot{e} \\ \dot{\tilde{k}}
+    \end{pmatrix} = \begin{pmatrix}
+    -\alpha_m & b\Phi^T(\cdots) \\ -\gamma\Phi(\cdots) & 0
+    \end{pmatrix} \begin{pmatrix}
+    e \\ \tilde{k}
+    \end{pmatrix}
+\]
+which is a skew symmetric matrix, which is always related to conservation of energy in physics. 
+\\If the regressor is persistently exciting and La Salle is applicable we obtain attracivity of the origin.
 
 
 
