@@ -2275,12 +2275,34 @@ There are two drawbacks to this approach:
 \end{itemize}
 
 
+\section{Analysis of Trajectories}
+When designing the control system of a robot, or more in general of an automatic machine, it is necessary to pay particular attention to the choice and design of the desired trajectory for the actuation system. As a matter of fact, a wrong choice has strong impacts on the performance, stress, and possible damages of the whole machine. In the following, two aspects will be analyzed:\begin{itemize}
+    \item vibrations induced on the mechanical structure (frequency analysis of trajectories)
+    \item working conditions of the actuators (trajectories and torque-speed characteristics)
+\end{itemize}
 
+\subsection{Frequency analysis of trajectories}
+Vibrations are undesired phenomena often present in automatic machines. They are basically due to the presence of structural elasticity in the mechanical system, and may be generated during the normal working cycle of the machine due to several reasons. 
 
+In particular, vibrations may be produced if trajectories with a discontinuous acceleration profile are imposed to the actuation system. 
+\begin{itemize}
+    \item Acceleration discontinuoities $\rightarrow$ sudden variation of the inertial forces applied to the system. 
+        \item Relevant discontinuities of such forces, applied to an elastic system (i.e. any mechanical device), generate vibrational effects 
+            \item Since every mechanism is characterized by some elasticity, this type of phenomenon must always be considered in the design of a trajectory, that therefore should have a smooth acceleration profile or, more in general, a limited bandwidth.
+\end{itemize}
 
+Let us consider a feedback control system: It is well known that, in order to have negligible tracking error, it is necessary that the spectrum of the signal $q_d(t)$ is within the bandwidth of the complementary sensitivity function 
+% [TODO] insert slide 7 
 
+With the current performances of electric drives, if the controller is designed in a satisfactory manner, we can expect the motor to follow with (almost) zero error the desired set-point. In case of infinitely rigid systems the load will track the desired motion exactly. If there are elastic effects in the transmission system, or more in general in case the load is not a rigid body, a different behaviour is obtained. 
+% [TODO] insert Dynamic model slide 9
+In order to avoid oscillations, the maximum frequency of the trajectory must be smaller than the resonance frequency of the system. 
 
-
+In order to compare different trajectories, and to understand the effects on a given mechanical system, it is good practice to analyze their spectrum (harmonic content), in particular that of the acceleration. For this type of analysis, a \emph{normalized} expression of the trajectory is considered, that is with a time duration $T=1$ and a unitary displacement $h=1$. Moreover, the spectra $V(\Omega)$ are referred to the variable $\Omega$ defined as 
+\[
+    \Omega = \displaystyle\frac{\omega}{\omega_0}, \qquad \omega_0=\displaystyle\frac{2\pi}{T}
+\]
+Rescaling of trajectories also nicely applies to the frequency domain. 
 
 
 
