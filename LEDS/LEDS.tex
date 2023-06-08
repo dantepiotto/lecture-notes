@@ -2016,19 +2016,69 @@ $\hat{x}_0$: initial guess for $x_0$
 
 
 
+\subsection{Kalman predictor form}
+By replacing $\hat{x}(t|t)$ in $\hat{x}(t+1|t)$ and $P(t|t)$ in $P(t+1|t)$ we get 
+\begin{flalign*}
+    & \hat{x}(t+1|)=A\hat{x}(t|t-1)+AK(t)\varepsilon(t)+Bu(t) & \\
+    & =(A-K_p(t)C)\hat{x}(t|t-1)+Bu(t)+K_p(t)y(t) &
+\end{flalign*}
+where $K_p(t)=AK(t)$, and 
+\begin{gather*}
+    P(t+1|t)=AP(t|t-1)A^T-AP(t|t-1)C^T(CP(t|t-1)C^T+R)^{-1}CP(t|t-1)A^T+GQG^T
+\end{gather*}
+The above equation is called the \emph{difference Riccati equation}
 
+\subsection{Convergence of the difference Riccati equation}
+\subsubsection{Theorem 1}
+Let the system be asymptotically stable. Then: 
+\begin{itemize}
+    \item $p(t+1|t)$ converges to a constant matrix $P$ for every initial positive semidefinite condition 
+        \[
+            lim_{t\to\infty}P(t+1|t)=P \quad \forall P_0>\geq0
+        \]
+        where $P$ is the solution of the \emph{algebraic Riccati equation} 
+        \[
+            P=APA^T-APC^T(CPC^T+R)^{-1}CPA^T+GQG^T
+        \]
+    \item As a consequence, the Kalmann filter gain $K(t)$ converges: 
+        \[
+            K=lim_{t\to\infty}K(t)=PC^T(CPC^T+R)^{-1}
+        \]
+    \item The corresponding Kalmann predictor is asymptotically stable, i.e. all the eigenvalues of $A-K_pC$ are inside the unit disc, where $K_p=AK$
+\end{itemize}
+\subsubsection{Theorem 2}
+Let 
+\[
+    Q=\bar{Q}\bar{Q}^T, \quad \bar{Q}>0 \quad \text{and} \quad \bar{G}=G\bar{Q}
+\]
+If $(A,\bar{G})$ is stabilizable and $(A,C)$ is detectable, the same results of theorem 1 hold
 
+\subsection{Time invariant filter (predictor)}
+If the assumptions of Th. 1 or Th. 2 are satisfied, it is possible to use the steady-state Kalman filter gain $K$ from the beginning so that the difference Riccati equation is avoided $\implies$ suboptimal filter. The equations become: 
+\begin{enumerate}
+    \item Start: solve the algebraic Riccati equation to get $P$ and then $K$, set $\hat{x}(0|-1)$
+        \item Correction: \begin{gather}
+                \varepsilon(t)=y(t)-\hat{y}(t|t-1)^s=y(t)-C\hat{x}(t|t-1)^s\\
+                \hat{x}(t|t)^s=\hat{x}(t||t-1)^s+K\varepsilon(t)
+        \end{gather}
+        \item Prediction: 
+            \[
+                \hat{x}(t+1|t)^s=A\hat{x}(t|t)^s+Bu(t)
+            \]
+\end{enumerate}
+The suboptimal estimates convege to the optimal ones: 
+\[
+    lim_{t\to\infty}\hat{x}(t|t)^s=\hat{x}(t|t), \quad lim_{t\to\infty}\hat{x}(t+1|t)^s=\hat{x}(t+1|t)
+\]
 
-
-
-
-
-
-
-
-
-
-
+One nice property of the Kalman filter is that it can also be used for time-varying systems
+\[
+    \begin{cases}
+        x(t+1)=A(t)x(t)+B(t)u(t)+g(t)w(t)\\
+        y(t)=C(t)x(t)+v(t)
+    \end{cases}
+\]
+This application requires no modification of the Kalman filter equations. However, in this case the invariant version of the filter is not applicable as convergence of $P$ cannot be proven as the terms of the algebraic Riccati equation would be time-varying.
 
 
 

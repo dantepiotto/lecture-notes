@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float}
+\usepackage[english]{babel}
+\graphicspath{ {./images/} }
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,237mm},
+ left=20mm,
+ top=30mm,
+ }
+ \usepackage[hidelinks]{hyperref}
+
+\newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+
+\title{Real Time Q\&A}
+\author{Dante Piotto}
+\date{spring semester 2023}
+
+
+\begin{document}
+\section{Explain why bounds are not significant when studying applications with sporadic tasks.}
+\section{What does it mean that EDF is "optimal"? Can you show intuitively why that is the case?}
+\section{Consider the real-time task scheduling problem with/without precedence constraints and with/without preemption. What are the easiest and the hardest cases? Why?}
+\section{Consider a generic application composed of periodic and sporadic tasks, to be scheduled using static priorities. Can feasibility be determined using bounds?}
+\section{Discuss optimal versus heuristic scheduling algorithms. When would you use either type of scheduling algorithm?}
+\section{Explain the different types of blocking that can occur when PCP is used to regulate access to resources, and show why such blockings may occur.}
+\section{Briefly present a method for scheduling aperiodic jobs with precedence constraints, assuming that jobs are non-preemptible and they may share resources. Can we say that this a difficult scheduling problem?}
+\section{Compare the non-preemptive (NPP) and highest locker priority (HLP) protocols. Discuss cases when either protocol may be preferred to the other.}
+\section{Discuss blocking time under priority inheritance: in what ways does it differ from that obtained under other resource access protocols?}
+\section{Clock-driven scheduling is a very common method for scheduling periodic tasks. Briefly discuss the main ideas and what are its advantages/disadvantages with respect to priority-driven scheduling.}
+\section{Discuss how precedence relations and the (im)possibility to preempt tasks affect the difficulty of scheduling problems.}
+\section{Explain priority inversion, and why it is a problem in real-time systems.}
+\section{The stack resource policy protocol (SRP) is a way of dealing with priority inversion. Discuss its advantages and disadvantages with respect to other resource access protocols seen.}
+\section{Discuss the analysis you need to perform to understand whether a set of independent periodic tasks is feasible. Consider all cases: static/dynamic priorities, and relative deadlines equal to/less than the periods. Do not enter into details: just outline the general procedure and mention the methods you would use at each step.}
+\section{Discuss what kind of analysis you should perform to understand whether a task set is schedulable under dynamic priorities. Consider two cases: relative deadlines equal to periods, or otherwise.}
+\section{The highest locker priority protocol (HLP) is a way of dealing with priority inversion. Discuss its advantages and disadvantages with respect to other resource access protocols seen.}
+\section{Show why EDF is optimal.}
+\section{Discuss the advantages of SRP (Stack Resource Policy) over HLP (Highest Locker Priority).}
+\section{Illustrate a procedure for scheduling asynchronous tasks with precedence constraints. (You do not need to give all the details: just the main idea). Why should such a procedure be preferred to using a generic scheduling algorithm?}
+\section{Can we always determine feasibility of any given set of purely periodic, independent tasks (no shared resources, deadlines equal to periods) under fixed priorities by simply looking at the processor utilization? Why? Explain the concept of least upper bound and when it can help determine feasibility.}
+\section{Define the scheduling problem in general, and identify some special cases where the problem is tractable.}
+\section{Explain the differences between fixed-priority and dynamic-priority scheduling policies. What are the advantages/disadvantages of one over the other?}
+
+\end{document}
