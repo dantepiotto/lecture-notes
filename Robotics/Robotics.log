@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.1)  8 JUN 2023 18:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.1)  21 JUN 2023 00:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -401,7 +401,7 @@ Chapter 3.
 [17
 
 ] [18] [19]
-<./images//invkin.png, id=457, 1191.45125pt x 308.15125pt>
+<./images//invkin.png, id=472, 1191.45125pt x 308.15125pt>
 File: ./images//invkin.png Graphic file (type png)
 <use ./images//invkin.png>
 Package pdftex.def Info: ./images//invkin.png  used on input line 810.
@@ -416,7 +416,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 810--811
 ]
 Chapter 4.
 [23] [24] [25] [26] [27] [28] [29]
-<./images//adapctrl.png, id=512, 1024.82875pt x 460.72125pt>
+<./images//adapctrl.png, id=527, 1024.82875pt x 460.72125pt>
 File: ./images//adapctrl.png Graphic file (type png)
 <use ./images//adapctrl.png>
 Package pdftex.def Info: ./images//adapctrl.png  used on input line 1299.
@@ -430,49 +430,61 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 1299--1300
 
 ]
 Chapter 5.
-[33] [34] [35] [36] [37] [38
-
-]
+[33] [34] [35] [36] [37] [38]
 Chapter 6.
-[39] [40] [41] [42]
-<./images//hybridjspace.png, id=587, 840.13875pt x 389.455pt>
+[39
+
+] [40] [41] [42]
+<./images//hybridjspace.png, id=603, 840.13875pt x 389.455pt>
 File: ./images//hybridjspace.png Graphic file (type png)
 <use ./images//hybridjspace.png>
-Package pdftex.def Info: ./images//hybridjspace.png  used on input line 1758.
+Package pdftex.def Info: ./images//hybridjspace.png  used on input line 1807.
 (pdftex.def)             Requested size: 459.51051pt x 213.01239pt.
-<./images//hybridwspace.png, id=588, 751.80875pt x 324.21124pt>
+<./images//hybridwspace.png, id=604, 751.80875pt x 324.21124pt>
 File: ./images//hybridwspace.png Graphic file (type png)
 <use ./images//hybridwspace.png>
-Package pdftex.def Info: ./images//hybridwspace.png  used on input line 1766.
+Package pdftex.def Info: ./images//hybridwspace.png  used on input line 1814.
 (pdftex.def)             Requested size: 459.51051pt x 198.16432pt.
- [43 <./images//hybridjspace.png> <./images//hybridwspace.png>] [44
-
-]
+ [43 <./images//hybridjspace.png>] [44 <./images//hybridwspace.png>]
 Chapter 7.
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1790.
+(hyperref)                than one, level fixed on input line 1838.
 
-[45] [46] [47] [48] [49] [50] [51] [52] [53] [54] [55] [56] (./Robotics.aux)
+[45
+
+] [46] [47] [48] [49] [50] [51] [52] [53] [54] [55]
+<./images//worktraj.png, id=696, 667.49374pt x 127.47626pt>
+File: ./images//worktraj.png Graphic file (type png)
+<use ./images//worktraj.png>
+Package pdftex.def Info: ./images//worktraj.png  used on input line 2372.
+(pdftex.def)             Requested size: 314.39998pt x 60.04416pt.
+ [56 <./images//worktraj.png>] [57]
+<./images//compsens.png, id=708, 429.605pt x 104.39pt>
+File: ./images//compsens.png Graphic file (type png)
+<use ./images//compsens.png>
+Package pdftex.def Info: ./images//compsens.png  used on input line 2452.
+(pdftex.def)             Requested size: 314.39998pt x 76.39677pt.
+ [58 <./images//compsens.png>] (./Robotics.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Robotics.out' has not changed.
-(rerunfilecheck)             Checksum: 5ED9187FB1527C98E6A57C3B6D4B4699;13218.
+(rerunfilecheck)             Checksum: B0A8BBE25128BAB750FB343E69CA562D;13787.
  ) 
 Here is how much of TeX's memory you used:
- 10811 strings out of 480171
- 169463 string characters out of 5894490
- 487846 words of memory out of 5000000
- 28420 multiletter control sequences out of 15000+600000
+ 10848 strings out of 480171
+ 170168 string characters out of 5894490
+ 487849 words of memory out of 5000000
+ 28449 multiletter control sequences out of 15000+600000
  480608 words of font info for 70 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  60i,16n,63p,614b,468s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Robotics.pdf (56 pages, 485699 bytes).
+Output written on Robotics.pdf (58 pages, 509214 bytes).
 PDF statistics:
- 814 PDF objects out of 1000 (max. 8388607)
- 701 compressed objects within 8 object streams
- 199 named destinations out of 1000 (max. 500000)
- 557 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 845 PDF objects out of 1000 (max. 8388607)
+ 726 compressed objects within 8 object streams
+ 207 named destinations out of 1000 (max. 500000)
+ 591 words of extra memory for PDF output out of 10000 (max. 10000000)
 

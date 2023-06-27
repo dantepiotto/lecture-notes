@@ -634,6 +634,14 @@ INPUT ./images//hybridwspace.png
 INPUT ./images//hybridwspace.png
 INPUT ./images//hybridwspace.png
 INPUT ./images//hybridwspace.png
+INPUT ./images//worktraj.png
+INPUT ./images//worktraj.png
+INPUT ./images//worktraj.png
+INPUT ./images//worktraj.png
+INPUT ./images//compsens.png
+INPUT ./images//compsens.png
+INPUT ./images//compsens.png
+INPUT ./images//compsens.png
 INPUT Robotics.aux
 INPUT ./Robotics.out
 INPUT ./Robotics.out

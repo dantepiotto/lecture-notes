@@ -1070,7 +1070,7 @@ In order to compensate for the uncertainty term $\eta$, we define a control law 
 \]
 the error dynamics in this case results
 \[
-    \dot{\xi} = H \xi + D(\eta-w)
+    \dot{\xi} = \tilde{H} \xi + D(\eta-w)
 \]
 where the eigenvalues of the matrix
 \[
@@ -1121,7 +1121,7 @@ Overall control scheme:
 This is akin to sliding mode control as the direction of $z$ cannot be assumed to be continuous. The sliding subspace $S(\xi)=D^TQ\xi=0$ depends on the choice of the matrix $Q$. The chattering problem may be solved e.g. by the 'boundary layers' method:
 \[
     w=\begin{cases}
-        \displaystyle\frac{\rho}{\|z\|}z \quad \text{when }\|z\|\geq\epsilon
+        \displaystyle\frac{\rho}{\|z\|}z \quad \text{when }\|z\|\geq\epsilon\\
         \displaystyle\frac{\rho}{\epsilon}z \quad \text{when }\|z\|<\epsilon
     \end{cases}
 \]
@@ -1195,7 +1195,7 @@ Let us consider a candidate control law:
 \]
 that is a nonlinear trajectory tracking control law having global asymptotic stabilization properties. In principle, the control law could be made adaptive by defining 
 \[
-    \dot{\hat{\alpha}}=\gamma(\hat{\alpha}q,\dot{q},q_d,\dot{q}_d)
+    \dot{\hat{\alpha}}=\gamma(\hat{\alpha},q,\dot{q},q_d,\dot{q}_d)
 \]
 where $\gamma(\cdot)$ is a proper update law for the robot's parameters
 
@@ -1275,7 +1275,7 @@ As a matter of fact, we have
 \]
 Therefore, with the control law 
 \[
-    u=Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\hat{\alpha}+K_d(\hat{\tilde{q}+\Lambda\tilde{q}})
+    u=Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\hat{\alpha}+K_d(\dot{\tilde{q}}+\Lambda\tilde{q})
 \]
 where the parameters are computed according to 
 \[
@@ -1289,7 +1289,7 @@ and then $\tilde{q},\dot{\tilde{q}}$ converge to zero and moreover $\hat{\alpha}
 \[
     M(q)\dot{\sigma}+C(q,\dot{q})\sigma+D\sigma+K_D\sigma=- Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)\tilde{\alpha}
 \]
-in steady state ($\dot{\sigma=\sigma=0)}$) we have 
+in steady state ($\dot{\sigma}=\sigma=0$) we have 
 \[
     Y(q,\dot{q},\dot{q}_r,\ddot{q}_r)(\hat{\alpha}-\alpha)=0\quad \notimplies \quad \hat{\alpha}\to\alpha
 \]
@@ -1300,7 +1300,7 @@ The overall control scheme is
 
 This is an implicit adaptive control. There are three contributions: 
 \begin{enumerate}
-    \item term $Y\hat{@a}$, a control action similar to the inverse dynamics approach 
+    \item term $Y\hat{\alpha}$, a control action similar to the inverse dynamics approach 
         \item term $K_D\sigma$, PD stabilizing action 
         \item estimated parameter vector $\hat{\alpha}$, updated according to a \emph{gradient} method, matrix $K_\alpha$ defines the speed of convergence of the estimated parameters.
 \end{enumerate}
@@ -1400,16 +1400,48 @@ Condition (1) is sufficient for guaranteeing the global asymptotic stability (a 
 \subsubsection{Proof}
 Define $\tilde{q}=q_d-q$. At the end of each iteration, because of the update law, we have $u_i=g(\bar{q}_i)$ and therefore 
 \[
-    \|u_i-u_{i-1}\| = \| g(\bar{q}_i)-g(\bar{q}_{i-1}) \| \leq \alpha\|\bar{q}_i-\bar{q}_{i-1} \leq \alpha(\|\tilde{q}_i\| + \|\tilde{q}_{i-1}\|)
+    \|u_i-u_{i-1}\| = \| g(\bar{q}_i)-g(\bar{q}_{i-1}) \| \leq \alpha\|\bar{q}_i-\bar{q}_{i-1}\| \leq \alpha(\|\tilde{q}_i\| + \|\tilde{q}_{i-1}\|)
 \]
-% [TODO] finish proof and add comments slide 10-11 
-
+from the update law we have 
+\[
+    \|u_i-u_{i-1}\| = \displaystyle\frac{1}{\beta}\|K_p\tilde{q}_i\|
+\]
+By combining the above relations, and taking advantage of condition 1. we get 
+\[
+    \displaystyle\frac{1}{\beta}\alpha \|\tilde{q}_i\| \leq \displaystyle\frac{1}{\beta}\lambda_{min}(K_p)\|\tilde{q}_i\| \leq \displaystyle\frac{1}{\beta}\|K_p\tilde{q}_i\| \leq \alpha(\|\tilde{q}_i\|+\|\tilde{q}_{i-1}\|)
+\]
+which means that 
+\[
+    \displaystyle\frac{1}{\beta} \|\tilde{q}_i\| \leq (\|\tilde{q}_i\|+\|\tilde{q}_{i-1}\|)
+\]
+which can be rewritten as 
+\[
+    \|\tilde{q}_i\| < \displaystyle\frac{\beta}{1-\beta}\|\tilde{q}_{i-1}\|
+\]
+which because of condition 2 is a contraction mapping, and therefore 
+\[
+    \lim_{i\to\infty} \|\tilde{q}_i\|=0
+\]
+with asymptotic convergence from any initial condition. 
+\subsubsection{comments}
+\begin{itemize}
+    \item By sobstitution of condtions 1. and 2. in the control law, we have that the matrix defining the proportional gains becomes 
+        \[
+            \hat{K}_p=K_p/\beta \implies \lambda_{min}(\hat{K}_p)>2\alpha
+        \]
+    \item if $K_p$ is a diagonal matrix, this condition implies a lower bound for each element of the diagonal 
+    \item It is a sufficient condition: the scheme could converge even if it is not satisfied 
+    \item The overall scheme can be interpreted as a control law with an integral action updated in correspondence of a discrete sequence of time instants (each steady state), achieving GAS
+\end{itemize}
 \subsection{Final comments}
 \begin{itemize}
     \item convergence is achieved in few iterations 
-    \item  the condition on the proportional gain is sufficient: 
+    \item  the condition on the proportional gain is sufficient: the system might converge even if it is violated 
+    \item it is possible, with a more detailed analysis to determine lower bounds on the gains $K_{p,j}$ with a smaller value but still sufficient to guarantee stability 
+    \item it is reasonable to assume that these values are lower for the distal links of the robot 
+    \item in practical cases, the update of the control law is performed the robot is sufficiently close to a steady state condition 
+    \item this approach has been extended to the case of flexible (joints and/or links) robot arms
 \end{itemize}
-% [TODO] finish
 
 
 \section{Repetitive control}
@@ -1623,8 +1655,26 @@ We have
     \tilde{x}=-K_P^{-1}K_A(x)(x_e-x)
 \]
 \subsubsection{Stiffness control in joint space}
-% [TODO] maybe
-
+Given the dynamic model in the joint space: 
+\begin{gather*}
+    M(q)\ddot{q}+C(q,\dot{q})\dot{q}+D\dot{q}+g(q)=u+J^T(q)w \\
+    u=g(q)+K_P\tilde{q}-K_D\dot{q}
+\end{gather*}
+in steady state: 
+\begin{gather*}
+    K_P\tilde{q}=-J^Tw\\
+    \tilde{q}=-K_p^{-1}J^Tw
+\end{gather*}
+under the assumption of small displacements we can consider 
+\[
+    \tilde{x}=J(q)\tilde{q}
+\]
+and therefore 
+\begin{gather*}
+    \tilde{x}=-J(q)K_P^{-1}J^T(q)w\\
+    \tilde{x}=-J(q)K_P^{-1}J_A^T(q)w_A\\
+    \tilde{x}=-J(q)K_P^{-1}J_A^T(q)K_A(x_e-x)
+\end{gather*}
 \subsection{Impedance control}
 The goal is not to track specific desired position/velocity or force trajectories, but rather to define a dynamic relationship between velocities and forces. We define a desired work-space dynamics. We have:
 \[
@@ -1752,7 +1802,6 @@ In order to establish a Euclidean scalar product in the force/velocity vector sp
 Once the selection matrices $\Sigma_v,\Sigma_f$ have been defined, it is possible to use these general control schemes: 
 \begin{itemize}
     \item Control in joint space: 
-        % [TODO] insert image slide 50
         \begin{figure}[H]
             \begin{center}
                 \includegraphics[width=0.95\textwidth]{hybridjspace}
@@ -1760,7 +1809,6 @@ Once the selection matrices $\Sigma_v,\Sigma_f$ have been defined, it is possibl
             \label{fig:}
         \end{figure}
     \item Control in work space 
-        % [TODO] insert image slide 51
         \begin{figure}[H]
             \begin{center}
                 \includegraphics[width=0.95\textwidth]{hybridwspace}
@@ -1836,7 +1884,7 @@ Trajectories are specified by defining some characteristic points:
 The algorithm that computes a function $q(t)$ interpolating the given points is characterized by the following features:
 \begin{itemize}
     \item trajectories must be computationally efficient 
-    \item the positino and velocity profiles must be continuous functions of time 
+    \item the position and velocity profiles must be continuous functions of time 
     \item undesired effects (such as non regular curvatures) must be minimized or completely avoided. 
 \end{itemize}
 Single joint trajectories may be classified as 
@@ -1910,7 +1958,7 @@ being
 \[
     v_k = \displaystyle\frac{q_k-q_{k-1}}{t_k-t_{k-1}}=\displaystyle\frac{K_k}{T_k}
 \]
-the slope of the $k$-tj tract $\begin{bmatrix}
+the slope of the $k$-th tract $\begin{bmatrix}
     t_k-1 & t_k
 \end{bmatrix}$
 
@@ -1976,7 +2024,7 @@ We have seen that the parameters $t_a,\dot{q}_v$ have been assumed as known, and
     \]
   \item Moreover, from geometrical considerations, the following condition must be verified: 
     \begin{gather*}
-      \ddot{q}_at_a = \displaystyle\frac{q_m-q_a}{t_m-t_a}\begin{cases}
+      \ddot{q}_at_a = \displaystyle\frac{q_m-q_a}{t_m-t_a}\quad\begin{cases}
         q_a = q(t_a)\\
         q_m = (q_i+q_f)/2=q_i+L/2\\
         t_m = T_2
@@ -2108,7 +2156,41 @@ with the conditions
   \ddot{q}_k(t_{k+1})=\ddot{q}_{k+1}(t_{k+1}) \qquad k=0,\dots,n-2
 \end{gather*}
 
-% [TODO] slide 93-94-95-96
+The coefficients $a_{k,i}$ can be computed with the following algorithm: 
+\[
+    \left\{
+        \begin{array}{lllll}
+            q_k(t_k) & = & a_{k0}& = & q_k\\
+            \dot{q}_k(t_k) & = & a_{k1}& = & v_k\\
+            q_k(t_{k+1}) & = & a_{k0} + a_{k1}T_k + a_{k2} T_k^2 + a_{k3} T_k^3 & = & q_{k+1}\\
+            \dot{q}_k(t_{k+1}) & = & a_{k0} + a_{k2} T_k + a_{k3}t_k^2 & = & v_{k+1}
+        \end{array}
+    \right.
+\]
+By solving this system one would obtain
+\[
+    \begin{cases}
+        a_{k0} =  q_k\\
+        a_{k1} =  v_k\\
+        a_{k2} = \displaystyle\frac{1}{T_k}\left[\displaystyle\frac{3(q_{k+1}-q_k)}{T_k}-2v_k-v_{k+1}\right] \\
+        a_{k3} = \displaystyle\frac{1}{T_k^2}\left[\displaystyle\frac{2(q_k-q_{k+1})}{T_k}+v_k+v_{k+1}\right] 
+    \end{cases}
+\]
+Note that the velocities $v_1,\dots,v_{n-1}$ in the intermediate points are not known, and must be therefore computed. By imposing continuity of accelerations in the intermediate points: 
+\[
+    \ddot{q}_k(t_{k+1}) = 2a_{k,2}+6a_{k-3}T_k=2a_{k+1,2}=\ddot{q}_{k+1}(t_{k1}) \qquad k=0,\dots,n-2
+\]
+From these conditions, by taking into account the expression of the parameters and through some simple manipulations we get
+\[
+    T_{k+1}v_k+2(T_{k+1}+T_k)v_{k+1}+T_{k}v_{k+2} = \displaystyle\frac{3}{T_kT_{k+1}}[T_k^2(q_{k+2}-q_{k+1})+t_{k+1}^2(q_{k+1}-q_k)]
+\]
+for  $k=0,\dots,n-2$
+These relations can be written in matrix form as $A'v'=c'$, with 
+% [TODO] matrices slide 95
+chere the constant terms $c_k$ depend only on the intermediate positions and on the time duration $T_k$ of the spline segments, which are known
+
+Since the velocities $v_0$ and $v_n$ are known, it is possible to eliminate the corresponding columns of matrix $A'$ and obtain a new equation 
+% [TODO] matrices slide 96
 That is 
 \[
   A(T)v=c(T,q,v_0,v_n)
@@ -2135,7 +2217,10 @@ It is possible to define an optimality problem aiming at minimizing $T$. The val
 \[
   \begin{cases}
     \min_{T_k}T=\displaystyle\sum_{k=1}^{n}T_k\\
-    \text{such that} % TODO
+    \text{such that} \begin{array}{l}
+        |\dot{q}(\tau,T_k)|<v_{max} \qquad \tau\in[0,T]\\
+        |\ddot{q}(\tau,T_k)|<a_{max} \qquad \tau\in[0,T]
+    \end{array}
   \end{cases}
 \]
 
@@ -2260,12 +2345,21 @@ Therefore:
     \item if $k>1$ a faster motion is obtained
 \end{itemize}
 With the new parameterization, the torques compute as: 
-\[
+\begin{gather*}
     \tau_i(t)=\alpha_i(\hat{\sigma}(t))\ddot{\hat{\sigma}}(t)+\beta_i(\hat{\sigma}(t))\dot{\hat{\sigma}}^2(t)+\gamma_i(\hat{\sigma}(t)),\quad \\
-    = \alpha_i(\sigma(t))\displaystyle\frac{\ddot{\sigma(t)}}{k^2}+\beta_i(\sigma(t))\displaystyle\frac{\dot{\sigma}^2(t)}{k^2}+\gamma_i(\sigma(t))
+    = \alpha_i(\sigma(t))\displaystyle\frac{\ddot{\sigma(t)}}{k^2}+\beta_i(\sigma(t))\displaystyle\frac{\dot{\sigma}^2(t)}{k^2}+\gamma_i(\sigma(t))\\
+    = \displaystyle\frac{1}{k^2}[\tau_i(t)-\gamma_i(\sigma(t))]+\gamma_i(\sigma(t))
+\end{gather*}
+from which
+\[
+    \tau_i(x)-\gamma_i(x)=\displaystyle\frac{1}{k^2}[\tau_i(t)-\gamma_i(t)]
 \]
-% [TODO] finish slide 129-130
-
+Considerations: 
+\begin{itemize}
+    \item it is not necessary to re-compute the whole trajectory 
+        \item neglecting the gravitational term, the new torques are obtaind by scaling the previuos torques by a factor $1/k^2$
+            \item The motion is slower if $k>1$ and faster if $k<1$
+\end{itemize}
 \section{Trajectories in the Workspace}
 If trajectories are defined in the workspace, it is necessary to use the inverse kinematic function to translate the motion specification to the joint space (where actuators operate). Since this increases the computational burden for trajectory planning, the operations of computing the trajectory and translating it to the joint space are made at a lower frequency with respect to the control frequency. Therefore, it is necessary to interpolate the data before assigning them to the low-level controllers: usually, a simple linear interpolation is adopted.
 There are two drawbacks to this approach: 
@@ -2273,6 +2367,67 @@ There are two drawbacks to this approach:
     \item You can only start interpolation once you know the next point, so the system presents a delay equal to the frequence of the trajectory+inverse kinematics (the slower one) 
     \item The cartesian positions actually achieved during the motion obtained by interpolating the points $q(t_n)$ are not those originally planned, due to points linearly interpolated in the joint space are not linearly interpolated in the work space
 \end{itemize}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{worktraj}
+    \end{center}
+\end{figure}
+
+For the computation of the workspace trajectories, it is possible to adopt one of the techniques used for the joint space or to define analytically the geometric path as a function of time $p=p(t)$ or, better, in a parametric form $p=p(s)$ being $s=s(t)$ a proper parameterization defining the motion law.
+\subsection{Curvature of a geometric path}
+Consider a path $\Gamma$ in the workspace $\mathbb{R}^3$, expressed in parametric form 
+\[
+    p=p(r) = \begin{bmatrix}
+        x(r) \\ y(r) \\ z(r)
+    \end{bmatrix}, \qquad r\in [r_a,~r_b]
+\]
+Assume that the curve is regular, i.e.
+\[
+    \dot{p} = \displaystyle\frac{d~p}{dr} \neq 0, \qquad \forall r \in [r_a,~r_b]
+\]
+Given a point $p_a$ of $\Gamma$, and a motion direction on the path, the \emph{arc legth} of a generic point $p(r)$ is defined as 
+\[
+    s = \displaystyle\int_{p_a}^{p(r)}\|\dot{p}(\rho)\|d\rho
+\]
+By definition, the arc length represents the legth of the arc of $\Gamma$ defined by the two points $p$ and $p_a$. The value $s=0$ is assigned to point $p_a$. 
+
+A bijective relationship exists between the arch length $s$ and the points of the path $\Gamma$, and it is therefore possible to use the arc legnth for a parametric expression of $\Gamma$.
+\[
+    p=p(s)
+\]
+It is possible to assign to each point $p$ of $\Gamma$ a reference frame (Frenet frame) defined by the following unit vectors: 
+\[
+    \left\{\begin{array}{llll}
+            t & = & \displaystyle\frac{\dot{p}}{\|\dot{p}\|} & \text{tangent unit vector}\\
+            b & = & \displaystyle\frac{\dot{p}\times \ddot{p}}{\|\dot{p} \times \ddot{p}\|} & \text{binormal unit vector}\\
+            n & = & b\times t & \text{normal unit vector}
+    \end{array}\right.
+\]
+\subsection{Position trajectories}
+\subsubsection{Segment of a line}
+The linear geometric path between points $p_i$ and $p_f$ has a parametric representation expressed by 
+\[
+    p(s) = p_i + \displaystyle\frac{s}{\|p_f-p_i\|}(p_f-p_i) \qquad s \in [0,~\|p_f-p_i\|]
+\]
+Moreover, by deriving $p$ with respect to $s$, one obtains 
+\[
+    \displaystyle\frac{d~p}{ds}= \displaystyle\frac{p_f-p_i}{\|p_f-p_i\|}, \qquad \displaystyle\frac{d^2~p}{ds^2}=0
+\]
+It is possible to plan a trajectory through a sequence of points with the same modalities seen in the joint space. If it is required to pass exactly through the intermediate points, then it is possible to compute the parameter $s$ using one of the motion laws defined in the joint space. In case it is not required for the manipulator to pass through the intermediate points, the geometric path can be defined for example by linear segments with polynomial blends.
+\subsubsection{Arc of a circle}
+A parametric representation of an arc of a circle is 
+\[
+    p=p(r) = \begin{bmatrix}
+        x \\ y \\ z
+    \end{bmatrix} = \begin{bmatrix}
+    r \cos{\theta} \\r \sin{\theta} \\ 0
+    \end{bmatrix}
+\]
+where the parameter is the angle $\theta= \theta(t)\in[\theta_{min},\theta_{max}]$. Notice that if the path must be arbitrarily positioned/oriented in the 3D space, it is sufficient to multiply the homogenous vector $p$ by a proper transformation matrix $T$
+\subsection{Rotational trajectories}
+
+
+
 
 
 \section{Analysis of Trajectories}
@@ -2286,16 +2441,29 @@ Vibrations are undesired phenomena often present in automatic machines. They are
 
 In particular, vibrations may be produced if trajectories with a discontinuous acceleration profile are imposed to the actuation system. 
 \begin{itemize}
-    \item Acceleration discontinuoities $\rightarrow$ sudden variation of the inertial forces applied to the system. 
+    \item Acceleration discontinuities $\rightarrow$ sudden variation of the inertial forces applied to the system. 
         \item Relevant discontinuities of such forces, applied to an elastic system (i.e. any mechanical device), generate vibrational effects 
             \item Since every mechanism is characterized by some elasticity, this type of phenomenon must always be considered in the design of a trajectory, that therefore should have a smooth acceleration profile or, more in general, a limited bandwidth.
 \end{itemize}
 
-Let us consider a feedback control system: It is well known that, in order to have negligible tracking error, it is necessary that the spectrum of the signal $q_d(t)$ is within the bandwidth of the complementary sensitivity function 
-% [TODO] insert slide 7 
+Let us consider a feedback control system:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{compsens}
+    \end{center}
+\end{figure}
+It is well known that, in order to have negligible tracking error, it is necessary that the spectrum of the signal $q_d(t)$ is within the bandwidth of the complementary sensitivity function 
+\[
+    F(s)=\displaystyle\frac{Q_d(s)}{Q_m(s)}=\displaystyle\frac{L(s)}{1+L(s)}=\displaystyle\frac{R(s)G(s)}{1+R(s)G(s)}
+\]
 
 With the current performances of electric drives, if the controller is designed in a satisfactory manner, we can expect the motor to follow with (almost) zero error the desired set-point. In case of infinitely rigid systems the load will track the desired motion exactly. If there are elastic effects in the transmission system, or more in general in case the load is not a rigid body, a different behaviour is obtained. 
-% [TODO] insert Dynamic model slide 9
+Dynamic model ($\tilde{q}=q_l-q_m\approx q_l-q_d$):
+\begin{gather*}
+    m\ddot{q}_l+b\dot{q}_l+kq_l = b\dot{q}_m+kq_m\\
+    m\ddot{\tilde{q}}_l+b\dot{\tilde{q}}_l+k\tilde{q}_l = -m\ddot{q}_m\\
+    \ddot{\tilde{q}}+2\delta_z\omega_z\dot{\tilde{q}}+\omega_z^2\tilde{q} = -\ddot{q}_m
+\end{gather*}
 In order to avoid oscillations, the maximum frequency of the trajectory must be smaller than the resonance frequency of the system. 
 
 In order to compare different trajectories, and to understand the effects on a given mechanical system, it is good practice to analyze their spectrum (harmonic content), in particular that of the acceleration. For this type of analysis, a \emph{normalized} expression of the trajectory is considered, that is with a time duration $T=1$ and a unitary displacement $h=1$. Moreover, the spectra $V(\Omega)$ are referred to the variable $\Omega$ defined as 
