@@ -1,0 +1,240 @@
+
+\documentclass{book}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float}
+\usepackage[english]{babel}
+\graphicspath{ {./images/} }
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,237mm},
+ left=20mm,
+ top=30mm,
+ }
+ \usepackage[hidelinks]{hyperref}
+
+\newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\des}{des}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{Industrial Robotics M}
+\author{Dante Piotto}
+\date{spring semester 2023}
+
+
+\begin{document}
+
+\chapter{Introduction to optimal control}
+
+\section{Optimal control problem formulation}
+Consider the continuous-time system ($t\in\R$)
+
+\begin{gather}
+    \dot{x}(t) = f(x(t),u(t),t) \\
+    y(t) = h(x(t),u(t),t)
+\end{gather}
+\begin{itemize}
+    \item $x(t)\in\R^n$ state of the system at time $t$ 
+    \item $u(t)\in\R^m$ input of the system at time $t$ 
+    \item $y(t)\in\R^p$ output of the system at time $t$
+\end{itemize}
+We will mainly work with time invariant systems, $\dot{x}(t)=f(x(t),u(t))$. 
+
+We consider nonlinear, discrete-time systems described by 
+\[
+    x(t+1)=f_t(x(t),u(t)) \quad t\in\N_0
+\]
+but from now on we will use the compact notation
+\[
+    x_{t+1}=f_t(x_t,u_t) \quad t\in\N_0
+\]
+where $x_t\in\R^n$ and $u_t\in\R^m$ are the state and the input of the system at time $t$.
+
+Consider a nonlinear, discrete-time system on a finite time horizon 
+\[
+    x_{t+1} = f_t(x_t,u_t) \quad t=0,\dots,T-1
+\]
+We use $\mathbf{x}\in\R^{nT}$ and $\mathbf{u}\in\R^{mT}$ to denote, respectively, the stack of the states $x_t$ for all $t\in\{1,\dots,T\}$ and the unputs $u_t$ for all $t\in\{0,\dots,T-1\}$, that is:
+\begin{gather*}
+    \mathbf{x} := \begin{bmatrix}
+        x_1 \\ \vdots \\ x_T
+    \end{bmatrix} \qquad
+    \mathbf{u} := \begin{bmatrix}
+        u_0 \\ \vdots \\ u_{T-1}
+    \end{bmatrix}
+\end{gather*}
+
+\subsubsection{Trajectory of a system}
+
+Definition: A pair ($\bar{\mathbf{x}},\bar{\mathbf{u}})\in\R^{nT} \times \R^{mT}$ is called a trajectory of system (1) % TODO fix
+if $\bar{x}_{t+1}=f_t(\bar{x}_t,\bar{u}_t)$ for all $t\in\{0,\dots,T-1\}$., That is, if $\bar{\mathbf{x}},\bar{\mathbf{u}})$ satisfies the system dynamics (the same holds for continuous time systems with proper adjustments). In particular, $\bar{\mathbf{x}}$ is the state trajectory, while $\bar{\mathbf{u}}$ is the input trajectory.
+
+\subsubsection{Equilibrium}
+Definition: A state-input pair $(x_e,u_e)\in\R^n\times\R^m$ is called an equilibrium pair of (1) % TODO fix
+if $(x_t,u_t)=(x_e,u_e),t\in\N_0$ is a trajectory of the system. \\
+Equilibria of time-invariant systems satisfy $x_e=f(x_e,u_e)$
+
+\subsubsection{Linearization of a system about a trajectory}
+Given the dynamics (1)% TODO fix 
+and a trajectory $(\bar{\mathbf{x}},\bar{\mathbf{u}})$, the linearization of (1) about $(\bar{\mathbf{x}},\bar{\mathbf{u}})$ is given by the linear (possibly) time-varying system 
+\[
+    \Delta x_{t+1} = A_t\Delta x_t + B_t \Delta u_t \quad t\in\N_0
+\]
+with $A_t$ and $B_t$ the Jacobians of $f_t$, with respect to state and input respectively, evaluated at $(\bar{\mathbf{x}},\bar{\mathbf{u}})$
+\[
+A_t = \at{\displaystyle\frac{\partial}{\partial x}f(\bar{x}_t,\bar{u}_t)}{(\bar{\mathbf{x}},\bar{\mathbf{u}})} \quad B_t = \at{\displaystyle\frac{\partial}{\partial u}f(\bar{x}_t,\bar{u}_t)}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
+\]
+
+\subsection{Optimization}
+\subsubsection{Main ingredients}
+\begin{itemize}
+    \item Decision variable: $x\in\R^n$ 
+    \item Cost function: $\ell(x):\R^n\to\R$ cost associated to decision $x$
+        \item Constraints (constraint sets): for some given functions $h_i:\R^n\to\R, i=1,\dots,m, \text{ and } g_j:\R^n\to\R,$ the decision vector $x\in\R^n$ needs to satisfy 
+            \begin{gather*}
+                h_i(x)=0 \quad i=1,\dots,m
+                g_j(x)=0 \quad j=1,\dots,r
+            \end{gather*}
+        equivalently we can say that we require $x\in X$ with 
+        \[
+            X=\{x\in\R^n|h(x)=0, g(x)\leq 0\},
+        \]
+        where we compactly denoted $h(x)=\col(h_1(x),\dots,h_m(x))$ and $g(x) = \col(g_1(x),\dots,g_r(x))$
+\end{itemize}
+
+\subsubsection{Minimization}
+We can write our optimization problem as 
+\begin{gather}
+    \min_{x\in\R^n} \ell(x)\\
+    \text{subj. to } h_i(x) = 0 \quad i=1,\dots,m\\
+    g_j(x)\leq 0 \quad j=1,\dots,r
+\end{gather}
+where $h_i:\R^n\to\R$ and $g_j:\R^n\to\R$\\
+We can write it more compactly as 
+\begin{gather*}
+    \min_{x\in\R^n} \ell(x)\\
+    \text{subj. to } h(x) = 0 
+    g(x)\leq 0 
+\end{gather*}
+where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$\\
+\subsection{Discrete-time optimal control}
+\subsubsection{main ingredients}
+\begin{itemize}
+    \item Dynamics: a discrete-time system in state space form 
+        \[
+            x_{t+1} = f_t(x_t,u_t) \quad t=0,1,\dots,T-1
+        \]
+    \item the dynamics introduce $T$ equality constraints 
+        \[
+            \begin{array}{l l l}
+                x_1 = f(x_0,u_0) & \quad \text{i.e.} \quad& x_1-f_t(x_0,u_0)=0 \\
+                x_2 = f(x_1,u_1) & \quad \text{i.e.} \quad & x_1-f_t(x_1,u_1)=0 \\
+                \vdots \\
+                x_T = f(x_{T-1},u_{T-1}) & \quad \text{i.e.} \quad & x_T-f_t(x_{T-1},u_{T-1})=0 \\
+            \end{array}
+        \] 
+    \item Cost function: a cost "to be payed" for a chosen trajectory. We consider an additive structure in time 
+        \[
+            \ell(\mathbf{x},\mathbf{u}) = \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)
+        \]
+        where $\ell_t:\R^n\times\R^m\to\R$ is called stage-cost, while $\ell_T:\R^n\to\R$ is the terminal cost. 
+    \item End-point constraints: function of the state variable prescribed at initial and/or final point 
+        \[
+            r(x_0,x_T)=0
+        \]
+    \item Path constraints: point-wise (in time) constraints representing possible limits on states and inputs at each time $t$ 
+        \[
+            g_t(x_t,u_t)\leq 0, \quad t\in\{0,\dots,T-1\}
+        \]
+\end{itemize}
+
+A discrete-time optimal control problem can be written as 
+\begin{gather*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)\\
+    \begin{array}{l l l}
+        \text{subj. to } & x_{t+1}=f_t(x_t,u_t), & t\in\{0,\dots,T-1\}\\
+                         & r(x_0,x_T) = 0 & \\
+                         & g_t(x_t,u_t)\leq 0, & t\in\{0,\dots,T-1\}
+    \end{array}
+\end{gather*}
+
+\subsubsection{Optimal control for trajectory generation}
+We can pose a trajectory generation problem as 
+\begin{gather*}
+    \min_{\mathbf{x}\in\R^n,\mathbf{u}\in\R^m}\displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}\|x_t-x_t^{\des}\|^2_Q + \displaystyle\frac{1}{2}\|u_t-u_t^{\des}\|^2_R + \displaystyle\frac{1}{2}\|x_T-x_T^{\des}\|^2_{P_f}
+\end{gather*}
+
+
+
+
+
+
+
+
+
+
+\chapter{Nonlinear Optimization}
+
+
+
+
+\chapter{Optimality conditions for optimal control}
+
+
+
+
+
+\chapter{Linear Quadratic (LQ) optimal control}
+
+
+\chapter{Dynamic Programming}
+
+
+
+\chapter{Numerical methods for nonlinear optimal control}
+
+
+
+
+\chapter{Optimization-based predictive control}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
