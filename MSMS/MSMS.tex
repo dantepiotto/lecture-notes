@@ -89,15 +89,83 @@ Where $\Phi_R(\cdot)$ is called \emph{constitutive equation}.
 Usually, resistors dissipate energy, i.e. power flows into the resistor but never comes out of it. 
 Pwer flows nito the port when the product of $e$ and $f$ is positive according to the sign convention shown, so power is always dissipated if the constitutive relation lies in the first and third quadrants of the $e-f$ plane.
 When a resistive element is assumed to be linear, it is conventional to indicate this on the bond graph by appending a colon (:) next to R. For passive resistors, estabilsh the power sign convention by means of a half-arrow pointing towards the resistor.
-% TODO insert images slides 3-4
 \begin{center}
-\includegraphics[width=0.8\textwidth]{1portR1}
+\includegraphics[width=0.45\textwidth]{1portR1}
+\includegraphics[width=0.45\textwidth]{1portR2}
 \end{center}
 
-\begin{center}
-\includegraphics[width=0.8\textwidth]{1portR2}
-\end{center}
+\subsubsection{1-port capacitor - compliance}
+1-port device in which a static constitutive relation between an effort and a displacement. 
+\begin{itemize}
+    \item such a device stores and gives up energy without loss 
+    \item In bond graph terminology, an element that relates $e$ to $q$ is called is called a \emph{1-port capacitor} or \emph{compliance}
+    \item In physical terms, a capacitor is an idealisation of devices as springs, torsion bars, electrical capacitors, gravity tanks, and hydraulic accumulators 
+    \item There are idealised linear compliance elements as well as nonlinear ones
+\end{itemize}
+% TODO insert images slides 5-6
+With the same sign convention of the resistor, we have that
+\[
+    E(t) = \displaystyle\int_{0}^{t}e(\tau)f(\tau)d\tau+E_0
+\]
+considering a change of variables $f d t = d q$ and $e=e(q)$ we get 
+\[
+    E(q) = \displaystyle\int_{q_0}^{q}e(\bar{q})d \bar{q} + E_0
+\]
+The conservation of energy for $C$ is obvious
+\begin{itemize}
+    \item The power flow into the port reverses and power flows out of the port 
+    \item During the process, no energy is lost, i.e. it is conserved
+\end{itemize}
 
+\subsubsection{1-port inertia}
+Energy storing 1-port where the momentum $p$ is related to the flow $f$ by a static constitutive law. It is the dual of the capacitor. 
+\begin{itemize}
+    \item it is used to model inductance effects in electrical systems, and mass or inertia effects in mechanical or fluid systems.
+\end{itemize}
+As before we have 
+\[
+    E(t) = \displaystyle\int_{0}^{t}e(\tau)f(\tau)d\tau+E_0 
+\]
+by considering a change of variables $edt=dp$ and $f=f(p)$
+\[
+    E(p) = \displaystyle\int_{p_0}^{p}f(\bar{p})d\bar{p}+E_0
+\]
+\subsubsection{effort source and flow source}
+\begin{itemize}
+    \item an effort or flow is maintained reasonably constant, or constrained to be some particular function of time 
+    \item a source maintains one of the power variables constant or a specified function of time no matter how large the other variable may be
+\end{itemize}
+It is possible to incorporate a modulation in the source element, thus obtaining a MSE of a MSF. Many physical devices function as amplifiers or transducers but are inadequately modelled as simple controlled sources.
+
+\section{Basic 2-port elements}
+
+The 2-ports to be discussed here are ideal in the sense that power is conserved ($e_1(t)f_1(t) = e_2(t)f_2(t)$). Let us consider a conservative 2-port with a through power sign convention
+% TODO insert image slide 13 
+\begin{itemize}
+    \item Transformer ($TF$): $e_1 = me_2, \quad mf_1=f_2$
+    \item Gyrator ($GY$): $e_1=rf_2, \quad rf_1=e_2$
+\end{itemize}
+
+The scalign ration for a $TF$ or a $GY$ can be time-dependent. In mechanics, the MTF is particularly important and may be used to represent geometric transformations or kinematic linkages.
+
+\section{3-port junction elements}
+3-port power conserving elements that serve to interconnect other multiports into subsystems or system models 
+\begin{itemize}
+    \item They are the most fundamental ideas behind bond graph formalism
+    \item they are an abstraction of the parallel and series connections of electrical circuits 
+    \item they appear in all physical domains
+\end{itemize}
+\subsubsection{0-junction}
+\[
+    e_1(t)=e_2(t)=e_3(t)\\
+    f_1(t)+f_2(t)+f_3(t)=0
+\]
+\subsubsection{1-junction}
+\[
+    f_1(t)=f_2(t)=f_3(t)\\
+    e_1(t)+e_2(t)+e_3(t)=0
+\]
+% TODO images slide 18
 
 
 
