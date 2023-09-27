@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.1)  27 SEP 2023 14:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.1)  27 SEP 2023 14:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -372,25 +372,35 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
 Chapter 2.
+<./images//1portR1.png, id=43, 770.88pt x 332.24126pt>
+File: ./images//1portR1.png Graphic file (type png)
+<use ./images//1portR1.png>
+Package pdftex.def Info: ./images//1portR1.png  used on input line 94.
+(pdftex.def)             Requested size: 386.95894pt x 166.77419pt.
+<./images//1portR2.png, id=45, 832.10875pt x 323.2075pt>
+File: ./images//1portR2.png Graphic file (type png)
+<use ./images//1portR2.png>
+Package pdftex.def Info: ./images//1portR2.png  used on input line 98.
+(pdftex.def)             Requested size: 386.95894pt x 150.30472pt.
 [3
 
-] (./MSMS.aux)
+ <./images//1portR1.png> <./images//1portR2.png>] (./MSMS.aux)
 Package rerunfilecheck Info: File `MSMS.out' has not changed.
 (rerunfilecheck)             Checksum: 2E525251A3C53E4EBE63B4568953ACFB;626.
  ) 
 Here is how much of TeX's memory you used:
- 10467 strings out of 480171
- 164891 string characters out of 5894490
+ 10492 strings out of 480171
+ 165402 string characters out of 5894490
  480599 words of memory out of 5000000
- 28281 multiletter control sequences out of 15000+600000
+ 28303 multiletter control sequences out of 15000+600000
  473818 words of font info for 45 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  60i,8n,63p,599b,362s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on MSMS.pdf (3 pages, 129645 bytes).
+Output written on MSMS.pdf (3 pages, 169511 bytes).
 PDF statistics:
- 104 PDF objects out of 1000 (max. 8388607)
- 75 compressed objects within 1 object stream
+ 109 PDF objects out of 1000 (max. 8388607)
+ 76 compressed objects within 1 object stream
  12 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 43 words of extra memory for PDF output out of 10000 (max. 10000000)
 

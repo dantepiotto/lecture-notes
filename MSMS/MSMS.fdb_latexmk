@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1695818514 "MSMS.tex" "MSMS.pdf" "MSMS" 1695818514
+["pdflatex"] 1695819174 "MSMS.tex" "MSMS.pdf" "MSMS" 1695819174
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -88,9 +88,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1685606232 1435903 5a9769c21b3612151472dacc9da1a381 ""
-  "MSMS.aux" 1695818514 1821 6fb1694a4429c75688b34a77d3f3bfa0 "pdflatex"
-  "MSMS.out" 1695818514 626 2e525251a3c53e4ebe63b4568953acfb "pdflatex"
-  "MSMS.tex" 1695818512 5250 89323c67d583629c4efbb159c5b87656 ""
+  "MSMS.aux" 1695819174 1821 6fb1694a4429c75688b34a77d3f3bfa0 "pdflatex"
+  "MSMS.out" 1695819174 626 2e525251a3c53e4ebe63b4568953acfb "pdflatex"
+  "MSMS.tex" 1695819173 5398 8e5659268f3259ec4b5f801fd264e347 ""
+  "images//1portR1.png" 1695818860 21043 94a459d0a7e157013ae35a15e23b2bc4 ""
+  "images//1portR2.png" 1695819119 31760 40588f9a4be0acaaa2ea21a90c110015 ""
   (generated)
   "MSMS.aux"
   "MSMS.log"

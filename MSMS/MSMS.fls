@@ -589,6 +589,14 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsl10.tfm
+INPUT ./images//1portR1.png
+INPUT ./images//1portR1.png
+INPUT ./images//1portR1.png
+INPUT ./images//1portR1.png
+INPUT ./images//1portR2.png
+INPUT ./images//1portR2.png
+INPUT ./images//1portR2.png
+INPUT ./images//1portR2.png
 INPUT MSMS.aux
 INPUT ./MSMS.out
 INPUT ./MSMS.out
