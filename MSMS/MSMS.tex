@@ -167,10 +167,25 @@ The scalign ration for a $TF$ or a $GY$ can be time-dependent. In mechanics, the
 \]
 % TODO images slide 18
 
-
-
-
-
+\section{Causality}
+\subsubsection{basic 1-ports}
+\begin{itemize}
+    \item The 1-port resistor is normally indifferent to the causality imposed upon it, so there are two possibilities: 
+        \[
+            e = \Phi_R(f) \qquad f = \Phi_R^{-1}(e)
+        \]
+    \item The constitutive law of 1-port capacitor is a static relation between effort and displacement, which means that 
+        \[
+            e = \Phi_C^{-1}(\int_{}^{t}fd\tau) \qquad f = \displaystyle\frac{d}{dt}\Phi_C(e)
+        \]
+    \item Dually, the constitutive law of 1-port inertia is a static relation between flow and momentum
+        \[
+            f = \Phi_I^{-1}(\int_{}^{t}ed\tau) \qquad e = \displaystyle\frac{d}{dt}\Phi_I(f)
+        \]
+        For both, the integral causality form is preferred to the differential causality.
+\end{itemize}
+\subsubsection{basic 2- and 3-ports}
+For basic 2-ports, there are two possible causal assignments. As soon as $e$ or $f$ is assigned as an input, the other one is constrained by the constitutive relation. Similar cnosiderations are valid also for 3-ports.
 
 
 
