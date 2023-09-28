@@ -17,6 +17,8 @@
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\col}{col}
 \DeclareMathOperator{\des}{des}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand{\notimplies}{%
   \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
 \newcommand{\R}{\mathbb{R}}
@@ -121,7 +123,7 @@ We can write it more compactly as
     \text{subj. to } h(x) = 0 
     g(x)\leq 0 
 \end{gather*}
-where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$\\
+where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$
 \subsection{Discrete-time optimal control}
 \subsubsection{main ingredients}
 \begin{itemize}
@@ -138,6 +140,7 @@ where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$\\
                 x_T = f(x_{T-1},u_{T-1}) & \quad \text{i.e.} \quad & x_T-f_t(x_{T-1},u_{T-1})=0 \\
             \end{array}
         \] 
+        This is equivalent to $nT$ scalar constraints
     \item Cost function: a cost "to be payed" for a chosen trajectory. We consider an additive structure in time 
         \[
             \ell(\mathbf{x},\mathbf{u}) = \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)
@@ -156,10 +159,10 @@ where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$\\
 A discrete-time optimal control problem can be written as 
 \begin{gather*}
     \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)\\
-    \begin{array}{l l l}
-        \text{subj. to } & x_{t+1}=f_t(x_t,u_t), & t\in\{0,\dots,T-1\}\\
-                         & r(x_0,x_T) = 0 & \\
-                         & g_t(x_t,u_t)\leq 0, & t\in\{0,\dots,T-1\}
+    \begin{array}{l l }
+        \text{subj. to } & x_{t+1}=f_t(x_t,u_t), \quad t\in\{0,\dots,T-1\}\\
+                         & r(x_0,x_T) = 0  \\
+                         & g_t(x_t,u_t)\leq 0, \quad t\in\{0,\dots,T-1\}
     \end{array}
 \end{gather*}
 
@@ -169,16 +172,117 @@ We can pose a trajectory generation problem as
     \min_{\mathbf{x}\in\R^n,\mathbf{u}\in\R^m}\displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}\|x_t-x_t^{\des}\|^2_Q + \displaystyle\frac{1}{2}\|u_t-u_t^{\des}\|^2_R + \displaystyle\frac{1}{2}\|x_T-x_T^{\des}\|^2_{P_f}
 \end{gather*}
 
-
-
-
-
-
-
-
-
+\subsubsection{Continuous-time Optimal Control problem}
+A continuous-time optimal control problem, i.e., $t\in\R$ can be written as 
+\begin{gather*}
+    \min_{(x(\cdot),u(\cdot))\in \mathcal{F}}\displaystyle\int_{0}^{T}\ell_\tau(x(\tau),u(\tau))d\tau+\ell_T(x(T))\\
+    \begin{array}{l l}
+        \text{subj. to } & \dot{x}(t) = f_t(x(t),u(t)) \quad t\in[0,T]\\
+                         & r(x(0),x(T)) = 0 \\
+                         & g_t(x(t),u(t))\leq 0 \quad t\in[0,T)
+    \end{array}
+\end{gather*}
+Note that $\mathcal{F}$ is a space of functions (function space). This is an infinite dimensional optimization problem
+\begin{itemize}
+    \item Cost functional $\ell:\mathcal{F}\to\R$
+        \[
+            \ell(x(\cdot),u(\cdot)) = \displaystyle\int_{0}^{T}\ell_\tau(x(\tau),u(\tau))d\tau+\ell_T(x(T))
+        \]
+    \item Space of trajectories ( or trajectory manifold)
+        \[
+            \mathcal{T} = \{(x(\cdot),u(\cdot))\in\mathcal{F}|\dot{x}(t)=f_t(x(t),u(t)), t\geq 0\}
+        \]
+\end{itemize}
 
 \chapter{Nonlinear Optimization}
+\section{Unconstrained Optimization}
+Consider the unconstrained optimization problem 
+\[
+    \min_{x\in\R^n}\ell(x)
+\]
+with $\ell:\R^n\to\R$ a cost function to be minimized and $x$ a decision vector 
+
+We say that $x^*$ is a  
+\begin{itemize}
+    \item global minimum if $\ell(x^*)\leq\ell(x)$ for all $x\in\R^n$ 
+        \item strict global minimum if $\ell(x^*)<\ell(x)$ for all $x\neq x^*$
+        \item local minimum if there exists $\epsilon>0$ such that $\ell(x^*)\leq\ell(x)$ for all $x\in B(x^*,\epsilon) = \{x\in\R^n| \|x-x^*\|<\epsilon\}$
+            \item strict local minimum if there exists $\epsilon>0$ such that $\ell(x^*)<\ell(x)$ for all $x\in B(x^*,\epsilon)$ 
+
+\end{itemize}
+\subsubsection{Notation}
+We denote $\ell(x^*)$ the optimal (minimum) value of a generic optimization problem, i.e. 
+\[
+    \ell(x^*) = \min_{x\in\R^n}\ell(x)
+\]
+where $x^*$ is the minimum point (optimal value for the optimization variable) i.e. 
+\[
+    x^* = \argmin_{x\in\R^n} \ell(x)
+\]
+\subsubsection{Gradient and Hessian}
+Gradient of a function: for a function $r:\R^n\to\R$  the gradient is denoted as 
+\[
+    \nabla r(x) = \begin{bmatrix}
+         \displaystyle\frac{\partial r(x)}{\partial x_1} \\ \vdots \\ \displaystyle\frac{\partial r(x)}{\partial x_n}
+     \end{bmatrix} \in \R^{n\times 1}
+\]
+Hessian matrix of a function: for a fcuntion $r:\R^n\to\R$  the Hessian matrix is denoted as 
+\[
+    \nabla^2(r(x)) = \begin{bmatrix}
+        \displaystyle\frac{\partial^2 r(x)}{\partial x_1^2} & \cdots & \displaystyle\frac{\partial^2 r(x)}{\partial x_1x_n} \\ \vdots & \ddots & \vdots \\ \displaystyle\frac{\partial^2 r(x)}{\partial x_nx_1} & \cdots & \displaystyle\frac{\partial^2 r(x)}{\partial x_1^2}
+    \end{bmatrix}
+\]
+Gradient of a vector-valued function: for a vector field $r:\R^n\to\R^m$, the gradient is denoted as 
+\[
+    \nabla r(x) = \begin{bmatrix}
+        \nabla r_1(x) & \cdots & \nabla r_m(x)
+    \end{bmatrix} = \begin{bmatrix}
+        \displaystyle\frac{\partial r_1(x)}{\partial x_1} & \cdots & \displaystyle\frac{\partial r_m(x)}{\partial x_1} \\
+        \vdots & \ddots & \vdots \\
+        \displaystyle\frac{\partial r_1(x)}{\partial x_n} & \cdots & \displaystyle\frac{\partial r_m(x)}{\partial x_n} \\
+    \end{bmatrix} \in \R^{n\times m}
+\]
+which is the transpose of the Jacobian matrix of $r$
+\subsection{Conditions of optimality}
+\subsubsection{First order necessary condition (FNC) of optimality (unconstrained)}
+Let $x^*$ be an unconstrained local minimum of $\ell:\R^n\to\R$ and assume that $\ell$ is continuously differentiable ($\mathcal{C}^1$) in $B(x^*,\epsilon)$ for some $\epsilon>0$. Then $\nabla \ell(x^*)=0$
+\subsubsection{Second order necessary condition (FNC) of optimality (unconstrained)}
+If additionally $\ell$ is twice continuously differentiable ($\mathcal{C}^2$) in $B(x^*,\epsilon)$, then $\nabla^2 \ell(x^*)\geq 0$ (The Hessian of $\ell$ is positive semidifinite)
+\subsubsection{Second order sufficient conditions of optimality (unconstrained)}
+Let $\ell:\R^n\to\R\in\mathcal{C}^2$ in $b(x^*,\epsilon)$ for some $\epsilon>0$. Suppose that $x^*\in\R^n$ satisfies 
+\[
+    \nabla\ell(x^*) = 0 and \nabla^2\ell(x^*)>0
+\]
+Then $x^*$ is a strict (unconstrained) local minimum of $\ell$
+\subsubsection{Convex set} 
+A set $X\subset \R^n$ is convex if for any two points $x_A$ and $x_B$ in $X$ and for all $\lambda\in[0,1]$, then 
+\[
+    \lambda x_a+(1-\lambda)x_B \in X
+\]
+\subsubsection{Convex functions}
+Let $X \subset \R^n$ be a convex set. A function $\ell:X\to\R$ is convex if for any two points $x_A$ and $x_B$ in $X$ and for all $\lambda\in[0,1]$, then 
+\[
+    \ell(\lambda x_A + (1-\lambda)x_B)\leq \lambda\ell(x_A)+ (1-\lambda)\ell(x_B)
+\]
+% TODO slide 12-13 
+\subsection{Minimization of convex functions}
+\subsubsection{Proposition}
+Let $X\subset\R^n$ be a convex set and $\ell: X\to\R$ a convex function. Then a local minimum of $\ell$ is also a global minimum \\
+Proof: not done in class but present in slides for funsies
+\subsubsection{Necessary and sufficient condition of optimality (unconstrained)}
+For the unconstrained minimization of a convex function it can be shown that the first order necessary condition of optimality is also sufficient (for a global minimum).
+\subsubsection{Proposition}
+Let $\ell_\R^n \to \R$ be a convex function. Then $x^*$ is a global minimum if and only if $\nabla\ell(x^*)=0$
+
+Proof: not done in class but present in slides for funsies
+
+
+
+
+
+
+
+
 
 
 
