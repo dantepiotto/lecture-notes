@@ -187,6 +187,68 @@ The scalign ration for a $TF$ or a $GY$ can be time-dependent. In mechanics, the
 \subsubsection{basic 2- and 3-ports}
 For basic 2-ports, there are two possible causal assignments. As soon as $e$ or $f$ is assigned as an input, the other one is constrained by the constitutive relation. Similar cnosiderations are valid also for 3-ports.
 
+\chapter{System Models in Different Domains}
+\section{Electrical Systems}
+Any electrical circuit can be modelled by a bond graph containing elements of the set $\{0,1,R,C,I,S_e,S_f\}$. The elements $TF$ and $GY$ are not included. 
+\subsection{Circuit construction procedure}
+\begin{itemize}
+    \item Assign a power conventin to the circuit schematic diagram: this is done by showing the positive voltage drop and current directions.
+    \item Label each node voltage on the circuit schematic diagram and use a 0-junction to represent each node voltage 
+    \item Establish the positive voltage drops across the circuit elements using 1-junctions: by properly directing the half-arrows on 1-junctions, the voltage drop can be established across each bond graph element
+    \item Choose a ground and remove all bonds that have zero power
+    \item Simplify the bond graph by using "bond graph identities"
+\end{itemize}
+An electrical network is an extension of electrical circuits to include idealised transformers and gyrators.
+\begin{itemize}
+    \item an electrical transformer is a common electromagnetic device used to step voltages up or down while doing the opposite to the current 
+    \item Electrical gyrators are exhibited in Hall effect transducers, where voltage across a semiconductor material is related to a current through the material perpendicular to the voltage drop direction.
+\end{itemize}
+
+\section{Mechanical systems}
+\subsection{Mechanics of translation}
+The construction procedure for the bond graph is dual to that for electrical systems: 
+\begin{itemize}
+    \item representing system velocities using 1-junctions
+    \item create the appropriate relative velocities using 0-junctions
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

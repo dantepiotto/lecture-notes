@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1696060269 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1696060270
+["pdflatex"] 1696326486 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1696326486
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -17,6 +17,7 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm" 1136768653 1292 296a67155bdbfc32aa9c636f21e91433 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsl10.tfm" 1136768653 1508 efecb4a315fe0975509670a272d75ef5 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1136768653 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1248133631 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb" 1248133631 32007 e8fa0078355f39467039935974716569 ""
@@ -31,6 +32,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb" 1248133631 32915 7bf7720c61a5b3a7ff25b0964421c9b6 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1248133631 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb" 1248133631 35309 940e81a5b9e04201a07e8b33a3ae6e64 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -94,9 +96,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1685606232 1435903 5a9769c21b3612151472dacc9da1a381 ""
-  "Optimal_control.aux" 1696060269 5170 6834ffd57eec3ed07808f59400a6ec51 "pdflatex"
-  "Optimal_control.out" 1696060269 2716 ae0397f69efa99f18467340e177ba03b "pdflatex"
-  "Optimal_control.tex" 1696060268 12803 d1d2a7714dd0fb9156bcada2e403ec7c ""
+  "Optimal_control.aux" 1696326486 7183 08f0cf7b8eab44ceff0006de5ed19686 "pdflatex"
+  "Optimal_control.out" 1696326486 4630 5f22027fc631a26bc026c887756df105 "pdflatex"
+  "Optimal_control.tex" 1696326485 21038 2c8dfa0f980dd77ab9ecd81e5a8620fe ""
   (generated)
   "Optimal_control.aux"
   "Optimal_control.log"

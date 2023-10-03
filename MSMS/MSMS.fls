@@ -597,6 +597,8 @@ INPUT ./images//1portR2.png
 INPUT ./images//1portR2.png
 INPUT ./images//1portR2.png
 INPUT ./images//1portR2.png
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT MSMS.aux
 INPUT ./MSMS.out
 INPUT ./MSMS.out

@@ -276,6 +276,213 @@ Let $\ell_\R^n \to \R$ be a convex function. Then $x^*$ is a global minimum if a
 
 Proof: not done in class but present in slides for funsies
 
+\subsection{Quadratic programming}
+Let us consider a special class of optimization problems, namely quadratic optimization problems or quadratic programs: 
+\[
+    \min_{x\in\R^n}x^TQx+b^tx
+\]
+with $Q=Q^T\in\R^{n\times n}$ and $b\in\R^n$
+\subsubsection{optimality conditions}
+First-order necessary condition for optimality: if $x^*$ is a minimum then 
+\[
+    \nabla \ell(x^*)=0 \implies 2Qx^*+b=0
+\]
+Second-order necessary condition for optimality: if $x^*$ is a minimum then 
+\[
+    \nabla^2\ell(x^*)\geq 0 \implies 2Q>0
+\]
+A necessary condition for the existence of minima for a quadratic program is that $Q\geq 0$. Thus, quadratic programs admitting at least a minimum are convex optimization problems.
+\subsubsection{properties}
+Since quadratic programs are convex programs ($Q\geq 0$ is necessary to have a local minimum), then the following holds: 
+\begin{itemize}
+    \item For a quadratic program necessary conditions of optimality are also sufficient and minima are global
+\end{itemize}
+If $Q>0$, then there exists a unique global minimum given by 
+\[
+    x^* = -\displaystyle\frac{1}{2}Q^{-1}b
+\]
+
+\section{Unconstrained Optimization Algorithms}
+\subsection{Iterative descent methods}
+We consider optimization algorithms relying on the iterative descent idea. We denote $x^k\in\R^n$ an estimate of a local minimum at iteration $k\in\N$. The algorithm starts at a given initial guess $x^0$ and iteratively generates vectors $x^1,x^2,\dots$ such that $\ell$ is decreased at each iteration, i.e. 
+\[
+    \ell(x^{k+1})<\ell(x^k) \qquad k = 1,2,\dots
+\]
+\subsubsection{two-step procedure}
+We consider a general two-step procedure that reads as follows 
+\[
+    x^{k+1} = x^k+\gamma^k d^k, \qquad k=1,2,\dots
+\]
+in which 
+\begin{enumerate}
+    \item each $\gamma^k>0$ is a "step-size" 
+    \item $d^k\in\R^n$ is a "direction"
+\end{enumerate}
+The goal is to 
+\begin{enumerate}
+    \item choose a direction $d^k$ along which the cost decreases for $\gamma^k$ sufficiently small;
+        \item select a step-size $\gamma^k$ guaranteeing a sufficient decrease. 
+\end{enumerate}
+In oher references these are called line-search methods.
+\subsection{Gradient methods}
+Let $x^k$ be such that $\nabla\ell(x^k)\neq 0$. We start by considering the update rule 
+\[
+    x^{k+1} = x^k-\gamma^k\nabla\ell(x^k)
+\]
+i.e., we choose $d^k = \nabla\ell(x^k)$
+
+From the first order Taylor expansion of $\ell$ at $x$ we have 
+\begin{gather*}
+    \begin{array}{r c l}
+        \ell(x^{k+1}) & = & \ell(x^k)+\nabla\ell(x^k)^T(x^{k+1}-x^k)+o(\|x^{k+1}-x^k\|)\\
+                      & = & \ell(x^k)-\gamma^k\|\nabla\ell(x^k)\|^2+o(\gamma^k)
+     \end{array}
+\end{gather*}
+Thus, for $\gamma^k>0$ sufficiently small it can be shown that $\ell(x^k+1)<\ell(x^k)$
+
+The update rule 
+\[
+    x^{k+1}=x^k-\gamma^k\nabla\ell(x^k)
+\]
+can be generalized to so called \emph{gradient methods}
+\[
+    x^{k+1}=x^k+\gamma^kd^k
+\]
+with $d^k$ such that
+\[
+    \nabla\ell(x^k)^Td^k<0
+\]
+Also, $d^k$ must be gradient related, i.e. $d^k$ must not asymptotically become perpendicular to $\nabla\ell$
+\subsubsection{selecting the descent direction}
+Several gradient methods can be written as 
+\[
+    x^{k+1} 0 x^k-\gamma^kD^k\nabla\ell(x^k) \quad k=1,2,\dots
+\]
+where $D^k\in\R^{n\times n}$ is  a symmetric positive definite matrix. It can be immediately seen that 
+\[
+    -\nabla\ell(x^k)^TD^k\nabla\ell(x^k)<0
+\]
+i.e. $d^k = -D^k\nabla\ell(x^k)$ is a descent direction. The choice of $D^k$ must be made such that there exist $d_1,d_2$ positive real, such that $d_1 I \leq D^k \leq d_2 I$
+
+Some choices for $D^k$:
+\begin{itemize}
+    \item Steepest descent $D^k=I_n$
+    \item Newton's method $D^k = (\nabla^2\ell(x^k))^{-1}$\\
+        It can be used when $\nabla^2\ell(x^k)>0$. It typically converges very fast asymptotically. For $\gamma^k = 1$ pure Newton's method
+    \item Discretized Newton's method $D^k=(H(x^k))^{-1}$, where $H(x^k)$ is a positive definite symmetric approximation of $\nabla^2\ell(x^k)$ obtained by using finite difference approximations of the second derivatives 
+    \item Some regularized version of the Hessian
+\end{itemize}
+\subsection{gradient method}
+The update rule obtained for $D^k=I$ is called steepest descent. The name steepest descent is due to the following property: the normalized negative gradient direction 
+\[
+    d^k = -\displaystyle\frac{\nabla\ell(x^k)}{\|\nabla\ell(x^k)\|}
+\]
+minimizes the slope $\nabla \ell(x^k)^Td^k$ among all normalized directions, i.e. it gives the steepest descent.
+
+\subsection{Newton's method for root finding}
+Consider the nonlinear root finding problem 
+\[
+    r(x) = 0
+\]
+Idea: iteratively refine the solution such that the improved guess $x^{k+1}$ represents a root of the linear approximation of $r$ about the current tentative solution $x^k$. Consider the linear approximation of $r$ about $x^k$, we have 
+\[
+    r^k(x^k+\Delta x^k) = r(x^k)+\nabla r(x^k)^T\Delta x^k
+\]
+then, finding the zeros of the approximation, we have
+\[
+    \Delta x^k = -(\nabla r(x^k)^T)^{-1}r(x^k)
+\]
+Thus, the solution is improved as 
+\[
+    x^{k+1} = x^k-(\nabla r(x^k)^T)^{-1}r(x^k)
+\]
+\subsection{Newton's method for unconstrained optimization}
+Consider the unconstrained optimization problem 
+\[
+    \min_{x\in\R^n} \ell(x)
+\]
+stationary points $\bar{x}$ satisfy the first order optimality condition 
+\[
+    \nabla \ell (\bar{x}) = 0
+\]
+We can look at it as a root finding problem, with $r(x)=\nabla\ell(x)$, and solve it via Newton's method. Therefore, we can compute $\Delta x^k$ as the solution of the linearization of $r(x)=\nabla\ell(x)$ at $x^k$, i.e. 
+\[
+    \nabla \ell(x^k) + \nabla^2\ell(x^k)\Delta x^k = 0
+\]
+and run the update 
+\[
+    x^{k+1} = x^k -(\nabla^2\ell(x^k))^{-1}\nabla\ell(x^k)
+\]
+We can introduce a variable step-size 
+\[
+    x^{k+1} = x^k-\gamma^k(\nabla^2\ell(x^k))^{-1}\nabla\ell(x^k)
+\]
+This is called generalized Newton's method
+\subsubsection{Newton's method via Quadratic Optimization}
+Observe that 
+\[
+    \nabla\ell(x^k) +\nabla^2\ell(x^k)\Delta x^k = 0
+\]
+is the first-order necessary and sufficient condition of optimality for the quadratic program 
+\begin{equation}
+    \label{qp}
+    \Delta x^k = \argmin_{\Delta x}\nabla\ell(x^k)^T \Delta x+\displaystyle\frac{1}{2}\Delta x^T\nabla^2\ell(x^k)\Delta x
+\end{equation}
+Thus, the $k$-th iteration of Newton's method can be seen as 
+\[
+    x^{k+1} = x^k+\Delta x^k
+\]
+with $\Delta x^k$ solution of the quadratic problem \ref{qp}. Generalized version: 
+\[
+    x^{k+1} = x^k + \gamma^k \Delta x^k
+\]
+
+\subsection{Gradient methods via quadratic optimization}
+Similarly to Newton's method, a descent direction $\Delta x^k=D^k\nabla\ell(x^k)$ can be seen as the direction that minimizes at each iteration a different quadratic approximation of $\ell$ about $x^k$. In fact, consider the quadratic approximation $\ell^k(x)$ about $x^k$ given by 
+\[
+    \ell^k(x) = \ell(x^k)+\nabla\ell(x^k)^T(x-x^k)+\displaystyle\frac{1}{2}(x-x^k)^T(D^k)^{-1}(x-x^k)
+\]
+By setting the derivative to zero, we have 
+\[
+    \nabla\ell(x^k)+(D^k)^{-1}(x-x^k)=0
+\]
+we can calculate the minimum of $\ell^k(x)$ and set it as the next iterate $x^{k+1}$
+\[
+    \Delta x^k = -D^k\nabla\ell(x^k)
+\]
+\subsection{step-size selection rules}
+\begin{itemize}
+    \item Constant step-size: $\gamma^k=\gamma>0$
+        \item Diminishing step-size: $\gamma^k\to 0$ as $k\to\infty$. It must hold that \[
+                \displaystyle\sum_{k=0}^{\infty}\gamma^k = +\infty \quad \text{and} \quad \displaystyle\sum_{k=0}^{\infty}(\gamma^k)^2 < +\infty
+        \]
+        The above conditions avoid pathological choices of $\gamma^k$
+        \item minimization rule
+        \item Armijo rule
+\end{itemize}
+\subsubsection{Armijo rule}
+Step-size is selected following the procedure: 
+\begin{enumerate}
+    \item set $\bar{\gamma}^0>0,\quad \beta\in(0,1),\quad c\in(0,1)$
+\end{enumerate}
+given $d^k$ descent direction we can consider 
+\[
+    g(\gamma) = \ell(x^k+\gamma d^k), \quad g:\R\to\R
+\]
+% TODO insert image slide 30
+The value of $g(\gamma)$ for $\gamma=0$ is $\ell(x^k)$. The minimization rule chooses as the value for $\gamma$ the value that minimizes $g(\gamma)$. The partial minimization rule would search for a minimum in a restricted set of values for $\gamma$
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
