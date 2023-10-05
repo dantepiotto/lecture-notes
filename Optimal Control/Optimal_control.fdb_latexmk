@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1696326486 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1696326486
+["pdflatex"] 1696498786 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1696498786
   "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -96,9 +96,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1685606232 1435903 5a9769c21b3612151472dacc9da1a381 ""
-  "Optimal_control.aux" 1696326486 7183 08f0cf7b8eab44ceff0006de5ed19686 "pdflatex"
-  "Optimal_control.out" 1696326486 4630 5f22027fc631a26bc026c887756df105 "pdflatex"
-  "Optimal_control.tex" 1696326485 21038 2c8dfa0f980dd77ab9ecd81e5a8620fe ""
+  "Optimal_control.aux" 1696498786 8226 b60c010bae587fa47bd9525250f1608f "pdflatex"
+  "Optimal_control.out" 1696498786 5288 a070d97c6612216fc2439a53e061d578 "pdflatex"
+  "Optimal_control.tex" 1696498784 25730 13440b47360801ad14d5db4642543491 ""
   (generated)
   "Optimal_control.aux"
   "Optimal_control.log"
