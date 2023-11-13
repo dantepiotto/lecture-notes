@@ -62,7 +62,16 @@
 \contentsline {subsection}{\numberline {3.1.2}system trajectories and trajectory manifold}{19}{subsection.3.1.2}%
 \contentsline {section}{\numberline {3.2}Unconstrained optimal control problem (d-t)}{19}{section.3.2}%
 \contentsline {section}{\numberline {3.3}KKT conditions for unconstrained optimal control}{20}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Linear Quadratic (LQ) optimal control}{21}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Dynamic Programming}{23}{chapter.5}%
-\contentsline {chapter}{\numberline {6}Numerical methods for nonlinear optimal control}{25}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Optimization-based predictive control}{27}{chapter.7}%
+\contentsline {subsection}{\numberline {3.3.1}Indirect methods for optimal control}{21}{subsection.3.3.1}%
+\contentsline {section}{\numberline {3.4}KKT conditions for constrained optimal control}{21}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Linear Quadratic (LQ) optimal control}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}First order optimality condition}{23}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Infinite horizion LQ optimal control}{25}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Optimality Conditions for Unconstrained Optimal Control via Shooting}{27}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Reduced optimal control problem}{27}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Algorithms for optimal control problem solution}{28}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}First order necessary condition for optimality}{29}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}explicit computation of }{29}{subsection.5.2.2}%
+\contentsline {chapter}{\numberline {6}Dynamic Programming}{31}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Numerical methods for nonlinear optimal control}{33}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Optimization-based predictive control}{35}{chapter.8}%

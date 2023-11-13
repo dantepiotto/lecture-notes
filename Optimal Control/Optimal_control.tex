@@ -30,6 +30,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 \theoremstyle{remark}
@@ -47,10 +48,13 @@
 \section{Optimal control problem formulation}
 Consider the continuous-time system ($t\in\R$)
 
-\begin{gather}
-    \dot{x}(t) = f(x(t),u(t),t) \\
-    y(t) = h(x(t),u(t),t)
-\end{gather}
+\begin{equation}\label{system}
+    \begin{gathered}\
+        \dot{x}(t) = f(x(t),u(t),t) \\
+        y(t) = h(x(t),u(t),t)
+    \end{gathered}
+\end{equation}
+
 \begin{itemize}
     \item $x(t)\in\R^n$ state of the system at time $t$ 
     \item $u(t)\in\R^m$ input of the system at time $t$ 
@@ -84,16 +88,16 @@ We use $\mathbf{x}\in\R^{nT}$ and $\mathbf{u}\in\R^{mT}$ to denote, respectively
 
 \subsubsection{Trajectory of a system}
 
-Definition: A pair ($\bar{\mathbf{x}},\bar{\mathbf{u}})\in\R^{nT} \times \R^{mT}$ is called a trajectory of system (1) % TODO fix
+Definition: A pair ($\bar{\mathbf{x}},\bar{\mathbf{u}})\in\R^{nT} \times \R^{mT}$ is called a trajectory of system \eqref{system} 
 if $\bar{x}_{t+1}=f_t(\bar{x}_t,\bar{u}_t)$ for all $t\in\{0,\dots,T-1\}$., That is, if $\bar{\mathbf{x}},\bar{\mathbf{u}})$ satisfies the system dynamics (the same holds for continuous time systems with proper adjustments). In particular, $\bar{\mathbf{x}}$ is the state trajectory, while $\bar{\mathbf{u}}$ is the input trajectory.
 
 \subsubsection{Equilibrium}
-Definition: A state-input pair $(x_e,u_e)\in\R^n\times\R^m$ is called an equilibrium pair of (1) % TODO fix
+Definition: A state-input pair $(x_e,u_e)\in\R^n\times\R^m$ is called an equilibrium pair of \eqref{system} 
 if $(x_t,u_t)=(x_e,u_e),t\in\N_0$ is a trajectory of the system. \\
 Equilibria of time-invariant systems satisfy $x_e=f(x_e,u_e)$
 
 \subsubsection{Linearization of a system about a trajectory}
-Given the dynamics (1)% TODO fix 
+Given the dynamics \eqref{system}
 and a trajectory $(\bar{\mathbf{x}},\bar{\mathbf{u}})$, the linearization of (1) about $(\bar{\mathbf{x}},\bar{\mathbf{u}})$ is given by the linear (possibly) time-varying system 
 \[
     \Delta x_{t+1} = A_t\Delta x_t + B_t \Delta u_t \quad t\in\N_0
@@ -443,7 +447,7 @@ Thus, the $k$-th iteration of Newton's method can be seen as
 \[
     x^{k+1} = x^k+\Delta x^k
 \]
-with $\Delta x^k$ solution of the quadratic problem \ref{qp}. Generalized version: 
+with $\Delta x^k$ solution of the quadratic problem \eqref{qp}. Generalized version: 
 \[
     x^{k+1} = x^k + \gamma^k \Delta x^k
 \]
@@ -761,7 +765,7 @@ Start from a tentative solution $x^0$. For $k=0,1,\dots$ (up to convergence)
                 text{subj. to} & h(x^k) + \nabla h(x^k)^T \Delta x = 0
             \end{array}
         \end{equation}
-        with $\Delta^*_{QP}$ the Lagrange multiplier associated to the optimal solution of \ref{sqp}
+        with $\Delta^*_{QP}$ the Lagrange multiplier associated to the optimal solution of \eqref{sqp}
     \item Choose $\gamma^k$ using Armijo's rule on \emph{merit function} $M_1(x^k+\gamma\Delta x^k)$
     \item Update 
         \begin{gather*}
@@ -845,21 +849,105 @@ where $\mathbf{\lambda}\in\R^{nT}$ and
     \mathcal{L}_t(x_t,u_t,\mathbf{\lambda}) = \ell_t(x_t,u_t)+\lambda_1^T f_t(x_t,u_t)-\lambda_tx_t\\
     \mathcal{L}_T(x_T,\mathbf{\lambda}) = \ell_T(x_T) - \lambda_T^Tx_T
 \end{gather*}
+Let $(\mathbf{x}^*,\mathbf{u}^*)$ be a regular point for the dynamics constraints and an optimale (state-input) trajectory. Then there exists $\mathbf{\lambda}^*$ such that $\nabla \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)=0$ 
+
+Let us explicitly write condition $\nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = 0 $ 
+\[
+    \nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = \begin{bmatrix}
+        \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)\\
+        \nabla_2\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)
+    \end{bmatrix} = 0
+\]
+Let us note that 
+\[
+    \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = \at{\begin{bmatrix}
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_1)_1}\\
+            \vdots \\
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_1)_n}\\
+            \vdots \\
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_T)_1}\\
+            \vdots \\
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_T)_n}
+    \end{bmatrix}}{\mathbf{x}=\mathbf{x}^*}
+\]
+Since $\mathcal{L}(\mathbf{x}^,\mathbf{u}^,\mathbf{\lambda}^)= \displaystyle\sum_{t=0}^{T}\mathcal{L}(x_t,u_t,\mathbf{\lambda})$, we can explpot this sparsity and write 
+\[
+    \begin{array}{l l}
+        \nabla_2\mathcal{L}_0(x_0,u_0,\mathbf{\lambda}) = 0 & \nabla_2\ell_0(x_0,u_0)\nabla_2f_0(x_0,u_0)\lambda_0\\
+                                                            & \\
+                                                            \begin{bmatrix}
+                                                                \nabla_1\mathcal{L}_t(x_t,u_t,\mathbf{\lambda})\\
+                                                                \nabla_2\mathcal{L}_t(x_t,u_t,\mathbf{\lambda})
+                                                            \end{bmatrix} = 0 &  
+                                                            \begin{bmatrix}
+                                                                \nabla_1\ell_t(x_t,u_t) + \nabla_1f_t(x_t,u_t)\lambda_{t+1}-\lambda_t \\
+                                                                \nabla_2\ell_t(x_t,u_t) + \nabla_2f_t(x_t,u_t)\lambda_{t+1}
+                                                            \end{bmatrix} = 0 \quad t=1,\dots,T-1 \\
+                                                            & \\
+        \nabla_1\mathcal{L}_t(x_t,\mathbf{\lambda}) = 0 & \nabla\ell_T(x_T)-\lambda_T = 0
+    \end{array}
+\]
+Let us introduce some notation: 
+\begin{gather*} 
+    \nabla_1\ell_t(x_t^*,u_t^*) = a_t\in \R^n\\
+    \nabla_1f_t(x_t^*,u_t^*) = A_t^T\\
+    \nabla_2\ell_t(x_t^*,u_t^*) = b_t\in \R^n\\
+    \nabla_2f_t(x_t^*,u_t^*) = B_t^T
+\end{gather*}
+So we can rewrite the KKT conditions for unconstrained optimal control as:
+\begin{flalign*}
+    &\lambda_t^* = A_t^T\lambda_{t+1}^* + a_t \qquad t= T-1,\dots,1\\
+    &\lambda_T^* = \nabla\ell(x_T^*)\\
+    &B_t^T\lambda_{t+1}^* + b_t = 0 \qquad t=0,\dots,T-1 
+\end{flalign*}
+
+\subsection{Indirect methods for optimal control}
+Solving the optimality conditions: 
+\begin{itemize} % TODO look in recording
+    \item Guess some $u_t^0,\quad t= 0,\dots,T-1 \quad k=0$ 
+    \item run "forward" 
+        \[
+            x_{t+1}^0 = f-t(x_t^0,u_t^0) \quad x_0
+        \]
+    \item run "backward"
+        \[
+            a
+        \]
+    \item given $\lambda_t^0 \quad t=1,\dots,T$ solve:
+        \[
+            \nabla_2\ell(x_t^0,u_t) + \nabla_2f(x_t^0,u_t)\lambda_{t+1}^0 = 0 \quad t=0,\dots,T-1
+        \]
+        to get $u_{t}^1 \quad t=0,\dots,T-1$
+\end{itemize}
 
 
+\section{KKT conditions for constrained optimal control}
+We look for a solution of the discrete-time optimal control problem
+\[
+    \begin{array}{r l}
+        \min_{x_0\in\R^n,\mathbf{x}\in\R^{nT},\mathbf{U}\in\R^{mT}} & \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) \\
+        \text{subj. to} & x_{t+1} = f_t(x_t,u_t), \quad t=0,\dots,T-1\\
+                        & r(x_0,x_T) = 0 \\
+                        & g_t(x_t,u_t)\leq 0 ,\quad t=0,\dots,T-1
+    \end{array}
+\]
+where 
+\begin{itemize}
+    \item $\ell_t:\R^n\times\R^m\to\R$ is the stage cost,
+    \item $\ell_T:\R^n\to\R$ is the terminal cost,
+    \item $r\R^n\times\R^n\to\R^{p_0}$ identifies a boundary constraint on initial and final states,
+    \item $g_t:\R^n\times\R^m\to\R^p$ for each $t$ identifies point-wise constraints on state and input at some time $t$
+\end{itemize}
+The Lagrangian function has the form 
+\begin{gather*}
+    \begin{array}{r c l}
+        \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda},\mathbf{\mu}) &=& \ell(\mathbf{x},\mathbf{u})+\mathbf{\lambda}_d^T h(\mathbf{x},\mathbf{u})+ \lambda_b^T r(x_0,x_T) + \mathbf{\mu}^Tg(\mathbf{x},\mathbf{u}) \\ 
+                                                                         &=&\displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda_{d,t+1}(f_t(x_t,u_t)-x_{t+1})+\lambda_b^Tr(x_0,x_T) + \displaystyle\sum_{t=0}^{T-1}\mu_t^Tg_t(x_t,u_t)\\
+                                                                         &=&\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\mathbf{\lambda},\mathbf{\mu})
+    \end{array}
+\end{gather*}
 
-
-
-
-
-
-
-
-
-
-
-
-
+% TODO finish
 
 
 
@@ -879,6 +967,368 @@ where $\mathbf{\lambda}\in\R^{nT}$ and
 
 
 \chapter{Linear Quadratic (LQ) optimal control}
+
+Consider a linear quadratic optimal control problem as: 
+\[
+    \begin{array}{r l}
+        \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}[x_t^Tq_tx_t+u_t^TR_tu_t] + \displaystyle\frac{1}{2}x_T^tq_Tx_T\\
+        \text{subj. to} & x_{t+1} = A_tx_t + B_tu_t \quad t=0,\dots,T-1\\
+                        &x_0 = x_{\text{init}}
+    \end{array}
+\]
+We assume $Q_t=Q_t^T\geq 0 \forall t=0,\dots,T-1$, $Q_t = Q_t^T \geq 0$, and $R_t=R_t^T > 0 \forall t=0,\dots,T-1$
+
+\section{First order optimality condition}
+\begin{gather*}
+    \nabla_1f_t(x_t,u_t) = A_t^T\\
+    \nabla_1\ell(x_t,u_t) = \nabla_1(\displaystyle\frac{1}{2}x_t^TQ_tx_t+\displaystyle\frac{1}{2}u_t^TR_tu_t)=Q_tx_t\\
+    \nabla_2f_t(x_t,u_t) = B_t^T\\
+    \nabla_2\ell_t(x_t,u_t) = R_tu_t\\
+\end{gather*}
+therefore 
+\begin{gather*}
+    \lambda_t^* = A_t^T\lambda_t+1^* + Q_tx_t^* \quad t= T_1,\dots,0\\
+    \lambda_T^* = Q_Tx_T^* \\
+    B_t^T\lambda_{t+1}^* + R_tu_t^* = 0 \quad t=0,\dots,T-1
+\end{gather*}
+Remark: second order optimality conditions 
+\[
+    y^T\nabla^2_{(1,2)(1,2)}\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*,)y \geq 0
+\]
+For vectors $y$ satisfying the "linear approximation of the constraint". The hessian turns out as 
+\[
+    \begin{bmatrix}
+        Q_1 & & &  0\\
+            & \ddots & & & \\ 
+        0 & & & Q_n
+    \end{bmatrix}
+\]
+% TODO end of remark do some formatting
+Because $R_t>0$ it is invertible. Therefore, we can write 
+\[
+    u_t^* = -R_t^{-1}B_t^T\lambda_{t+1}^*
+\]
+Introducing a matrix $P_t=P_t^T \geq 0$, it can be proven that 
+\[
+    \lambda_t^* = P_tx_t^*
+\]
+Assuming that it holds for some $t\leq T-1$, then we have 
+\[
+    u_t^* = -R_t^{-1}B_t^TP_{t+1}x_{t+1}^*
+\]
+Now, considering the constraint represented by the dynamics 
+\[
+    u_t^* = -R_t^{-1}N_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)
+\]
+Solving by $u^*_t$ yields 
+\[
+    u_t^* = -(R_t+B_t^Tp_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx^*_t \quad t=0,\dots,T-1
+\]
+% TODO slide 17 and hamiltonian system
+we now get 
+\begin{gather*}
+    u_t^* = -R_t^{-1}B_t^Tp_{t+1}x_{t+1}^* \\
+    = -R_t^{-1}B_t^Tp_{t+1}(A_tx_t^*+B_tu_t^*)
+\end{gather*}
+we multiply both sides by $R_t$: 
+\begin{gather*}
+    R_tu_t^* = -B_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)\\
+    R_tu_t^* = -B_t^TP_{t+1}A_tx_t^*-B_t^TP_{t+1}B_tu_t^*)\\
+    (R_t+B_t^TP_{t+1}B_t)u_t^* = -B_t^TP_{t+1}A_tx_t^*
+\end{gather*}
+The matrix on the left is clearly positive definite, therefore: 
+\[
+    u_t^* = -(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx_t^*
+\]
+which we can write as 
+\[
+    u_t^* = K_t^*x_t^*
+\]
+that is, the optimal control is a state feedback with gain $-(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}$
+\[
+    x_{t+1} = A_tx_t^*-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx_t^*
+\]
+which we can rewrite as 
+\[
+    x_{t+1}^* = (A_t-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t)x_t^*
+\]
+which is a closed loop system. We multiply both sides by $P_{t+1}$ and obtain 
+\[
+    P_{t+1}x_{t+1}^* = P_{t+1}(\cdots)x_t^*
+\]
+On the left side of the equation we have obtained $\lambda_{t+1}^*$
+\[
+    \lambda_{t+1}^* =P_{t+1}(\cdots)x_t^*
+\]
+Remembering that $\lambda_t^* = A_t^T+\lambda_{t+1}^*+Q_tx_t^*$ we multiply both sides by $A_t^T$ and then add $Q_tx^*_t$ and obtain 
+\[
+    A_t^T\lambda_{t+1}^*+Q_tx_t^*=A_t^TP_{t+1}(\cdots)x_t^* + Q_tx_t^*
+\]
+and because 
+\[
+    \lambda_t^* = P_tx_t^*
+\]
+then 
+\[
+    P_tx_t^* = [A_t^TP_{t+1}(\cdots)+Q_t]x_t^*
+\]
+so 
+\[
+    P_tx_t^* = \left[A_t^TP_{t+1}A_t-a_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t\right]x_t^*
+\]
+from which 
+\begin{equation}\label{Riccati}
+    P_T = \left[A_t^TP_{t+1}A_t-a_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t\right]
+\end{equation}
+because $\lambda_T^*=Q_Tx_T^*$ we have that 
+\[
+    P_T = Q_T
+\]
+Therefore, by propagating equation \eqref{Riccati} back in time, $P_t$ can be calculated. equation \eqref{Riccati} is called difference Riccati equation
+\begin{itemize}
+    \item gains $K_t^*$ can be precomputed offline and the unsed for different $x_0$ 
+    \item It can be shown that if $T\to\infty$ the gains $K_t^*$ converge and asymptotically stabilize the system
+\end{itemize}
+% TODO slide 7
+\section{Infinite horizion LQ optimal control}
+Consider the infinite-horizon optimal control problem
+\[
+    \begin{array}{r l}
+        \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{\infty}\displaystyle\frac{1}{2}[x_t^TQx_t+u_t^TRu_t] \\
+        \text{subj. to} & x_{t+1} = Ax_t + Bu_t \quad t=0,\dots,T-1\\
+                        &x_0 = x_{\text{init}}
+    \end{array}
+\]
+where 
+\begin{itemize}
+    \item $x\in\R^n$ and $u\in\R^m$
+    \item $A\in\R^{n\times n}$
+    \item $B\in\R^{n\times m}$
+    \item $Q\in\R^{n\times n}$ and $Q=Q^T\geq 0$
+    \item $R\in\R^{m\times m}$ and $R=R^T> 0$
+\end{itemize}
+We assume the pair $(A,B)$ is controllable and the pair $(A,C)$ with $Q=C^TC$ is observable
+Let us write 
+\[
+    y_t=Cx_t
+\]
+which leads to 
+\[
+    \displaystyle\frac{1}{2}x_t^TQx_t = \displaystyle\frac{1}{2}x_t^TC^TCx_t = \displaystyle\frac{1}{2}y_t^Ty_t
+\]
+The controllability assumption guardantees that an optimal controller exists: if $(A,B)$ controllable, then $\exists \bar{u}_0,\dots,\bar{u}_{T-1}$ for $T$ sufficiently large ($T=n$) such that $\forall x_0\in \R^n\implies x_T=0$. Consider the input
+\[
+    \bar{u}_0,\dots,\bar{u}_{T-1},0,\dots,0,\dots
+\]
+Let us compute the cost associated to this input 
+\[
+    \displaystyle\sum_{t=0}^{\infty}\displaystyle\frac{1}{2}[x_t^TQx_t+u_t^TRu_t] =\displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}\bar{x}_t^TQ\bar{x}_t + \displaystyle\frac{1}{2}\bar{u}_t^TR\bar{u}_t
+\]
+We can note that the cost is a finite quantity. Because the cost is finite, There must exist a solution which minimizes the cost.
+\proposition
+
+Let the pair $(A,B)$ be controllable and the pair $(A,C)$ with $Q=C^TC$ be observable. Then the following holds:
+\begin{itemize}
+    \item there exists a unique positive definite $P_\infty$ equilibrium solution of the Difference Riccati Equation. That is, $P_\infty$ is a solution of \[
+            P_\infty = Q+A^TP_\infty A-A^TP\infty B(R+B^TP_\infty B)^{-1}B^TP_\infty A
+        \]
+        which is called Algebraic Riccati Equation 
+        \item the optimal control is a feedback of the state given by:
+            \begin{flalign*}
+                & K^* = -(R+B^TP_\infty B)^{-1}(B^TP_\infty A)\\
+                & u_t^* = K^*x^*_t\\
+                & x_{t+1}^* = Ax_t^*+Bu_t^* \quad t=1,2,\dots \quad x_0^* = X_{\text{init}}
+            \end{flalign*}
+\end{itemize}
+\remark The observability of $(A,C)$ guardantees that if the stage cost goes to zero, then the state trajectory goes to zero.
+
+
+
+
+
+
+
+\chapter{Optimality Conditions for Unconstrained Optimal Control via Shooting}
+
+Let us consider the system dynamics 
+\[
+    x_{t+1} = f_t(x_t,u_t) \quad t=0,\dots,T-1 \quad x_0 \text{ given}
+\]
+and let us suppose we have an input sequence $u_0,\dots,u_{T-1}$. We have: 
+\begin{flalign*}
+    & x_1 =f_0(x_0,u_0) = \tilde{\Phi}_1(\mathbf{u}) \\
+    &  x_2 = f_1(x_1,u_1) = f_1(f_0(x_0,u_0),u_1) = \tilde{\Phi}_2(\mathbf{u}) \\
+    & \vdots \\
+    & x_t = \tilde{\Phi}_t(\mathbf{u}) \qquad t=0,\dots,T-1
+    & \vdots \\
+    & x_T = \tilde{\Phi}_{T}(\mathbf{u}) \qquad t=0,\dots,T-1
+\end{flalign*}
+Idea: express the state $x_t$ at each $t=1,\dots,T$ as a function of the input sequence $\mathbf{u}$ unly. For all $t$ we can introduce a map $\Phi_t:\R^m \to \R^n$ such that 
+\[
+    x_t := \Phi_t(\mathbf{u})
+\]
+compact notation
+\[
+    \Phi(\mathbf{u}) = \col(\Phi_1(\mathbf{u}),\dots,\Phi_T(\mathbf{u}))
+\]
+so that 
+\[
+    \mathbf{x} = \Phi(\mathbf{u})
+\]
+Note: Given any arbitrary $\bar{u}_0,\dots,\bar{u}_{T-1}$, we have that $\Phi_{t+1}(\bar{\mathbf{u}}) = f_t(\Phi_t(\bar{\mathbf{u}}),u_t)$ by construction. This is equivalent to the equality constraint for the optimal control problem.
+
+\section{Reduced optimal control problem}
+We can rewrite the optimal control problem as 
+\[
+    \min_{\mathbf{u}\in\R^{mT}} \displaystyle\sum_{t=0}^{T-1}\ell_t(\Phi_t(\mathbf{u}),u_t)+\ell_T(\Phi_T(\mathbf{u}))
+\]
+as noted before, the equality constraint is satisfied by construction, making this an unconstrained optimization problem. We can rewrite it compactly as 
+\[
+    \min_{\mathbf{u}\in\R^{mT}}\ell(\Phi(\mathbf{u}),\mathbf{u})
+\]
+and by defining $J(\mathbf{u}):=\ell(\Phi(\mathbf{u}),\mathbf{u})$
+\[
+    \min_{\mathbf{u}\in\R^{mT}} J(\mathbf{u}):
+\]
+This goes by the name of \emph{reduced} or \emph{condensed optimal control problem}. The procedure of writing $\mathbf{x}$ as a function of $\mathbf{u}$ and then plugging it into the optimal control problem is called shooting.
+\begin{remark}
+    if we consider path input constraints 
+    \[
+        g_0(u_0)\leq 0 \\
+        \vdots \\
+        g_{T-1}(u_{T-1})\leq 0 \\
+    \]
+    the problem becomes 
+    \[
+        \min_{\mathbf{u}\in\R^{mT}} J(\mathbf{u}) \\
+        text{subj to}
+    \]
+\end{remark}
+\begin{remark}
+     if we have constraints of the type 
+     \[
+        g_0(x_0,u_0)\leq 0\\
+        \vdots \\
+        g_{T-1}(x_{T-1},u_{T-1})\leq 0\\
+     \]
+     They can be rewritten as functions of $x_0$ and $\mathbf{u}$ only, however $\Phi(\cdot)$ must be explicitly known
+\end{remark}
+
+\section{Algorithms for optimal control problem solution}
+We can apply the gradient method, i.e. 
+\[
+    \mathbf{u}^{k+1}=\mathbf{u}^k-\gamma\nabla J(\mathbf{u}^k)
+\]
+We can formally write the expression of $\nabla J(\mathbf{u})=\nabla \ell(\Phi(\mathbf{u}),\mathbf{u})$ by using the chain rule of differentiation. 
+% TODO slide 14 (16/31)
+\[
+    \nabla\Phi(\mathbf{u}) = \nabla \begin{bmatrix}
+        \Phi_{1,1}(\mathbf{u})\\
+        \Phi_{1,2}(\mathbf{u})\\
+        \vdots \\
+        \Phi_{t,1}(\mathbf{u})\\
+        \Phi_{t,2}(\mathbf{u})\\
+        \vdots
+    \end{bmatrix}
+\]
+\[
+    \nabla\Phi(\mathbf{u}) = \begin{bmatrix}
+        \displaystyle\frac{\partial \Phi_{1,1}}{\partial u_0} & \displaystyle\frac{\partial \Phi_{1,2}}{\partial u_0} & \cdots & \displaystyle\frac{\partial \Phi_{T,n}}{\partial u_0}\\
+        \vdots & \vdots & \ddots & \vdots \\
+        \displaystyle\frac{\partial \Phi_{1,1}}{\partial u_{T-1}} & \displaystyle\frac{\partial \Phi_{1,2}}{\partial u_{T-1}} &\cdots & \displaystyle\frac{\partial \Phi_{T,n}}{\partial u_{T-1}}
+    \end{bmatrix}
+\]
+where $\Phi_{t,j}:\R^{mT}\to \R$, therefore the above matrix is a matrix of scalars.
+Let us introduce an auxiliary function $\mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda}):\R^{nT}\times \R^{mT} \times\R^{nT}\to \R$ given by 
+\[
+    \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})=\ell(\mathbf{x},\mathbf{u})+h(\mathbf{x},\mathbf{u})^T\mathbf{\lambda}
+\]
+where $\mathbf{\lambda}\in\R^{nT}$ is a "costate vector" and 
+\[
+    h(\mathbf{x},\mathbf{u}) = \begin{bmatrix}
+         f_0(x_0,u_0)-x1\\
+         \vdots \\
+         f_{T-1}(x_{T-1}u_{T-1})-x_T
+    \end{bmatrix}
+\]
+To compute $\nabla J(\mathbf{u})$ let us evaluate $\mathcal{l}(\cdot)$ for $\mathbf{x} = \Phi(\mathbf{u})$. Since $h(\Phi(\mathbf{u},)\mathbf{u})=0$ it holds that 
+\[
+    \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\mathbf{\lambda}) = J(\mathbf{u}) \quad \forall \lambda\in\R^{nT}
+\]
+Therefore 
+\[
+    \nabla \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\mathbf{\lambda}) = \nabla J(\mathbf{u}) \quad \forall \mathbf{\lambda}
+\]
+hence we can write 
+\[
+    \nabla J (\mathbf{u}) = \nabla\Phi(\mathbf{u})(\nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda})+\nabla_2\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}
+\]
+which hodls for every $\mathbf{\lambda}$. Therefore, for a given $\mathbf{u}$, we can cleverly select $\mathbf{\lambda}=\mathbf{\lambda}(\mathbf{u})$ such that: 
+\[
+    \nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}(\mathbf{u})
+\]
+which leads to 
+\[
+    \nabla J(\mathbf{u}) = \nabla_2\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}(\mathbf{u})
+\]
+
+
+
+
+
+\subsection{First order necessary condition for optimality}
+Let $\mathbf{u}^*$ be a local minimum with $\mathbf{x}^* = \Phi(\mathbf{u}^*)$ 
+Then
+\[
+    \nabla J(\mathbf{u^*}) = 0
+\]
+that is, if there exists a $\mathbf{\lambda}^*$ such that 
+\[
+    \nabla_1\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\mathbf{\lambda}^*)=0
+\]
+it holds 
+\[
+    \nabla_2\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\mathbf{\lambda}^*)=0
+\]
+
+\subsection{explicit computation of } % TODO fix title and bolds
+\[
+    \mathcal{L}(x,u,\lambda) = \displaystyle\sum_{t=0}^{T-1}[\ell_t(x_t,u_t)+\lambda_{t+1}^T f_t(x_t,u_t)-\lambda_{t+1}x_{t+1}]+\ell_T(x_T) = \displaystyle\sum_{t=0}^{T-1}(x_t,u_t)
+\]
+\begin{gather*}
+    \nabla_1\ell_1(x_1,u_1)+\nabla_1 f_1(x_1,u_1)\lambda_2- \lambda_1 = 0\\
+    \mathcal{L}(x,u,\lambda))\ell_0(x_0,u_0)+ \lambda_1^Tf_0(x_0,u_0)-\lambda_1x_1+ \ell_1(x_1,u_1)+\lambda_2^Tf_1(x_1,u_1)-\lambda_2x_2+\dots
+\end{gather*}
+% TODO finish slide 19-20 (21/31)
+
+Notice we can write 
+\begin{flalign*}
+    & A_t^T = \nabla_1f(x_t,u_t)\\
+    & B_t^T = \nabla_2f(x_t,u_t) % TODO order
+\end{flalign*}  
+so that we obtain 
+\[
+    \lambda_t = A_t^T\lambda_t+1 + a_t
+\]
+so given $u_0,\dots,u_{T-1}$ and $x_1,\dots,x_T$ such that $x_{t+1}=f(x_t,u_t)$ we can compute $\lambda_T,\dots,\lambda_1$ running backwards. We can also state that
+\[
+    (\nabla J(u))_t = \nabla_2\ell_t(x_t,u_t)+\nabla_2f_t(x_t,u_t)\lambda_{t+1} \\
+\]
+which we can rewrite as 
+\[
+    (\nabla J(u))_t = B_t^T\lambda_{t+1}+b_t
+\]
+
+
+
+
+
+
+
+
+
+
+
 
 
 \chapter{Dynamic Programming}
