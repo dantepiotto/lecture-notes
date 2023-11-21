@@ -203,7 +203,7 @@ Note that $\mathcal{F}$ is a space of functions (function space). This is an inf
         \[
             \ell(x(\cdot),u(\cdot)) = \displaystyle\int_{0}^{T}\ell_\tau(x(\tau),u(\tau))d\tau+\ell_T(x(T))
         \]
-    \item Space of trajectories ( or trajectory manifold)
+    \item Space of trajectories (or trajectory manifold)
         \[
             \mathcal{T} = \{(x(\cdot),u(\cdot))\in\mathcal{F}|\dot{x}(t)=f_t(x(t),u(t)), t\geq 0\}
         \]
@@ -1297,7 +1297,7 @@ it holds
 \]
 \begin{gather*}
     \nabla_1\ell_1(x_1,u_1)+\nabla_1 f_1(x_1,u_1)\lambda_2- \lambda_1 = 0\\
-    \mathcal{L}(x,u,\lambda))\ell_0(x_0,u_0)+ \lambda_1^Tf_0(x_0,u_0)-\lambda_1x_1+ \ell_1(x_1,u_1)+\lambda_2^Tf_1(x_1,u_1)-\lambda_2x_2+\dots
+    \mathcal{L}(x,u,\lambda)\ell_0(x_0,u_0)+ \lambda_1^Tf_0(x_0,u_0)-\lambda_1x_1+ \ell_1(x_1,u_1)+\lambda_2^Tf_1(x_1,u_1)-\lambda_2x_2+\dots
 \end{gather*}
 % TODO finish slide 19-20 (21/31)
 
@@ -1323,12 +1323,71 @@ which we can rewrite as
 
 
 
+\chapter{Optimal Control based trajectory generation and tracking}
+Task request: We want to control a (discrete-time) nonlinear system 
+\[
+    x_{t+1}=f_t(x_t,u_t)
+\]
+along a (possibly aggressive) evolution to perform a task while satisfying some performance criteria.
+\\Possible performance criteria:
+\begin{itemize}
+    \item reduce energy consumption
+    \item avoid excessive accelerations (due to e.g., a fragile payload)
+\end{itemize}
+\section{main strategy idea over a finite horizon} 
+First, a trajectory generation task is reformulated into an optimal control problem such as 
+\[
+    \min \\sum_{t=0}^{T-1} \displaystyle\frac{1}{2} \| x_t-x_t^{des}\|_{Q_t}^2+ \displaystyle\frac{1}{2}\|u_t-u_t^{des}\|^2_{R_t}+\displaystyle\frac{1}{2}\|x_T-x_T^{des}\|^2_{P_f} \\
+    \text{s.t.} x_{t+1} = f(x_t,u_t) \quad t=0,\dots,T-1\\
+    x_0 = x_{\text{init}}
+\]
+Where $Q_t,R_t,P_f$ are suitably chosen cost matrices and $(\mathbf{x}^{des},\mathbf{u}^{des})
+
+$ is a "reference curve" describing a desired evolution. 
+
+Note: $(\mathbf{x}^{des},\mathbf{u}^{des})$ is NOT a trajectory. It is based, e.g., on geometric considerations
+
+Idea: by using an optimal control algorithm, compute an open loop (optimal) state-input trajectory $(\mathbf{x}^{opt},\mathbf{u}^{opt})$, i.e., such that $x_{t+1}^{opt}=f(x_t^{opt},u_t^{opt}),  t=0,\dots,T-1$. Then, a feedback controller can be used to track the system trajectory $(\mathbf{x}^{opt},\mathbf{u}^{opt})$
 
 
+\section{LQR based trajectory tracking}
+Idea: track the generated (optimal) trajectory via a (stabilizing) feedback Linear Quadratic Regulator (LQR) on the linearization.
 
+Step 1 - linearize the system\\
+Linearize the dynamics about the (feasible) trajectory $(\mathbf{x}^{opt},\mathbf{u}^{opt})$, get the linear (time-varying) system 
+\[
+    \Delta x_{t+1}=A_t^{opt}\Delta x_t+B_t^{opt}\Delta u_t
+\]
+where $A_t^{opt}\in \R^{n\times n}$ and $B_t^{opt}\in\R^{n\times m}$ are defined as: 
+\begin{gather}
+    A_t^{opt}:=\nabla_1f_t{(x_t^{opt},u_t^{opt})}^T \\
+    B_t^{opt}:=\nabla_2f_t{(x_t^{opt},u_t^{opt})}^T
+\end{gather}
+for all $(x_t^{opt},u_t^{opt})$ with $t=0,\dots,T$, state-input paris at time $t$ of trajectory $(\mathbf{x}^{opt},\mathbf{u}^{opt})$ with length $T$.
 
+Step 2 - calculate the LQ optimal controller
+% TODO insert slide 4
+Solve the optimal contro problem % TODO insert
 
+for some cost matrices $Q_t^{reg}\geq 0 \in \R^{n\times R},Q_t^{reg}\geq 0 \in \R^{n\times m}$ and $Q_T^{reg}\geq 0 \in \R^{n\times n}$ (DoF). 
+Set $P_T=Q_T^{reg}$ and backward iterate $t=T-1,\dots,0$: 
+\[
+    P_t=Q_t^{reg}+A_t^{opt}^T P_{t+1}A_t^{opt}-(A_t^{opt}^T P_{t+1}B_t^{opt}) % TODO finish expression
+\]
+and define for all $t=0,\dots,T-1$, the feedback gain $K_t^{reg}\in\R^{m\times n}$
+% TODO insert expression
 
+Step 3 - track the generated (optimal) trajectory\\
+Apply the feedback controller designed on the linearization to the nonlinear system to track   $(\mathbf{x}^{opt},\mathbf{u}^{opt})$. Namely, for all $t=0,\dots,T-1$, we apply 
+\begin{gather}
+    u_t = u_t^{opt}+K_t^{reg}(x_t-x_t^{opt})\\ 
+    x_{t+1} = f_t(x_t,u_t)
+\end{gather}
+with x_0 given
+
+Remark: Under suitable assumptions, it can be shown that an infinite horizon trajectory of a nonlinear system, $(x_t,u_t)$ with $t=0,\dots$ is (locally) exponentially stable if and only if the system linearization about the trajectory is exponentially stable. (this can be viewed as a time-varying version of the Lyapunov indirect theorem)
+
+% TODO slide 6
 
 
 \chapter{Dynamic Programming}

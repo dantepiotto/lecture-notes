@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.1)  26 OCT 2023 11:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.11.16)  16 NOV 2023 11:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -124,22 +124,18 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 Package: babel 2022/01/26 3.70 The Babel package
 \babel@savecnt=\count273
 \U@D=\dimen150
-\l@unhyphenated=\language7
+\l@unhyphenated=\language87
  (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count274
  (/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
 Language: english 2017/06/06 v3.3r English support from the babel system
-Package babel Info: Hyphen rules for 'british' set to \l@english
-(babel)             (\language0). Reported on input line 82.
-Package babel Info: Hyphen rules for 'UKenglish' set to \l@english
-(babel)             (\language0). Reported on input line 83.
 Package babel Info: Hyphen rules for 'canadian' set to \l@english
 (babel)             (\language0). Reported on input line 102.
-Package babel Info: Hyphen rules for 'australian' set to \l@english
-(babel)             (\language0). Reported on input line 105.
-Package babel Info: Hyphen rules for 'newzealand' set to \l@english
-(babel)             (\language0). Reported on input line 108.
+Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
+(babel)             (\language74). Reported on input line 105.
+Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
+(babel)             (\language74). Reported on input line 108.
 )) (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
  (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
@@ -421,31 +417,140 @@ Overfull \hbox (25.30096pt too wide) has occurred while \output is active
 
 ]
 Chapter 6.
-[31] [32
+./Optimal_control.tex:1345: Missing $ inserted.
+<inserted text> 
+                $
+l.1345 
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-]
+./Optimal_control.tex:1345: Missing } inserted.
+<inserted text> 
+                }
+l.1345 
+       
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+./Optimal_control.tex:1345: Too many }'s.
+\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
+                                                  \fi 
+l.1345 
+       
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+./Optimal_control.tex:1347: Missing $ inserted.
+<inserted text> 
+                $
+l.1347 
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./Optimal_control.tex:1347: Missing } inserted.
+<inserted text> 
+                }
+l.1347 
+       
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+./Optimal_control.tex:1347: Too many }'s.
+\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
+                                                  \fi 
+l.1347 
+       
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+
+Overfull \hbox (8.4987pt too wide) in paragraph at lines 1350--1351
+[]\OT1/cmr/m/n/10 Idea: by us-ing an op-ti-mal con-trol al-go-rithm, com-pute an open loop (op-ti-mal) state-input tra-jec-tory $(\OT1/cmr/bx/n/10 x[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 u[]\OT1/cmr/m/n/10 )$,
+ []
+
+./Optimal_control.tex:1375: Double superscript.
+l.1375     P_t=Q_t^{reg}+A_t^{opt}^
+                                   T P_{t+1}A_t^{opt}-(A_t^{opt}^T P_{t+1}B_...
+I treat `x^1^2' essentially like `x^1{}^2'.
+
+./Optimal_control.tex:1375: Double superscript.
+l.1375 ...A_t^{opt}^T P_{t+1}A_t^{opt}-(A_t^{opt}^
+                                                  T P_{t+1}B_t^{opt}) % TODO...
+I treat `x^1^2' essentially like `x^1{}^2'.
+
+[31]
+./Optimal_control.tex:1386: Missing $ inserted.
+<inserted text> 
+                $
+l.1386 with x_
+              0 given
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./Optimal_control.tex:1387: Missing $ inserted.
+<inserted text> 
+                $
+l.1387 
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./Optimal_control.tex:1387: Missing } inserted.
+<inserted text> 
+                }
+l.1387 
+       
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+./Optimal_control.tex:1387: Too many }'s.
+\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
+                                                  \fi 
+l.1387 
+       
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+[32]
 Chapter 7.
-[33] [34
+[33
+
+] [34
 
 ]
 Chapter 8.
-[35] (./Optimal_control.aux)
+[35] [36
+
+]
+Chapter 9.
+[37] (./Optimal_control.aux)
 Package rerunfilecheck Info: File `Optimal_control.out' has not changed.
-(rerunfilecheck)             Checksum: 99D898E383C984C1D93DC0D6259AD87D;11127.
+(rerunfilecheck)             Checksum: 4E2E6770534205795887C19E440EF460;11951.
  ) 
 Here is how much of TeX's memory you used:
- 10710 strings out of 480171
- 167814 string characters out of 5894490
- 491444 words of memory out of 5000000
- 28383 multiletter control sequences out of 15000+600000
+ 10720 strings out of 478287
+ 167932 string characters out of 5849288
+ 496248 words of memory out of 5000000
+ 28628 multiletter control sequences out of 15000+600000
  479062 words of font info for 64 fonts, out of 8000000 for 9000
- 59 hyphenation exceptions out of 8191
+ 1141 hyphenation exceptions out of 8191
  60i,15n,63p,569b,449s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on Optimal_control.pdf (35 pages, 317190 bytes).
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on Optimal_control.pdf (37 pages, 330400 bytes).
 PDF statistics:
- 585 PDF objects out of 1000 (max. 8388607)
- 501 compressed objects within 6 object streams
- 139 named destinations out of 1000 (max. 500000)
- 361 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 618 PDF objects out of 1000 (max. 8388607)
+ 531 compressed objects within 6 object streams
+ 148 named destinations out of 1000 (max. 500000)
+ 385 words of extra memory for PDF output out of 10000 (max. 10000000)
 

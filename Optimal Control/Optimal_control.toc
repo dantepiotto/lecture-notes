@@ -72,6 +72,9 @@
 \contentsline {section}{\numberline {5.2}Algorithms for optimal control problem solution}{28}{section.5.2}%
 \contentsline {subsection}{\numberline {5.2.1}First order necessary condition for optimality}{29}{subsection.5.2.1}%
 \contentsline {subsection}{\numberline {5.2.2}explicit computation of }{29}{subsection.5.2.2}%
-\contentsline {chapter}{\numberline {6}Dynamic Programming}{31}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Numerical methods for nonlinear optimal control}{33}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Optimization-based predictive control}{35}{chapter.8}%
+\contentsline {chapter}{\numberline {6}Optimal Control based trajectory generation and tracking}{31}{chapter.6}%
+\contentsline {section}{\numberline {6.1}main strategy idea over a finite horizon}{31}{section.6.1}%
+\contentsline {section}{\numberline {6.2}LQR based trajectory tracking}{31}{section.6.2}%
+\contentsline {chapter}{\numberline {7}Dynamic Programming}{33}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Numerical methods for nonlinear optimal control}{35}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Optimization-based predictive control}{37}{chapter.9}%

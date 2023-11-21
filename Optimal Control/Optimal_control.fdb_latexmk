@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1698313605 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1698313606
-  "/etc/texmf/web2c/texmf.cnf" 1675014940 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/dante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1676890541 11524 85d9cb8708039d28f20223b00079a0f2 ""
+["pdflatex"] 1700130786 "Optimal_control.tex" "Optimal_control.pdf" "Optimal_control" 1700130786
+  "/etc/texmf/web2c/texmf.cnf" 1700090858 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -105,13 +105,15 @@
   "/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1575674187 9715 b051d5b493d9fe5f4bc251462d039e5f ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1636152094 2900 1537cc8184ad1792082cd229ecc269f4 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb" 1636152094 138258 6525c253f16cededa14c7fd0da7f67b2 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1675936945 162899 515de6df2324cca4eba6407bef60e07c ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1685606232 1435903 5a9769c21b3612151472dacc9da1a381 ""
-  "Optimal_control.aux" 1698313606 11819 f7e0a2d882cefa56a75556dece8c764d "pdflatex"
-  "Optimal_control.out" 1698313606 11127 99d898e383c984c1d93dc0d6259ad87d "pdflatex"
-  "Optimal_control.tex" 1698313605 57123 0d6e9c820fe334f06ca430c8b6d24bf1 ""
-  "Optimal_control.toc" 1698313606 7022 397eccd4e14de6c2b7adf3db21d42a61 "pdflatex"
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1700090884 4379155 98693266ff65f58d9f98aff394de12d2 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1700090912 2801958 e5dc28d97487ea56f861c02daf1b12d9 ""
+  "Optimal_control.aux" 1700130689 12322 ae92ed0816942fedf2c57c287814bee7 "pdflatex"
+  "Optimal_control.out" 1700130689 11951 4e2e6770534205795887c19e440ef460 "pdflatex"
+  "Optimal_control.tex" 1700130786 60578 cf88ea36ba6c306e53a7e8670988e3cb ""
+  "Optimal_control.toc" 1700130689 7326 d2492cbc3565021f01d3c1f9006266af "pdflatex"
   (generated)
   "Optimal_control.aux"
   "Optimal_control.log"
