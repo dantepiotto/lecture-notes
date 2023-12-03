@@ -1562,6 +1562,20 @@ If we suppose $V^*$ to be a positive semi-difinite quadratic function, we can wr
 where $P=P^T\geq 0$
 % TODO slide 15-16
 
+It can be shown that $K^*$ is exponentially stabilizing under the assumption of $(A,B)$ controllable and $(A,C)$ observable
+
+\subsubsection{Time invariant cost and dynamics} % (fold)
+
+\[
+    V^*(\bar{x})= \min \displaystyle\sum_{\tau=t}^{\infty}\ell(\bar{x},u)
+\]
+does not depend explicitly on time
+
+
+
+
+
+% subsubsection Time invariant cost and dynamics (end)
 
 
 
@@ -1580,14 +1594,137 @@ where $P=P^T\geq 0$
 
 
 
-\chapter{Optimization-based predictive control}
+\chapter{Model Predictive Control}
+\section{Introductionn}
+\subsubsection{Motivations}
+We want to control a system 
+\[
+    x_{t+1} = f_t(x_t,u_t)
+\]
+via a \emph{stabilizing} controller, which
+\begin{itemize}
+    \item minimizes a certain cost function \[
+            \displaystyle\sum_{t=0}^{\infty}\ell_t(x_t,u_t)
+        \]
+    \item enforces some constraints for all $t$ 
+        \[
+            x_t \in \mathcal{X}, u_t \in \mathcal{U}
+        \]
+    \item works \emph{online}
+\end{itemize}
+Idea: at each sampling time $t$ solve an optimal control problem and apply the first optimal input.
+\subsubsection{Idea} % (fold)
+For each $t$
+\begin{enumerate}
+    \item Measure the current state $x_t$ 
+    \item Compute the optimal trajectory $x^*_{t|t},\dots,x^*_{t+T|t},u^*_{t|t},\dots,u^*_{t+T-1|t}$\footnote{$x^*_{\tau|t}$ signifies the optimal state trajectory at instant $\tau$ for the optimal control problem starting at instant $t$, similarly for $u^*_{\tau|t}$}
+    \item Apply the first control input $u^*_{t|t}$
+    \item Measure $x_{t+1}$ and repeat
+\end{enumerate}
+\subsubsection{prediction horizon vs time horizon}
+Two time-scales: 
+\begin{itemize}
+    \item time $t=0,\dots,\infty$ time instants in the real world 
+    \item prediction iteration $\tau=t,\dots,t+T$, samples evaulated by the mpc algorithm at each time instant $t$
+\end{itemize}
+\subsubsection{optimal control problem to be solved at each t}
+At each time instant $t$, solve 
+\begin{gather*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
+    \begin{array}{l l }
+        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau), \quad t\in\{0,\dots,T-1\}\\
+                         & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U}  \\
+                         & x_t = x_t^{\text{meas}}\text{\footnotemark}
+    \end{array}
+\end{gather*}
+\footnotetext{$x_t^{\text{meas}}$ is the measured state at time isntant $t$}
 
+\section{MPC with Zero Terminal Constraint} 
+At each time instant $t$, solve
+\begin{gather*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
+    \begin{array}{l l }
+        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau), \quad t\in\{0,\dots,T-1\}\\
+                          & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U}  \\
+                          & x_t = x_t^{\text{meas}} \\
+                          & x_{t+T}=0
+    \end{array}
+\end{gather*}
+where 
+\begin{itemize}
+    \item $x_{\tau}$ and $u_\tau$ state and input predictions at future time $\tau$ computed at current time $t$ 
+    \item $x_t^{\text{meas}}$ state (of the real system) measured at $t$ 
+    \item $x=0$ equilibrium point for the system we want to stabilize 
+    \item $\mathcal{X}$ and $\mathcal{U}$ state and input constraint sets, which satisfy $(0,0)\in \text{int}\{\mathcal{X}\times \mathcal{U}\}$.
+    \item $\ell_\tau:\R^n\times \R^m \times \mathbb{Z}^+\to \R$ is a positive definite continous stage cost $\forall\tau\in\mathbb{Z}^+$.
+\end{itemize}
+Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can always perform a global change of coordinates $\varpsi:(x,u)\to(\bar{x},\bar{u})$ such that $(x^{eq},u^{eq})\to(0,0)$ which brings us back to the previous case 
+\begin{theorem}[]
+    Consider the discrete-time system
+    \[
+        x_{t+1}=f(x_t,u_t)
+    \]
+    with $f:\R^n\times\R^m\to\R^n$ Lipschitz continuous wrt $x$. If the stage cost is continuous and positive definite for all $\tau$, then the Zero Terminal Constraint MPC scheme is recursively feasible and the origin is asymptotically stable for the resulting closed-loop system.
+    Assumptions: the optimal control problem at $t=0$ is feasible and some regularity on the constraint funcitinos ($g_t(x_t,u_t)\leq0$)
+\end{theorem}
+\begin{proof}[Proof (sketch of)]
 
+    \begin{itemize}
+        \item Recursive Feasibility
+            \begin{itemize}
+                \item Assume the problem is feasible at generic time $t$ and $\{u^*_{\tau|t}\}^{t+T-1}_{\tau=t}$ is the corresponding optimal input sequence, and assume $x_t^{\text{meas}}=x^*_{t|t},\dots,x^*_{t+T|t}$
+                \item At time $t+1$ consider the following candidate input trajectory: 
+                    \[
+                        u_{\tau|t+1}:=\left\{\begin{array}{l l}
+                                u_{\tau|t}^*, & \tau = t+1,\dots,t+T-1\\
+                                0, & \tau = t+T
+                        \end{array} \right.
+                    \]
+                \item As it can be easily verified, this new trajectory is still feasible for the MPC problem (though in general suboptimal).
+            \end{itemize}
+        \item Asympototic Stability 
+            \begin{itemize}
+                \item The idea is to use the optimal cost $J^*(x_t^{\text{meas}})$ as a Lyapunov function 
+                \item First note that $J^*(x)\geq 0, \forall x\in\mathcal{X}$ and $J^*(x)=0 \iff x=0$
+                    \item Then observe that 
+                        \begin{align}
+                            J^*(x_{t+1}^{\text{meas}}) & =\displaystyle\sum_{\tau=t+1}^{t+T}\ell_{\tau}(x_{\tau|t+1}^*,u_{\tau|t+1})\\
+                                                       &\leq \displaystyle\sum_{\tau=t+1}^{t+T}\ell_{\tau}(x_{\tau|t}^*,u_{\tau|t})+\ell_{t+T}(0,0)\\
+                                                       & =J^*(x_t^{\text{meas}})-\ell_t(x_{\tau|t}^*,u_{\tau|t})=J^*(x_t^{\text{meas}})-\ell_t(x_t^{\text{meas}},u_t^{\text{MPC}})
+                        \end{align}
+                        Thus
+                        \[
+                            J^*(x_{t+1}^{\text{meas}})-J^*(x_t^{\text{meas}})<0, \quad \forall x_t{\text{meas}}\neq 0
+                        \]
+            \end{itemize}
+    \end{itemize}
+\end{proof}
 
-
-
-
-
+\section{Quasi-Infinte Horizon MPC}
+Main idea: Since the terminal constraint introduces nuerical instabilities, relax the terminal condition by introducing a proper terminal cost $\ell_{t+T}$ and constraining the terminal state to be in a proper region $\mahtcal{X}^f$ around the origin
+% TODO slide 11 insert problem
+Assumption: The terminal region is forward invariant wrt a local controller, i.e. there exists $k^{\text{loc}}:\R^n\to\R^m$ such that 
+\[
+    x\in\mathcal{X}^f \implies f(x,k^{\text{loc}}(x))\in\mathcal{X}^f
+\]
+Result: Under this assumption it can be proven that for a proper terminal cost and terminal set $\mathcal{X}^f$ the MPC scheme is recursively feasible and asymptotically stable.
+\subsection{Practical framework}
+\begin{itemize}
+    \item Quadratic stage cost and terminal cost: 
+        \begin{align*}
+            \ell_\tau(x,u)=x^TQx+u^TRu\\
+            \ell_{t+T}(x) = x^TPx
+        \end{align*}
+        where $P$ is computed in a way that $x^TPx$ is an upper bound for the optimal infinite-horizon cost-to-go
+    \item Ellipsoidal terminal region: 
+        \[
+            \mathcal{X}^f = \{x\in\R^n|x^TPx\\leq\alpha\}
+        \]
+        for a proper $\alpha$ which is forwar invariant wrt the LQR controller $K^{\text{lqr}}$
+    \item Hence, at each sampling time $t$, we solve the following problem: 
+        % TODO slide 14
+        and we apply to the real system the first optimal input $u^*_{t|t}(x_t^{\text{meas}})$
+\end{itemize}
 
 
 
