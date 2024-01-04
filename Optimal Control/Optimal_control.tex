@@ -1726,12 +1726,52 @@ Result: Under this assumption it can be proven that for a proper terminal cost a
         and we apply to the real system the first optimal input $u^*_{t|t}(x_t^{\text{meas}})$
 \end{itemize}
 
+\section{Optimal control with constraints}
+when dealing with constrained optimal control, with constraints $g(x_t,u_t)\leq 0$ barrier functions can be used: 
+\[
+    \min_{x_1,\dots,x_T,u_0,...,u_{T-1}} \displaystyle\sum_{t=0}^{T-1}[\ell_t(x_t,u_t)-\varepsilon\log(-g(x_t,u_t))]+\ell_T(x_T)\\
+    \text{subj to} x_{t+1}=f_t(x_t,u_t) \quad t=0,\dots,T-1
+\]
+start with $\varepsilon=\varepsilon^0$, solve the relaxed problem above, decrease $\varepsilon>0$
+Remarks: \begin{itemize}
+    \item need to initialize with feasible initial trajectory 
+        \item alternatively extend the $-\log(\cdot)$ function on the entire domain, i.e. use some function \[
+            b(z)= \begi~n{cases}
+                -\log(z) & z\leq -\delta\\
+                \text{smooth function} & z\geq -\delta
+            \end{cases} \qquad \delta>0
+        \]
+        \item use some heuristics to remain within the constraints when
+\end{itemize}
+% TODO ask someone what's missing
 
 
-
-
-
-
+\chapter{Reinforcement Learning}
+\section{Notation}
+\begin{itemize}
+    \item States and actions:
+        \[
+            (s,a)\in\mathcal{S}\times\mathcal{A}
+        \]
+        \item Transition Probability:
+            \[
+                s^+ \sim p(\cdot|s,a)
+            \]
+        \item Reward function at time $t$:
+            \[
+                R_t(s_t,a_t) \text{ or } R_t(s_{t-1},a_{t-1},s_t)
+            \]
+            
+            \item Discounted Return: \begin{align*}
+               &G_t(s_t):=\displaystyle\sum_{\tau=t}^{\infty}\gamma^\tau R_\tau(s_\tau,a_\tau) \\
+               &\text{subj to } s_{\tau+1}\sim p(\cdot|s_\tau,a_\tau),a_\tau\sim \pi(\cdot|s_\tau),\forall \tau \geq 0
+            \end{align*}
+                
+\end{itemize}
+Reinforcement learning is generally data-driven, whereas optimal control is generally model-based.
+\subsubsection{problem formulation}
+The Reinforcement Learning (RL) problem can be written in optimal control language as 
+% TODO slide 2
 
 
 

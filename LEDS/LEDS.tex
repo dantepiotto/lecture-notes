@@ -1,8 +1,7 @@
 \documentclass{book}
-\usepackage{amsmath, amsthm, graphicx, amssymb, mathtools, float}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float}
 \usepackage[english]{babel}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\graphicspath{ {./images/} }
 
 \usepackage{geometry}
  \geometry{
@@ -11,8 +10,34 @@
  left=20mm,
  top=30mm,
  }
+ \usepackage[hidelinks]{hyperref}
 
-\title{Learnig and Estimation of Dynamical Systems}
+\newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\deriv}[1]{\displaystyle\frac{d}{d #1}}
+\newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\theoremstyle{remark}
+\newtheorem*{notation}{Notation}
+
+
+\title{Learning and Estimation of Dynamical Systems}
 \author{Dante Piotto}
 \date{Spring semester 2023}
 
@@ -408,22 +433,37 @@ LS estimate:
 \]
 Statistical properties and optimale predictor: similar considerations to those of the ARX case.
 \section{Recursive least squares}
-Let $\hat{theta(t-1)}$ be a LS estimate obtained form data collected up to time $t-1$:
+Let $\hat{\theta}(t-1)$ be a LS estimate obtained form data collected up to time $t-1$:
 \[
     \hat{\theta}(t-1)=\left(\sum_{k=1}^{t-1}\varphi(k)\varphi^T(k)\right)^{-1} \sum_{k=1}^{t-1}\varphi(k)y(k) \qquad(1)
 \]
 Recursive identification methods consist of updating $\hat{\theta}(t-1)$ by some "simple modification" once data at time $t$ becomes available to compute $\hat{\theta}(t)$
 
-Starting from (1) and 
+Starting from (1) and defining:
 \begin{gather*}
-    S(t)=HH^T=\sum_{k=1}^t\varphi(k)\varphi^T(k)=S(t-1)+\varphi(t)\varphi^T(t)\\
-    \sum_{k=1}^t\\varphi(k)y(k)=\sum_{k=1}^{t-1}\varphi(k)y(k)+\varphi(t)y(t)\\
-    \hat{theta}(t)=S(t)^{-1}\sum_{k=1}^t\varphi(k)y(k)
+    \sum_{k=1}^t\varphi(k)\varphi^T(k)=S(t)=S(t-1)+\varphi(t)\varphi^T(t)\\
 \end{gather*}
-It is possible to obtain
+we can observe that:
+\begin{flalign*}
+    &\sum_{k=1}^t\varphi(k)y(k)=\sum_{k=1}^{t-1}\varphi(k)y(k)+\varphi(t)y(t)\\
+    &\hat{\theta}(t)=S(t)^{-1}\sum_{k=1}^t\varphi(k)y(k)\\ 
+    &\hat{\theta}(t-1)=S(t-1)^{-1}\displaystyle\sum_{k=1}^{t-1}\varphi(k)y(k)\\
+\end{flalign*}
+from which
+\begin{flalign}
+    &\displaystyle\sum_{k=1}^{t-1}\varphi(k)y(k) = S(t-1)\hat{\theta}(t-1)\\
+\end{flalign}
+by simply substituting we obtain
 \[
-    \hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)
+    \sum_{k=1}^t\varphi(k)y(k)=S(t-1)\hat{\theta}(t-1)+\varphi(t)y(t)
 \]
+and therefore 
+\begin{flalign*}
+    \hat{\theta}(t) &= S(t)^{-1}(S(t-1)\hat{\theta}(t-1)+\varphi(t)y(t))\\
+    &= S(t)^{-1}\left[\left(S(t)-\varphi(t)\varphi(t)^T\right)\hat{\theta}(t-1)+\varphi(t)y(t)\right]\\
+    &= \hat{\theta}(t-1)+S(t)^{-1}\varphi(t)\left[y(t)-\varphi(t)^T\hat{\theta}(t-1)\right]\\
+    &= \hat{\theta}(t-1)+K(t)\varepsilon(t)
+\end{flalign*}
 where
 \[
     K(t)=S(t)^{-1}\varphi(t)
@@ -433,11 +473,10 @@ and we can recall that
     \varepsilon(t) = y(t)-\varphi^T(t)\hat{\theta}(t-1)
 \]
 is the prediction error.
-computation was developed in class
 This leads to the following recursive least squares algorithm:
 \subsubsection{RLS I}
 \begin{enumerate}
-    \item $S(T) = S(t-1) + \varphi(t)\varphi^T(t)$
+    \item $S(t) = S(t-1) + \varphi(t)\varphi^T(t)$
     \item $K(t) = S(t)^{-1}\varphi(t)$
     \item $\varepsilon(t)=y(t)-\varphi^T(t)\hat{\theta}(t-1)$
     \item $\hat{\theta}(t)=\hat{\theta}(t-1)+K(t)\varepsilon(t)$
@@ -528,7 +567,7 @@ where
 \[
     W=\text{diag}\begin{bmatrix} \lambda^{N-1} & \lambda^{N-2} & \cdots & \lambda & 1 \end{bmatrix}    
 \]
-and $\lambda, 0<\lambda<1$ is the \emph{forgetting factor}. We have
+and $\lambda\in(0,1)\subset \R$ is the \emph{forgetting factor}. We have
 \[
     \hat{\theta} = \left( \sum_{t=1}^{N}\lambda^{N-t}\varphi(t)\varphi^T(t) \right)^{-1}\sum_{t=1}^{N}\lambda^{N-t}\varphi(t)y(t)
 \]
@@ -606,14 +645,14 @@ In a real data setting we may assume the model
 \[
     A(z^{-1})y(t)=B(z^{-1})u(t)+C(z^{-1})\varepsilon(t)
 \]
-where $\varepsilon(t)$ is the residual. Problem: the residual can be computed once the estimate $\hat{\theta}$ is available, so that it is a function of $\theta,\varepsilon(t,\theta)$
+where $\varepsilon(t)$ is the residual. Problem: the residual can be computed once the estimate $\hat{\theta}$ is available, so that it is a function of $\theta\implies\varepsilon(t,\theta)$
 \[
     y(t)=\varphi^T(t,\theta)\theta+\varepsilon(t)
 \]
 This is no longer a linear regression and the least squares method cannot be applied.
 If we consider 
 \[
-    \frac{C(z^{-1}}{A(Z^{-1}}
+    \frac{C(z^{-1})}{A(z^{-1})}
 \]
 as a disturbance $d(t)$ and only try to estimate the plant, we obtain
 \[
@@ -648,14 +687,22 @@ Available measurements:
 \]
 Prediction error method: find the estimate $\hat{\theta}$ that minimizes the loss function
 \[
-J(\theta) = \frac{1}{N}\sum_{t=1}^N\varepsilon^2(t,\theta) = \frac{1}{N} \sum_{t=1}^N(y(t)-\hat{y}(t|t-1,\theta))^2
+J(\theta) = \frac{1}{N}\sum_{t=1}^N\varepsilon^2(t,\theta) = \frac{1}{N} \sum_{t=1}^N\left(y(t)-\hat{y}(t|t-1,\theta)\right)^2
 \]
-where $\hat{y}(t|t-1,\theta)$ is the \emph{optimal one step ahead prediction} of $y(t)$. Optimal (minimal variance)  prediction: a prediction of $y(t)$ given $\theta$ and the past I/O data up to time $t-1$ s.t. the variance of the prediction error $\varepsilon(t)$ is minimal
+where $\hat{y}(t|t-1,\theta)$ is the \emph{optimal one step ahead prediction} of $y(t)$. Optimal (minimal variance)  prediction: a prediction of $y(t)$ given $\theta$ and the past I/O data up to time $t-1$ s.t. the variance of the prediction error $\varepsilon(t)$ is minimal.
 The model can be rewritten as
 \[
 y(t) = G(z^{-1})u(t) + (H(z^{-1})-1)w(t)+w(t)
 \]
-by replacing $w(t)$ with $\frac{1}{H(z^{-1})}y(t)-\frac{G(z^{-1})}{H(z^{-1})}u(t)$, after some stes we get
+by replacing 
+\[
+    w(t)=\displaystyle\frac{1}{H(z^{-1})}y(t)-\displaystyle\frac{G(z^{-1})}{H(z^{-1})}u(t)
+\]
+we get
+\[
+    y(t) = Gu+(H-1)\left(\displaystyle\frac{1}{H}y-\displaystyle\frac{G}{H}u\right)+w
+\]
+from which we get
 \[
     y(t)=\left(1-\frac{1}{H(z^{-1})}\right) y(t) + \frac{G(z^{-1})}{H(z^{-1})}u(t)+w(t)
 \]
@@ -673,25 +720,87 @@ For any other predictor $y^p(t)$ we have
 \end{gather*}
 We can notice that $w(t)$ is uncorrelated with all other members of the sum as $y^p(t)$ depends only on the first $t-1$ samples, therefore
 \begin{gather*}
-    =E[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2]+E[w(t)^2]
-    =E[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2]+\sigma_{w^2}
+    =E\left[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2\right]+E[w(t)^2]
+    =E\left[\left(\left(1-\frac{1}{H} \right)y+\frac{G}{H}u-y^p(t)\right)^2\right]+\sigma_{w^2}
 \end{gather*}
+\subsection{The Newton-Raphson Algorithm}
+It is an algorithm for zero-finding. $J(\theta)$ is approximated around $\hat{\theta}^k$ with a quadratic function $V(\theta)$
+\[
+    V(\theta)=J(\hat{\theta}^k)+J'(\hat{\theta}^k)(\theta-\hat{\theta}^k)+\displaystyle\frac{1}{2}(\theta-\hat{\theta}^k)^TJ''(\hat{\theta}^k)(\theta-\hat{\theta}^k)
+\]
+The algorithm updates $\hat{\theta}^k$ with the position of the minimum of $V(\theta)$. For this purpose, we compute the derivative of $V(\theta)$:
+\begin{align}
+    &V'(\theta)=J'(\hat{\theta}^k)^T+J''(\hat{\theta}^k)\theta-J''(\hat{\theta}^k)\hat{\theta}^k
+\end{align}
+By setting this to zero we get our update:
+\[
+    \hat{\theta}^{k+1}=\hat{\theta}^k-J''(\hat{\theta}^k)^{-1}J'(\hat{\theta}^k)^T
+\]
 
 
 
-\begin{gather*}
-    \lim_{N\to\infty} J''(\theta)= 2E[\psi(t,\theta)[\psi^T(t,\theta)]] - 2E[\varepsilon(t,\theta)\frac{\partial^2 \varepsilon(t,\theta)}{\partial \theta^2}]
-\end{gather*}
-assume $\theta^*$ exists, then
+\subsection{The Gauss-Newton Method}
+the application to PEM of the Newton-Raphson algorithm. Let us define 
+\[
+    \psi(t,\theta)=-\left(\displaystyle\frac{\partial\varepsilon(t,\theta)}{\partial\theta}\right)^T
+\]
+we get 
+\[
+    J'(\theta)=-\displaystyle\frac{2}{N}\displaystyle\sum_{t=1}^{N}\varepsilon(t,\theta)\psi^T(t,\theta)
+\]
+and
+\[
+    J''(\theta)=\displaystyle\frac{2}{N}\displaystyle\sum_{t=1}^{N}\psi(t,\theta)\psi^T(t,\theta)-\displaystyle\frac{2}{N}\varepsilon(t,\theta)\displaystyle\frac{\partial^2\varepsilon(t,\varepsilon)}{\partial\theta^2}\approx\displaystyle\frac{2}{N}\displaystyle\sum_{t=1}^{N}\psi(t,\theta)\psi^T(t,\theta)\geq 0 
+\]
+therefore the update rule is given by:
+\[
+    \hat{\theta}^{k+1}=\hat{\theta}^k + \eta^k(\displaystyle\frac{2}{N}\displaystyle\sum_{t=1}^{N}\psi(t,\theta)\psi^T(t,\theta)\geq 0 )^{-1}\displaystyle\frac{2}{N}\displaystyle\sum_{t=1}^{N}\varepsilon(t,\theta)\psi^T(t,\theta)
+\]
+\begin{itemize}
+    \item the approximated Hessian is positive definite, guaranteeing that the update happens in a descending direction
+    \item the algorithm can stop at a local minimum
+    \item convergence is dependant on the initialization
+\end{itemize}
+
+
 
 
 \subsection{Identification of ARMAX models}
+Model: 
+\[
+    A(z^{-1})y(t) = B(z^{-1})u(t)+C(z^{-1})w(t)
+\]
+the optimal predictor is given by:
+\[
+    \hat{y}(t|t-1,\theta)=\displaystyle\frac{C(z^{-1})-A(z^{-1})}{C(z^{-1})}y(t)+\displaystyle\frac{B(z^{-1})}{C(z^{-1})}u(t)
+\]
+from which we derive
+\[
+    C(z^{-1})\varepsilon(t)=A(z^{-1})y(t)-B(z^{-1})u(t)
+\]
+The residual is therefore given by:
 \begin{gather*}
-    \varepsilon(t,\theta)= -c_1\epsilon(t-1,\theta)-c_2\epsilon(t-2,\theta),\dots -c_n\epsilon(t-n,\theta)+y(t)+a_1y(t-1)+\dots + b_nu(t-n)
+    \varepsilon(t,\theta)= -c_1\varepsilon(t-1,\theta)-c_2\varepsilon(t-2,\theta),\dots -c_n\varepsilon(t-n,\theta)+y(t)+a_1y(t-1)+\dots + b_nu(t-n)
 \end{gather*}
+We must now derive $\psi(t,\theta)$. From the above relation we can derive
+\begin{gather*}
+    \displaystyle\frac{\partial\varepsilon(t,\theta)}{\partial a_i} = \displaystyle\frac{1}{C(z^{-1})}y(t-i) \qquad \qquad
+    \displaystyle\frac{\partial\varepsilon(t,\theta)}{\partial b_i} = -\displaystyle\frac{1}{C(z^{-1})}u(t-i)\\
+    \displaystyle\frac{\partial\varepsilon(t,\theta)}{\partial c_i} = -\displaystyle\frac{1}{C(z^{-1})}\varepsilon(t-i,\theta)
+\end{gather*}
+by introducing the filtered signals
+\[
+    y^F(t) = \displaystyle\frac{1}{C(z^{-1})}y(t), \qquad u^F(t) = \displaystyle\frac{1}{C(z^{-1})}u(t), \qquad \varepsilon^F(t)\displaystyle\frac{1}{C(z^{-1})}\varepsilon(t)
+\]
+we have
+\[
+    \psi(t,\theta) = \begin{bmatrix}
+        -y^F(t-1) & \cdots & -y^F(t-n) & u^F(t-1) & \cdots & u^F(t-n) & \varepsilon^F(t-1) & \cdots & \varepsilon^F(t-n)
+    \end{bmatrix}^T
+\]
 
-
-Identification of ARARX models: the optimal predictor is
+\subsection{Identification of ARARX models}
+The optimal predictor is
 \[
     \hat{y}(t|t-1\theta)=(1-a(z^{-1})D(z^{-1}))y(t)+B(z^{-1})D(z^{-1})u(t)
 \]
@@ -708,7 +817,7 @@ Assume that a true model exists and
 \end{itemize}
 In this case, the PEM estimate is consistent (proof skipped)
 \[
-    \lim_{N\to\infty} \hat{theta} = \theta^*
+    \lim_{N\to\infty} \hat{\theta} = \theta^*
 \]
 Moreover
 \[
@@ -775,7 +884,7 @@ The PEM estimate is also asymptotically efficient, therefore $P$ is the lowest c
 
 \chapter{Statistical hypothesis testing}
 
-\chapter{Model complexity selection and regularization}
+\chapter{Model complexity selection}
 
 Model complexity selection: given a model class $\mathcal{M}(\theta)$, estimate the model complexity $p$, i.e. choose the best model class $\mathcal{M}_p(\theta)$
 
@@ -802,15 +911,15 @@ ARX MODEL:
 
 If the validation set is used repeatedly to estimate the model complexity, the prediction error may be underestimated as well. This happens for very complex models like neural networks. For this reason, when dealing with neural networks the dataset is split into three parts. The third set is called \emph{test set} and is used for model assessment, i.e. for testing the predictive capabilities of the final chosen model. This requires a very large number of available samples. It is possible to design criteria that allow to estimate the model complexity by using the training test
 
-\subsection{The F-test}
+\section{The F-test}
 Let $\mathcal{M}_{p_1}(\theta),\mathcal{M}_{p_2}(\theta)$ such that $p_1<p_2$ ($p=2n$ for ARX models, $p=n$ for AR models etc.) Consider the test quantity
 \[
     x=N\displaystyle\frac{J(\hat{\theta^1_N})J(\hat{\theta^2_N})}{J(\hat{\theta^2_N})}
 \]
-where $\hat{\theta}^1_N,\hat{\theta}^1_N$ are PEM (or LS) estimates: intuitively:
+where $\hat{\theta}^1_N,\hat{\theta}^2_N$ are PEM (or LS) estimates: intuitively:
 \begin{itemize}
-    \item $x$ large: the decrease int he loss function is significant, hence $\mathcal{M}_{p_2}(\theta)$ is better
-    \item x small: $\mathcal{M}_{p_1}(\theta)$ and $\mathcal{M}_{p_2}(\theta)$ are almost equivalent so that $\mathcal{M}_{p_1}(\theta)$ should be chosen accorfing to the parsimony principle
+    \item $x$ large: the decrease in the loss function is significant, hence $\mathcal{M}_{p_2}(\theta)$ is better
+    \item x small: $\mathcal{M}_{p_1}(\theta)$ and $\mathcal{M}_{p_2}(\theta)$ are almost equivalent so that $\mathcal{M}_{p_1}(\theta)$ should be chosen according to the parsimony principle
 \end{itemize}
 How to quantify "large" and "small"?
 \begin{itemize}
@@ -824,47 +933,47 @@ How to quantify "large" and "small"?
 The following statistical test can be performed:
 \[
     \begin{cases}
-        H_0:\mathcal{M}_{p_1}(\theta) \text{ is suitable to describe the system}
+        H_0:\mathcal{M}_{p_1}(\theta) \text{ is suitable to describe the system}\\
         H_1:\mathcal{M}_{p_1}(\theta) \text{ is not suitable }
     \end{cases}
 \]
 that is:
 \[
     \begin{cases}
-        H_0: x \tilde \chi^2(p_2-p_1)
+        H_0: x \sim \chi^2(p_2-p_1)\\
         H_1: \text{not }H_0
     \end{cases}
 \]
 after the choice of the significance level:
 \[
     \begin{cases}
-        x\leq \chi^2_\alpha(p_2-p_1) \implies \text{ accept }H_0
+        x\leq \chi^2_\alpha(p_2-p_1) \implies \text{ accept }H_0\\
         x>\chi^2_\alpha(p_2-p_1) \implies \text{ accept }H_1
     \end{cases}
 \]
-\subsection{The final prediction error (FPE) criterion}
+\section{The final prediction error (FPE) criterion}
 Let $\hat{\theta}_N$ be a PEM (or LS) estimate of a model of complexity $p$ and assume that it is then used to predict future data. Assume also that a true model exists and consider the prediction error variance (the expectation is with respect to future data):
 \[
-    V(V\hat{\theta}_N) = E \left[ (y(t)-\hat{y}(t|t-1,\hat{\theta}_N))^2   \right]
+    V(\hat{\theta}_N) = E \left[ \left(y(t)-\hat{y}(t|t-1,\hat{\theta}_N)\right)^2   \right]
 \]
 by replacing $y(t)=\varphi^T(t)\theta^*+w(t)$ in $V(\hat{\theta}N)$ and computing the expectation we get
 \[
-    V(\hat{\theta}_N) = \sigma_\omega^2 + (\hat{\theta}_N-\theta^*)^T\Sigma_\varphi(\hat{\theta}_N-\theta^*)
+    V(\hat{\theta}_N) = \sigma_w^2 + (\hat{\theta}_N-\theta^*)^T\Sigma_\varphi(\hat{\theta}_N-\theta^*)
 \]
 consider now the criterion function
 \[
-    FPE = E[V(\hat{\theta}_N)]
+    FPE = E\left[V(\hat{\theta}_N)\right]
 \]
 where the expectation is with respect to past data. By taking into account that:
 \begin{itemize}
-    \item \[
+    \item \(
             E[(\hat{\theta}_N-\theta^*)^T\Sigma_{\varphi}(\hat{\theta}_N-\theta^*)]=E[\text{trace}(\Sigma_\varphi(\hat{\theta}_N-\theta^*)(\hat{\theta}_N-\theta^*)^T]
-        \]\footnote{E[trace($v^TAv)]=$E[trace($Avv^T$)]}
-\item Asymptotically: $\sqrt{N}(\hat{\theta}_N-\theta^*)\sim\mathcal{N}(0,\sigma^2_\Omega\Sigma_\varphi^{-1})$
+        \)\footnote{E[trace($v^TAv)]=$E[trace($Avv^T$)]}
+\item Asymptotically: $\sqrt{N}(\hat{\theta}_N-\theta^*)\sim\mathcal{N}(0,\sigma^2_w\Sigma_\varphi^{-1})$
 \end{itemize}
 it is easy to obtain
 \[
-    FPE\approx \sigma_\omega^2\left( 1+\displaystyle\frac{p}{N}\right)
+    FPE\approx \sigma_w^2\left( 1+\displaystyle\frac{p}{N}\right)
 \]
 in practice we need an asymptotically unbiased estimate of $\sigma_\omega^2$ 
 \[
@@ -872,7 +981,7 @@ in practice we need an asymptotically unbiased estimate of $\sigma_\omega^2$
 \]
 so that
 \[
-    FPE=\hat{\sigma}_e^2 \displaystyle\frac{N+p}{N}=\displaystyle\frac{N+p}{N-p}J(\hat{\theta}_N)=\displaystyle\frac{N\left(1+\displaystyle\frac{p}{N}\right)}{N\left(1-\displaystyle\frac{p}{N}\right)}J(\hat{\theta}_N)J(\hat{\theta}_N)=J(\hat{\theta}_N)+\displaystyle\frac{2\displaystyle\frac{p}{N}}{1-\displaystyle\frac{p}{N}}J(\hat{\theta}_N)
+    FPE=\hat{\sigma}_e^2 \displaystyle\frac{N+p}{N}=\displaystyle\frac{N+p}{N-p}J(\hat{\theta}_N)=\displaystyle\frac{N\left(1+\displaystyle\frac{p}{N}\right)}{N\left(1-\displaystyle\frac{p}{N}\right)}J(\hat{\theta}_N)=\displaystyle\frac{1+\displaystyle\frac{p}{N}-\displaystyle\frac{p}{N}+\displaystyle\frac{p}{N}}{1-\displaystyle\frac{p}{N}} J(\hat{\theta}_N)=J(\hat{\theta}_N)+\displaystyle\frac{2\displaystyle\frac{p}{N}}{1-\displaystyle\frac{p}{N}}J(\hat{\theta}_N)
 \]
 Note that for large $N$:
 \[
@@ -880,7 +989,9 @@ Note that for large $N$:
 \]
 for large $N$, this criterion belongs to the family of \emph{criteria with complexity terms} (terms that penalise complex models).
 
-\subsection{Criteria with complexity terms}
+The criterion is applied by minimizing the value of $FPE(n)$
+
+\section{Criteria with complexity terms}
 These criteria are obtained by penalizing in some way the decrease of $J(\hat{\theta}_N)$with increasing orders. The order giving the smallest value fo the criterion is selected.
 General form:
 \[
@@ -892,7 +1003,7 @@ where $f(N,p)$ penalizes high order models.
 \[
     AIC=NlogJ(\hat{\theta}_N)+2p
 \]
-AIC and FPE are asymptotically equivalent. They do not give consistend estimates of $n$ (the probability of overestimating the order is non-null). To get consistent estimates, the penalizing funciton must be such that
+AIC and FPE are asymptotically equivalent. They do not give consistend estimates of $n$ (the probability of overestimating the order is non-null). To get consistent estimates, the penalizing function must be such that
 \[
     \begin{cases}
         f(N,p)=kpg(N)\\
@@ -909,7 +1020,7 @@ MDL leads. in general, to models of lower complexity wrt AIC and FPE. Even thoug
 
 
 
-\chapter{model assesment (validation)}
+\chapter{Model assesment (validation)}
 
 Consists in evaluating the capability of the identified model to describe the process that has generated the data in a way compatible with its planned use. 
 
@@ -955,7 +1066,7 @@ Under $H_0$:
 \]
 and it is possible to prove that
 \[
-    \sqrt{N}\xrightarrow[N\to\infty]\sim \mathcal{N}(0,P), \quad P=\lim_{N\to\infty} E[N\hat{r}_\varepsilon\hat{r}_\varepsilon^T]=\sigma_w^4I \quad (*)
+    \sqrt{N}\hat{r}_\varepsilon\xrightarrow[N\to\infty]\sim \mathcal{N}(0,P), \quad P=\lim_{N\to\infty} E[N\hat{r}_\varepsilon\hat{r}_\varepsilon^T]=\sigma_w^4I \quad (*)
 \]
 as a consequence
 \[
@@ -964,7 +1075,7 @@ as a consequence
 This leads to the statistical test
 \[
     \begin{cases}
-        x\leq \chi_\alpha^2(m) \implies \text{ accept }H_0
+        x\leq \chi_\alpha^2(m) \implies \text{ accept }H_0\\
         x>\chi_\alpha^2(m) \implies \text{ accept }H_1
     \end{cases}
 \]
@@ -1009,32 +1120,16 @@ It is possible to prove that
 \]
 As a consequence
 \[
-    x=N\displaystyle\frac{\hat{r}_{\varepsilon u}^T\hat{\Sigma_u^{-1}}\hat{r}_{\varepsilon u}}{\hat{r}_{\varepsilon u}(0)}\xrightarrow[N\to\infty]\sim\chi^2(m)
+    x=N\displaystyle\frac{\hat{r}_{\varepsilon u}^T\hat{\Sigma}_u^{-1}\hat{r}_{\varepsilon u}}{\hat{r}_{\varepsilon u}(0)}\xrightarrow[N\to\infty]\sim\chi^2(m)
 \]
 This leads to the statistical test
 \[
     \begin{cases}
-        H_0 : x \leq \chi^2_\alpha(m) \implies \text{ accept } H_0
+        H_0 : x \leq \chi^2_\alpha(m) \implies \text{ accept } H_0\\
         H_0 : x >\chi^2_\alpha(m) \implies \text{ accept } H_1
     \end{cases}
 \]
 where $\alpha$ is the chosen significance level. $\bar{\tau}$ must be chosen with care. In some methods  $\hat{r}_{\varepsilon u}(\tau)$ is constrained to be zero for some values of $\tau$ by construction.
-Let us consider the quantity 
-%\[
- %   \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)\varepsilon(t)= \begin{bmatrix}
-  %      \hat{r}_{\varepsilon y}(1) \\
-   %     \vdots \\
-    %    \hat{r}_{\varepsilon y}(n) \\
-     %   \hat{r}_{\varepsilon u}(1) \\
-      %  \vdots \\
-       % \hat{r}_{\varepsilon u}(n) \\
-    %\end{bmatrix}
-%\]
-it follows that 
-%\[
- %   \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)\varepsilon(t)=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}\varpgi(t)(y(y)-\varphi^T(t)\hat{\theta}_N) = \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)- \displaystyle\frac{1}{N}\left(\displaystyle\sum_{t=1}^{N}\varphi^T(t)\varphi(t)\right)\hat{\theta}_N = \displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)-\displaystyle\frac{\}{N}\displaystyle\sum_{t=1}^{N}\varphi(t)y(t)=0
-%\]
-
 We define the normalized test quantities 
 \[
     \hat{\gamma}(\tau) = \displaystyle\frac{\hat{r}_{\varepsilon u}(\tau)}{\sqrt{\hat{r}_\varepsilon(0)\hat{r}_u(0)}}, \quad \tau=1,2,\dots,m 
@@ -1063,17 +1158,17 @@ The maximum likelihood estimate of $\theta$ is
 \end{itemize}
 \section{the gaussian case}
 \[
-    y(t) = G(z^{-1})u(t) + H(z^{-1})w(t) \quad w(t) \sim \mathcal{N}(0,\sigma_w^2)
+    y(t) = G(z^{-1})u(t) + H(z^{-1})w(t) \qquad\qquad  w(t) \sim \mathcal{N}(0,\sigma_w^2)
 \]
 Neglecting the effect of the initial conditions, the pdf $f(y(t)|\theta)$ can be replaced with $f(w(t)|\theta)$. By introducing also the approximation $\varepsilon(t,\theta)\approx w(t)$ we can write 
 \[
-    L(\theta)=\displaystyle\frac{1}{\sqrt(2\pi\sigma_\varepsilon^2)^N}\exp\left(-\displaystyle\frac{1}{2\sigma\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)\right)
+    L(\theta)=\displaystyle\frac{1}{\sqrt{(2\pi\sigma_\varepsilon^2)^N}}\exp\left(-\displaystyle\frac{1}{2\sigma\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)\right)
 \]
 By considering the logarithmic likelihood function (log-likelihood function)
-\[
-    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}\log \sigma_\varepsilon^2-\displaystyle\frac{1}{2\sigma_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta) \quad (*)
-\]
-Assume now that $\sigma_\varepsilon^2$ is an additional parameter to be estimated $\implies \log L(\theta,\sigma_\varepsilon^2)$. First miximize wrt $\sigma_\varepsilon^2$ by solving 
+\begin{equation}
+    \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}\log \sigma_\varepsilon^2-\displaystyle\frac{1}{2\sigma_\varepsilon^2}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta) \quad (*)\label{logl}
+\end{equation}
+Assume now that $\sigma_\varepsilon^2$ is an additional parameter to be estimated $\implies \log L(\theta,\sigma_\varepsilon^2)$. First maximize wrt $\sigma_\varepsilon^2$ by solving 
 \[
     \displaystyle\frac{\partial \log L(\theta,\sigma_\varepsilon^2)}{\partial \sigma_\varepsilon^2}=0
 \]
@@ -1081,15 +1176,15 @@ We get
 \[
     \sigma_\varepsilon^2=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}\varepsilon^2(t,\theta)=J(\theta)
 \]
-The inserting the above expression in (*) we find 
+Then inserting the above expression in \ref{logl} we find 
 \[
     \log L(\theta) = -\displaystyle\frac{N}{2}\log 2\pi -\displaystyle\frac{N}{2}-\displaystyle\frac{N}{2}\log J(\theta)
 \]
 $\hat{\theta}_{ML}$ is thus obtained by minimizing $J(\theta)\implies$ the PEM estimate can be interpreted as the ML estimate providede that $w(t)$ is gaussian distributed 
 \begin{itemize}
     \item As a consequence, the least squares estimate of static models, FIR models, ARX models and AR models, can be interpreted as the ML estimate provided that $w(t)$ is gaussian distributed
-    \item Strictly speaking, forn dynamic models $L(\theta)$ is not the exact likelihood function, because of the effecy of the initial conditions. 
-    \item When the number of sampples is large, the difference between the exact and the approximated likelihood functions becomes small.
+    \item Strictly speaking, for dynamic models $L(\theta)$ is not the exact likelihood function, because of the effect of the initial conditions. 
+    \item When the number of samples is large, the difference between the exact and the approximated likelihood functions becomes small.
 \end{itemize}
 
 \subsection{the Cramér-Rao lower bound}
@@ -1104,11 +1199,23 @@ Where $F$ is called the \emph{Fisher information matrix}. The matrix $F^{-1}$ is
     \item The least squares estimate of static models, FIR models, ARX models and AR models is (asymptotically) efficient provided that $w(t)$ is gaussian distributed 
     \item the PEM estimate of ARMAX, ARMA and ARARX models is asymptotically efficient provided that $w(t)$ is gaussian distributed.
 \end{itemize}
-
-
-
-
-
+We write the likelihood function for a LS estimate:
+\[
+    L(\theta^*)=\displaystyle\frac{1}{\sqrt{(2\pi\sigma_w^2)^N}}\exp\left(-\displaystyle\frac{1}{2\sigma_w^2}\displaystyle\sum_{t=1}^{N}w^2(t)\right)=\displaystyle\frac{1}{\sqrt{(2\pi\sigma_w^2)^N}}\exp\left(-\displaystyle\frac{1}{2\sigma_w^2}(Y-\Phi\theta^*)^T(Y-\Phi\theta^*)\right)
+\]
+and therefore the log-likelihood function is 
+\[
+    \log L(\theta^*) = -\displaystyle\frac{N}{2}\log 2\pi- \displaystyle\frac{N}{2}\log \sigma_w^2 - \displaystyle\frac{1}{w\sigma_\varepsilon^2}(Y-\Phi\theta^*)^T(Y-\Phi\theta^*)
+\]
+from which
+\[
+    \displaystyle\frac{\partial^2 \log L(\theta^*)}{\partial\theta^{*2}} = \displaystyle\frac{\Phi^T\Phi}{\sigma_w^2}=F
+\]
+so the CRLB turns out to be 
+\[
+    F^{-1}=(\Phi^T\Phi)^{-1}\sigma_w^2
+\]
+which corresponds to the covariance of an LS estimate when the noise is zero-mean gaussian distributed. This implies that the LS estimate in this case is efficient.
 \chapter{Classification: probabilistic models}
 Classification: assigning the input $u(t)\in \mathcal{U}$ to one of $M$ classes $C_1,C_2,\dots,C_M$. The input is numerical and the output is categorical. 
 Available data: 
@@ -1502,7 +1609,7 @@ A dateset whose classes can be separated exactly by linear decision boundaries a
         C_2 \quad \text{if } z(t)<0
     \end{cases} \implies y(t) = \begin{cases}
     1 \quad \text{if } z(t)>0\\
-    2 \quad \text{if } z(t)<0
+    -1 \quad \text{if } z(t)<0
    \end{cases}
 \]
 \subsection{the maximum margin classifier}
@@ -1520,20 +1627,20 @@ The optimal hyperplane can be seen as the mi-line of the widest "slab" that can 
 
 If we make the rescaling $\beta\to k\beta$ and $\beta_0 \to k\beta_0$, the distance from any point $u(t)$ to the decision boundary is unchanged, therefore, we can arbitrarily set $\|\beta\|=1/D$. As a consequence, the optimization problem is equivalent to 
 \[
-    \max_{\beta_0,\beta}D \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
+    \max_{\beta_0,\beta}D \text{ subject to } y(t)z(t)\geq 1, \quad t = 1,2,\dots,N
 \]
 that is
 \[
-    \max_{\beta_0,\beta}\|\beta\|^2 \text{ subject to } y(t)z(t)\geq 1, \quad t = \,2,\dots,N
+    \max_{\beta_0,\beta}\|\beta\|^2 \text{ subject to } y(t)z(t)\geq 1, \quad t = 1,2,\dots,N
 \]
-This is a convex optimization problem with $N$ linear inequality constraints. The constraints define an empty slab around the linear decision boundary of thickness $2D=2\|\beta\|$ 
+This is a convex optimization problem with $N$ linear inequality constraints. The constraints define an empty slab around the linear decision boundary of thickness $2D=2/\|\beta\|$ 
 
-\subsubsection{Constrained optimization problems: the Lagrange multipliers}
+\section{Constrained optimization problems: the Lagrange multipliers}
 Consider the following optimization problem with equality constraint: 
 \[
     \min_xf(x)\quad\text{subject to}\quad g(x)=0
 \]
-where $x\in \mathbb{R}^p$. The constraint $g(x)=0$ represents a $8p-1)$-dimensional hypersurface
+where $x\in \mathbb{R}^p$. The constraint $g(x)=0$ represents a $(p-1)$-dimensional hypersurface
 $\mathcal{S}\in \mathbb{R}^p$. We denote the gradients of $f(x)$ and $g(x)$ as $\nabla f(x), \nabla g(x)$\\
 Since 
 \begin{enumerate}
@@ -1555,7 +1662,7 @@ The original problem can be reformulated as
 in fact: 
 \begin{gather*}
     \displaystyle\frac{\partial L(x,\lambda)}{\partial x}=0 \implies \nabla f(x)-\lambda\nabla g(x)=0\\
-    \displaystyle\frac{\partial L(x,\lambda)}{\partial x}=0 \implies g(x)=0
+    \displaystyle\frac{\partial L(x,\lambda)}{\partial \lambda}=0 \implies g(x)=0
 \end{gather*}
 The minimization problem with $N_e$ equality constraints 
 \[
@@ -1563,7 +1670,7 @@ The minimization problem with $N_e$ equality constraints
 \]
 can be reformulated as 
 \[
-    min_x L(x,\lambda)
+    \min_x L(x,\lambda)
 \]
 where $L(x,\lambda)$ is the Lagrangian function 
 \[
@@ -1575,10 +1682,10 @@ Consider the follwing optimization problem with inequaility constraints:
 \[
     \min_x f(x)\quad\text{subject to}\quad g(x)\geq 0
 \]
-where $x\in\mathbb{R}^p$. Again the solution will be based on a Lagrange multiplier $\lambda$b and the associated Lagrangian funciton. Let $x^*$ be a solution of the problem. Two possibilties exist: 
+where $x\in\mathbb{R}^p$. Again the solution will be based on a Lagrange multiplier $\lambda$ and the associated Lagrangian funciton. Let $x^*$ be a solution of the problem. Two possibilties exist: 
 \begin{enumerate}
     \item $g(x^*)>0$: In this case the constraint is \emph{inactive} and the solution is found by setting $\nabla f(x)=0$ so that $g(x)$ plays no role $\implies \lambda=0$
-    \item $g(x^*)=0$: In this case the constraint is \emph{active} so that $\lambda=0$. Moreover, the descending direction $-\nabla f(x^*)$ mus be oriented away from the region $g(x)>0$ otherwise $f(x^*)$ does not correspond to a minimum. Consequently, we have $\nabla f(x^*)=\lambda\nabla g(x^*)$ for some $\lambda>0$
+    \item $g(x^*)=0$: In this case the constraint is \emph{active} so that $\lambda\neq 0$. Moreover, the descending direction $-\nabla f(x^*)$ must be oriented away from the region $g(x)>0$ otherwise $f(x^*)$ does not correspond to a minimum. Consequently, we have $\nabla f(x^*)=\lambda\nabla g(x^*)$ for some $\lambda>0$
 \end{enumerate}
 Note that both the above cases lead to $\lambda g(x)=0$ We also have that $\lambda\geq 0$.
 The original problem can be reformulated as follows: 
@@ -1624,11 +1731,11 @@ becomes
     \min_{\beta_0,\beta}J(\beta_0,\beta,\lambda)= \displaystyle\frac{1}{2}\|\beta\|^2-\displaystyle\sum_{t=1}^{N}\lambda_t(y(t)z(t)-1)=\displaystyle\frac{1}{2}\|\beta\|^2-\displaystyle\sum_{t=1}^{N}\lambda_t[y(t)(\beta_0+u^T(t)\beta)-1]
 \]
 subject to the constraints 
-\begin{gather*}
-    y(t)z(t)-1 \geq 0\\
-    \lambda_t \geq 0 \quad t=1,2,\dots,N\\
-    \lambda_t(y(t)z(t)-1)=0
-\end{gather*}
+\begin{align*}
+    y(t)z(t)-1 \geq 0 &\\
+    \lambda_t \geq 0 &\qquad t=1,2,\dots,N\\
+    \lambda_t(y(t)z(t)-1)=0 &
+\end{align*}
 \begin{itemize}
     \item the points for which $\lambda_t=0$ do not contribute to the estimated model $\hat{\theta}=\begin{bmatrix}
             \hat{\beta}_o & \hat{\beta}^T
@@ -1670,8 +1777,8 @@ The above relation shows how the obtained solution only depends on a limited num
 
 \begin{itemize}
     \item Although none of the training inputs are misclassified by construction, this will not necessarily be the case for future unseen data points. Hopefully, a large margin on the training data will lead to a good separation on the validation (test) data
-    \item The distance of a point from the pyperplane can be seen as a measure of the conficdence that the observation was correctlu classified. 
-    \item The maximum margin huperplane can be extremely sensitive to changes in the available data. Even a change in a single observation could lead to a dramatic change in the optimal hyperplane. 
+    \item The distance of a point from the hyperplane can be seen as a measure of the confidence that the observation was correctly classified. 
+    \item The maximum margin hyperplane can be extremely sensitive to changes in the available data. Even a change in a single observation could lead to a dramatic change in the optimal hyperplane. 
     \item If the training set is not linearly separable, the optimization problem has no feasible solution
 \end{itemize}
 
@@ -1688,11 +1795,20 @@ To solve this problem we introduce a set of \emph{slack variables} $\xi_1,\xi_2,
 It follows that 
 \begin{itemize}
     \item $\xi_t=0 \implies u(t)$ is correctly classified with distance $\geq D$
-    \item $0<\xi_t<1\implies u(t)$ is correctly clasified with distanec $<D$
+    \item $0<\xi_t<1\implies u(t)$ is correctly classified with distanec $<D$
     \item $\xi_t=1 \implies u(t)$ is on the decision boundary
     \item $\xi_t>1 \implies u(t)$ is misclassified
 \end{itemize}
-The optimization problem is 
+These considerations can be derived considering that the distance of a point from the hyperplane is given by 
+\[
+    d = \frac{y(t)z(t)}{\|\beta\|}
+\]
+which by setting $\|\beta\|=1/D$ becomes
+\[
+    d = y(t)z(t)D
+\]
+and by remembering that $$y(t)^2 = 1$$
+The optimization problem becomes 
 \[
     \max_{\beta_0,\beta,\xi}D \quad \text{subject to} \begin{cases}
         y(t)\displaystyle\frac{z(t)}{\|\beta\|}\geq D(1-\xi)\\
@@ -1715,7 +1831,7 @@ The problem can be rewritten as
 by rescaling $\beta_0$ by a factor $\eta$ such that $\|\beta\|=1/D$ 
 Computationally, it is convenient to exploit the equivalent form 
 \[
-  \min_{\beta_0,\beta,\xi}\{\displaystyle\frac{1}{2}\|\beta\|^2+C\displaystyle\sum_{t=1}^{N}\xi_t\} \quad \text{subject to}\quad \begin{cases}
+  \min_\left{\beta_0,\beta,\xi\right}\left\{\displaystyle\frac{1}{2}\|\beta\|^2+C\displaystyle\sum_{t=1}^{N}\xi_t\right\} \quad \text{subject to}\quad \begin{cases}
     y(t)z(t) \geq (1-\xi_t)\\
     \xi_t \geq 0
   \end{cases} \quad t=1,2,\dots,N
@@ -1729,14 +1845,14 @@ Where the tuning parameter $C>0$ plays the role of $1/K$ in the previous form (a
   J(\beta_0,\beta,\xi,\lambda,\mu)=\displaystyle\frac{1}{2}\|\beta\|^2+C\displaystyle\sum_{t=1}^{N}\xi_t-\displaystyle\sum_{t=1}^{N}\lambda_t(y(t)z(t)-1+\xi_t)-\displaystyle\sum_{t=1}^{N}\mu_t\xi_t
 \]
 subject to the constraints (KKT conditinos): 
-\begin{gather*}
-  y(t)z(t)-1+\xi_t \geq 0\\
-  \lambda_t \geq 0\\
-  \lambda_t(y(t)z(t)-1+\xi_t)=0\\
-  \xi_t \geq0\\
-  \mu_t \geq 0 \\
-  \mu_t\xi_t = 0
-\end{gather*}
+\begin{align*}
+    y(t)z(t)-1+\xi_t &\geq 0\\
+    \lambda_t &\geq 0\\
+    \lambda_t\left(y(t)z(t)-1+\xi_t\right)&=0\\
+    \xi_t &\geq0\\
+    \mu_t &\geq 0 \\
+    \mu_t\xi_t &= 0
+\end{align*}
 As before, the points for which $\lambda_t=0$ do not contribute to the estimated model $\hat{\theta}$. The remaining points, for which $y(t)z(t)=1-\xi_t$ are the support vectors. They may have $\xi_t=0$ (lie on the edges of the margin), $0<\xi_t\leq 1$ (lie inside the margin) or $\xi_t>1$ (misclassified)
 
 Setting to zero the derivatives of $J$ wrt $\beta,\beta_0$ and $\xi_t(t=1,\dots,N)$ we get 
@@ -1770,7 +1886,7 @@ Since only the support vectors have $\lambda_k\neq 0$ we have
 \]
 Where $\mathcal{S}_v$ is the set of indices of the support vectors. Once that $\hat{\lambda}$ and $\hat{\beta}_0$ have been computed, a new input $u(t)$ is classified by using 
 \[
-  \hat{z}(t)\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}_v}^{}\hat{\lambda}_ky(k)u^T(t)u(k)
+  \hat{z}(t)=\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}_v}^{}\hat{\lambda}_ky(k)u^T(t)u(k)
 \]
 Again, all we need is scalar products. 
 \subsection{Dealing with nonlinear boundaries: the kernel trick}
@@ -1786,7 +1902,7 @@ By using kernels, we can fit a support vector classifier in a higher-dimensional
   \item Choose a kernel function $\Psi(u(t),u(k))$. 
   \item Solve the optimization problem 
     \[
-      \max_k J(\lambda)=\displaystyle\sum_{t=1}^{N}\lambda_t-\displaystyle\frac{1}{2}\displaystyle\sum_{t=1}^{N}\displaystyle\sum_{k=1}^{N}\lambda_t\lambda_k y(t)y(k)\Psi(u(t),u(k))
+      \max_\lambda J(\lambda)=\displaystyle\sum_{t=1}^{N}\lambda_t-\displaystyle\frac{1}{2}\displaystyle\sum_{t=1}^{N}\displaystyle\sum_{k=1}^{N}\lambda_t\lambda_k y(t)y(k)\Psi(u(t),u(k))
     \]
     subject to 
     \begin{gather*}
@@ -1796,7 +1912,7 @@ By using kernels, we can fit a support vector classifier in a higher-dimensional
     and find the estimates $\hat{\lambda}$. Then, find the estimate $\hat{\beta}_0$
   \item Classify the new inputs by using
     \[
-      \hat{z}(t)\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}}^{}\hat{\lambda}_ky(k)\Psi(u(t),u(k))
+      \hat{z}(t)=\varphi^T(t)\hat{\theta}=\hat{\beta}_0+\displaystyle\sum_{k\in\mathcal{S}}^{}\hat{\lambda}_ky(k)\Psi(u(t),u(k))
     \]
 \end{enumerate}
 Two popular choices for the kernel function $\Psi$ are: 
@@ -1815,7 +1931,7 @@ where $\gamma>0$ is a hyperparameter.
 By using kernels, we can determine complex nonlinear decision boundaries without explicitly working in the enlarged feature space. The enlarged feature space can even be implicit and infinite-dimensional. This is the case for the radial basis kernels.
 \subsection{Multiclass problems}
 \subsubsection{One-vs-all approach}
-Consists in solving $M$ two-class SVM problems. The generic $i$-the problem involves the classes $C_i$ and $\bar{C}_i=\{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, we get $M$ different estimates for $\lambda$ and $\beta_0$ and, consequently, $M$ discriminant functions $\hat{z}^1(t),\hat{z}^2(t),\dots,\hat{z}^M(t)$. For any new input $u(t)$, the values $\hat{z}^i(u(t)),i=1,2,\dots,M$ are computed in order to take the final decision. 
+Consists in solving $M$ two-class SVM problems. The generic $i$-th problem involves the classes $C_i$ and $\bar{C}_i=\{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, we get $M$ different estimates for $\lambda$ and $\beta_0$ and, consequently, $M$ discriminant functions $\hat{z}^1(t),\hat{z}^2(t),\dots,\hat{z}^M(t)$. For any new input $u(t)$, the values $\hat{z}^i(u(t)),i=1,2,\dots,M$ are computed in order to take the final decision. 
 
 This method does not lead to an optimal solution and inconsistent results could be obtained, that is, an input could be assigned to multiple classes simultaneously. For this reason, the most common approach is to assign a new input u(t) to the class k such that 
 \[
@@ -1843,9 +1959,9 @@ where $\lambda>0$ is a tuning parameter. The solution of the learning from data 
 \]
 This technique is used both in regression and classification problems. One of the most common form is \emph{quadratic regularization}
 \[
-  V(\theta)=J(\theta)+\lambda\|\theta\|_2^2=J(\theta)+\lambda\theta^t\theta
+  V(\theta)=J(\theta)+\lambda\|\theta\|_2^2=J(\theta)+\lambda\theta^T\theta
 \]
-Why regularization?: 
+Why regularization? 
 \begin{itemize}
   \item To counteract the effects of overfitting 
   \item To make the optimization problem better conditined
@@ -1875,31 +1991,46 @@ Assume now the existence of the true model
     y(t)=\varphi^T(t)\theta^*+w(t) \quad t=1,2,\dots,N
 \]
 By analyzing the statistical properties of the Ridge estimator we get
-\begin{gather*}
-    E[\hat{\theta}]=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^TY]\\
-    Y=\Phi\theta^*+w\\
-    E[\hat{\theta}]=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T(\Phi\theta^*+w)]=\\
-    =E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*]+E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^Tw]=\\
-    =(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*\neq \theta^*
-\end{gather*}
+\begin{align*}
+    E[\hat{\theta}]&=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^TY]\qquad\qquad Y=\Phi\theta^*+w\\
+    E[\hat{\theta}]&=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T(\Phi\theta^*+w)]=\\
+    &=E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*]+E[(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^Tw]=\\
+    &=(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi\theta^*\neq \theta^*
+\end{align*}
 and 
+\begin{align*}
+    \cov(\hat{\theta}) &= E\left[ (\hat{\theta}-\theta^*)(\hat{\theta}-\theta^*)^T \right]
+\end{align*}
+by considering that 
+\begin{align*}
+    \hat{\theta} &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T Y\\
+                 &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi)^{-1}\Phi^T Y\\
+                 &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \hat{\theta}_{LS} \\
+\end{align*}     
+we can compute the covariance in the following way:
+\begin{align*}
+    \cov(\hat{\theta}) &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \cov(\hat{\theta}_{LS})\Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}\\
+                       &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \sigma_w^2 (\Phi^T \Phi)^{-1} \Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}\\
+                       &= \sigma_w^2(\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}
+\end{align*}
+It can also be proven that
 \[
-    cov(\hat{\theta})=\sigma_w^2(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi+\lambda I_p)^{-1}<\sigma_w^2(\Phi^T\Phi)^{-1}=cov(\hat{\theta}_{LS})
+    \cov(\hat{\theta})=\sigma_w^2(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi+\lambda I_p)^{-1}<\sigma_w^2(\Phi^T\Phi)^{-1}=\cov(\hat{\theta}_{LS})
 \]
 \begin{itemize}
-    \item The Ridge estimator $\hat{\theta}$ is biased and $cov(\hat{\theta})<cov(\hat{\theta}_{LS})$
+    \item The Ridge estimator $\hat{\theta}$ is biased and $\cov(\hat{\theta})<\cov(\hat{\theta}_{LS})$
     \item as $\lambda$ increases, the shrinkage of the estimated cocefficients leads to a reduction in the variance of the estimates at the expense of an increase in bias $\implies$ $\lambda$ is a hyperparameter that can manage the bias-variance tradeoff
     \item If $\Phi^T\Phi$ is ill-conditioned (or even rank deficient), the use of $\lambda$ leads to the better conditioned matrix $\Phi^T\Phi+\lambda I_p$
 \end{itemize}
 
-Regualarization can be exploited also for the identification of dynamic models and for classification problems. In general: 
+Regularization can be exploited also for the identification of dynamic models and for classification problems. In general: 
 \begin{itemize}
-    \item If the model complexity $p$ is high (many parameters) it may not be possible to estimate several of the accurately $\implies$ it is advantageous to pull them towards zero as the ones having the smallest influence on $J(\theta)$ will be affected most by the shrinkage property $\implies$ regularization allows complex models to eb trained on small data sets without severe overfitting. 
+    \item If the model complexity $p$ is high (many parameters) it may not be possible to estimate several of the accurately $\implies$ it is advantageous to pull them towards zero as the ones having the smallest influence on $J(\theta)$ will be affected most by the shrinkage property $\implies$ regularization allows complex models to be trained on small data sets without severe overfitting. 
     \item The problem of minimizing $J(\theta)$ may be ill conditioned, especially when the complexity $p$ is high, in the sense that the Hessian $J''(\theta)$ may be ill-conditioned $\implies$ adding the norm penalty will add $\lambda I_p$ to this matrix so that it becomes better conditioned. 
     \item The choice of $\lambda$ is a crucial issue as we may think of $\lambda$ as a knob to control the bias-variance tradeoff (the larger $\lambda$ the larger the number of parameters that will be close to zero). The best way consists in choosing the values of $\lambda$ leading to the smallest value of the loss function evaluated on the validation set. 
 \end{itemize}
 
-\subsubsection{Alternative formulation for Ridge regression}
+\subsubsection{Alternative formulation for Ridge regression} 
 It is possible to show that the problem 
 \[
     \argmin_{\theta\in\mathcal{M}_p(\theta)}V(\theta),\quad v(\theta)=J(\theta) + \lambda\theta^T\theta
@@ -2079,6 +2210,14 @@ One nice property of the Kalman filter is that it can also be used for time-vary
     \end{cases}
 \]
 This application requires no modification of the Kalman filter equations. However, in this case the invariant version of the filter is not applicable as convergence of $P$ cannot be proven as the terms of the algebraic Riccati equation would be time-varying.
+
+
+
+
+
+
+
+
 
 
 

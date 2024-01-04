@@ -95,3 +95,7 @@
 \contentsline {section}{\numberline {9.2}MPC with Zero Terminal Constraint}{40}{section.9.2}%
 \contentsline {section}{\numberline {9.3}Quasi-Infinte Horizon MPC}{41}{section.9.3}%
 \contentsline {subsection}{\numberline {9.3.1}Practical framework}{41}{subsection.9.3.1}%
+\contentsline {section}{\numberline {9.4}Optimal control with constraints}{41}{section.9.4}%
+\contentsline {chapter}{\numberline {10}Reinforcement Learning}{43}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Notation}{43}{section.10.1}%
+\contentsline {subsubsection}{problem formulation}{43}{section*.38}%
