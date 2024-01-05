@@ -1229,7 +1229,7 @@ A possible way to represent class labels numerically is
 where $y^i$ is a $M\times 1$ vector whose elements are zero except for the $i$-th element, which is equal to 1. For a two-class problem we will use 
 \[
     y(t) = \begin{cases}
-        1 \quad \text{if } u(t) \in C_1
+        1 \quad \text{if } u(t) \in C_1\\
         0 \quad \text{if } u(t) \in C_2
     \end{cases}
 \]
@@ -1237,24 +1237,24 @@ The input space $\mathcal{U}$ is divided into $M$ regions labeled according to t
 
 Deterministic models: the decision boundaries are explicitly modeled. This involves the construction of a \emph{discriminant function} that directly assigns each input $u(t)$ to a specific class. 
 
-Probabilistic models: first, the posterior probabilities $P(C_i|u(t)) = P(y(t)=y^i|u(t)), i= 1,2,\dots,M$ are estimated. Then, these probabilities are used to decide to which class a given input $u(t)$ belongs. 
+Probabilistic models: first, the posterior probabilities $P(C_i|u(t)) = P(y(t)=y^i|u(t)),\ i= 1,2,\dots,M$ are estimated. Then, these probabilities are used to decide to which class a given input $u(t)$ belongs. 
 
-The performance fo a classifier can be evaluated by computing the error rate: 
+The performance of a classifier can be evaluated by computing the error rate: 
 \[
     Er = \displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}I(y(t),\hat{y}(t))
 \]
-where $hat{y}(t)$ is the prediction of $y(t)$ provided by the classifier and $I(y(t)\hat{y}(t))$ is an \emph{indicator variable} 
+where $\hat{y}(t)$ is the prediction of $y(t)$ provided by the classifier and $I(y(t)\hat{y}(t))$ is an \emph{indicator variable} 
 \[
     I(y(t)\hat{y}(t)) = \begin{cases}
-        1 \quad \text{if } y(t)\neq \hat{y}(t)
+        1 \quad \text{if } y(t)\neq \hat{y}(t)\\
         0 \quad \text{if } y(t) = \hat{y}(t)
     \end{cases}
 \]
 The error rate is thus the fraction of misclassified observations. 
 \begin{itemize}
-    \item The error rate can be evaluated on the training set (training error rate), on the validation set (validation error rate) and on the etst set (test error rate)
-        \item A good classifier is one for which the validation (test) error rate is small 
-            \item As for regression problems, choosing the model complexity by using the training error rate leads to overfitting. 
+    \item The error rate can be evaluated on the training set (training error rate), on the validation set (validation error rate) and on the test set (test error rate)
+    \item A good classifier is one for which the validation (test) error rate is small 
+    \item As for regression problems, choosing the model complexity by using the training error rate leads to overfitting. 
 \end{itemize}
 
 \section{The Bayes classifier}
@@ -1267,7 +1267,7 @@ It maximizes the conditional probability that $y(t)=y^i$ given the observed inpu
     \item In a two-class problem, the Bayes classifier consists in assigning $u(t)$ to class $C_1$ if $P(C_1|u(t))>0.5$ and to class $C_2$ otherwise 
     \item It is possible to show that this classifier leads to the minimum classification (prediction) error on a future unseen dataset (validation or test set)
     \item When dealing with real data, the conditional distribution of $\mathcal{Y}$ given $\mathcal{U}$ is usually uknown so that the Bayes classifier cannot be used in practice 
-    \item Probabilistic models use estimated probabilities $\hat{P}(C_i|u(t)),i=1,2,\dots,M$ rather than the true ones
+    \item Probabilistic models use estimated probabilities $\hat{P}(C_i|u(t)),\ i=1,2,\dots,M$ rather than the true ones
 \end{itemize}
 \section{Logistic regression}
 Consider a two-class classification problem with $r$ inputs $(u(t)=[u_1(t)\dots u_r(t)]^T)$ and assume a linear decision boundary. This boundary is a hyperplane in $\mathbb{R}^r$ described by the equation 
@@ -1283,12 +1283,14 @@ with $\varphi(t)=\begin{bmatrix}
 \end{bmatrix}^T $ and $\theta=\begin{bmatrix}
     \beta_0 & \beta_1 & \cdots & \beta_r
 \end{bmatrix}^T$
+\\
+\\
 How to model $P(C_1|u(t))$?
 We need a function $f(z(t))$, where $z(t) = \varphi^T(t)\theta$, such that 
 \begin{itemize}
     \item $f(z)$ takes values in the range $(0,1)$
     \item $f(0)=0.5$ 
-    \item $f(z)>0.5(f(z)<0.5)$ when $z>0 (z>0)$
+    \item $f(z)>0.5\ (f(z)<0.5)$ when $z>0\  (z<0)$
     \item $f(z)\to 1$ when $z\to\infty$
     \item $f(z)\to 0$ when $z\to-\infty$
 \end{itemize}
@@ -1301,7 +1303,7 @@ We have
 \[
     P(C_1|u(t))=f(z(t)), \quad P(C_2|u(t))=1-f(z(t))=\displaystyle\frac{1}{1+e^z}
 \]
-and
+from which we can simply derive
 \[
     z(t)=\log \displaystyle\frac{P(C_1|u(t))}{P(C_2|u(t))}=\log \displaystyle\frac{f(z)}{1-f(z)}
 \]
@@ -1311,11 +1313,11 @@ Find the estimate $\hat{\theta}$ that maximizes the posterior probability of the
     y(1) & y(2) & \cdots & y(N)
 \end{bmatrix}^T \implies$ maximum likelihood estimation 
 \[
-    P(Y|\theta) = \prod_{t=1}^N P(C_1|u(t))^{y(t)}P(C_2|u(t))^{1-y(t)} = \prod_{t=1}^N f(z(t))^{t(t)} (1-f(z(t)))^{1-y(t)}
+    L(\theta)=P(Y|\theta) = \prod_{t=1}^N P(C_1|u(t))^{y(t)}P(C_2|u(t))^{1-y(t)} = \prod_{t=1}^N f(z(t))^{t(t)} (1-f(z(t)))^{1-y(t)}
 \]
 Log-likelihood function:
 \[
-    \log P(Y|\theta) = \displaystyle\sum_{t=1}^{N}[y(t)\log f(z(t))+(1-y(t))\log(1-f(z(t)))]
+    \log P(Y|\theta) = \displaystyle\sum_{t=1}^{N}\left[y(t)\log f(z(t))+(1-y(t))\log(1-f(z(t)))\right]
 \]
 Maximizing the above function is equivalent to minimizing its negative, so we have to find the estimate $\hat{\theta}$ minimizing
 \[
@@ -1368,10 +1370,10 @@ The iterative algorithm is
 Once an estimate $\hat{\theta}$ has been computed and a new input $u(t)$ becomes available:
 \begin{enumerate}
     \item Compute $\hat{z}(t)=\varphi^T(t)\hat{\theta}$ 
-    \item Compute $f(\hat{z}(t))=\hat{P}(C_1|u(t)) = \frac{e^{\hat{z}}}{1+e^{\hat{z}}}$, which is an estimate of $P(C_1|u(t))$ 
+    \item Compute $f(\hat{z}(t))=\hat{P}(C_1|u(t)) = \displaystyle\frac{e^{\hat{z}}}{1+e^{\hat{z}}}$, which is an estimate of $P(C_1|u(t))$ 
     \item If $f(\hat{z}(t))>0.5$ assign $u(t)$ to class $C_1$ ($\hat{y}(t)=1$), otherwise assign it to class $C_2$ ($\hat{y}(t)=0$)
 \end{enumerate}
-Depending on the specific classification proble, the decision criterion could be different from that described in the above step 3
+Depending on the specific classification problem, the decision criterion could be different from that described in the above step 3
 \subsection{The gradient descent algorithm}
 \[
     \hat{\theta}^{k+1} = \hat{\theta}^k-\eta^kJ'(\hat{\theta}^k)
@@ -1384,7 +1386,7 @@ Depending on the specific classification proble, the decision criterion could be
     \item The procedure can be repeated by starting from different initial guesses  
     \item \emph{Stopping criterion}: $\|\hat{\theta}^{k+1}-\hat{\theta}^k\|<\delta$ or $|J(\hat{\theta}^{k+1})-J(\hat{\theta}^k)|<\delta$ or $\|J'(\hat{\theta}^k)\|<\delta$ where $\delta$ is a small positive number 
 \end{itemize}
-For the logistic regressino problem, the iterative algorithm is 
+For the logistic regression problem, the iterative algorithm is 
 \[
     \hat{\theta}^{k+1} = \hat{\theta}^k-\eta^k \Phi^T(F(\theta)-Y)
 \]
@@ -1435,12 +1437,14 @@ The error rate concerning the second class is
     Er_H = 11\%
 \]
 \subsection{Multiclass problems}
-One-vs-all: the multiclass problem is split into $M$ two-class problems. The generic $i$-th binary problem involves the classes $C_i$ and $\bar{C}_i = \{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, $M$ conditional probabilities $\hat{P}(C_i|u(t)),i=1,2,\dots,M$ are estimated. A new input $u(t)$ is assigned to the class $C_k$ such that 
+\subsubsection{One-vs-all}
+the multiclass problem is split into $M$ two-class problems. The generic $i$-th binary problem involves the classes $C_i$ and $\bar{C}_i = \{C_1,\dots,C_{i-1},C_{i+1},\dots,C_M\}$. Therefore, $M$ conditional probabilities $\hat{P}(C_i|u(t)),i=1,2,\dots,M$ are estimated. A new input $u(t)$ is assigned to the class $C_k$ such that 
 \[
     k = \argmax_{i\in \{1,2,\dots,M\}}\hat{P}(C_i|u(t))
 \]
 Note that the sum of the posterior probabilities $\hat{P}(C_i|u(t))$ is not 1 as multiple two-class classification problems are being considered.
-Multiclass logistic regression: the posterior probabilities are modelled using the \emph{normalized exponential} (or \emph{softmax function})
+\subsubsection{Multiclass logistic regression}
+the posterior probabilities are modelled using the \emph{normalized exponential} (or \emph{softmax function})
 \[
     P(C_i|u(t))=\displaystyle\frac{e^{z_i(t)}}{e^{z_1(t)}+e^{z_2(t)}+\dots+e^{z_M(t)}}, \quad i=1,2,\dots,M
 \]
@@ -1448,7 +1452,7 @@ where
 \[
     z_i(t)=\varphi^T(t)\theta_i, \quad i=1,2,\dots,M
 \]
-Note that $\sum_{i=1}^{M}P(C_i|u(t))=1$
+Note that $\displaystyle\sum_{i=1}^{M}P(C_i|u(t))=1$
 
 The input space $\mathcal{U}=\mathbb{R}^r$ can thus be devided into $M$ regions defined by a set of $M$ hyperplanes. Each hyperplane represents the linear decision boundary between two classes. More precisely, the hyperplane separating classes $k$ and $j$ is described by the equation 
 \[
@@ -1474,19 +1478,19 @@ a nonlinear boundary in $\mathcal{U}$ can be mapped into a linear one in $\bar{\
     \item Nonlinear transformations cannot remove class overlap. They can increase the level of overlap or create overlap where none existed in $\mathcal{U}$
 \end{itemize}
 
-\subsection{Linear discriminant analysis}
+\section{Linear discriminant analysis}
 The posteior probabilities are estimated through the Bayes theorem:
 \[
     P(C_i|u(t)) =\displaystyle\frac{P(u(t)|C_i)P(C_i)}{P(u(t))}=\displaystyle\frac{P(u(t)|C_i)P(C_i)}{\sum_{k=1}^{M}P(u(t)|C_k)p(C_k)}
 \]
 if $u(t)$ is a continuous random variable, $P(u(t)|C_i)$ is replaced with the conditional pdf $f_u(u|C_i)$. In fact, $f_u(u|C_i)du$ is the probability that $u(t)\in[u,u+du]$.
 \\How does it work? 
-\begin{itemize}
+\begin{enumerate}
     \item Assume a specific probability density function for $P(u(t)|C_i),i=1,2,\dots,M$ and estimate the parameters characterizing such distribution 
     \item Estimate the prior probabilities $P(C_1),P(C_2),\dots,P(C_M)$. 
     \item Compute estimates of the posterior probabilities $P(C_i|u(t)),i=1,2,\dots,M$ 
     \item Assign a new input $u(t)$ to the class $C_k$ for which $\hat{P}(C_i|u(t)),i=1,2,\dots, M$ is largest
-\end{itemize}
+\end{enumerate}
 
 \subsection{Gaussian class densities with commmon covariance matrix}
 Two class classification problem 
@@ -1521,34 +1525,58 @@ As for the logistic regression, the decision boundary is given by the hyperplane
 \]
 The estimates required in steps 1 and 2 can be computed as 
 \[
-    \hat{\mu}_1=\displaystyle\frac{1}{N_1}\displaystyle\sum_{t=1}^{N}y(t)u(t) \quad \hat{\mu}_1=\displaystyle\frac{1}{N_2}\displaystyle\sum_{t=1}^{N}y(t)u(t)\\
+    \hat{\mu}_1=\displaystyle\frac{1}{N_1}\displaystyle\sum_{t=1}^{N}y(t)u(t) \qquad \hat{\mu}_1=\displaystyle\frac{1}{N_2}\displaystyle\sum_{t=1}^{N}(1-y(t))u(t)\\
 \]
 \[
-    \hat{\Sigma}=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}y(t)(u(t)-\hat{\mu}_1)(u(t)-\hat{\mu}_1)^T+\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}y(t)(u(t)-\hat{\mu}_2)(u(t)-\hat{\mu}_2)^T
+    \hat{\Sigma}=\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}y(t)(u(t)-\hat{\mu}_1)(u(t)-\hat{\mu}_1)^T+\displaystyle\frac{1}{N}\displaystyle\sum_{t=1}^{N}(1-y(t))(u(t)-\hat{\mu}_2)(u(t)-\hat{\mu}_2)^T
 \]
 \[
     \hat{P}(C_1)=\displaystyle\frac{N_1}{N_1+N_2},\quad\hat{P}(C_2)=1-\hat{P}(C_1)
 \]
 where $N_1$ is the number of inputs belonging to class $C_1$ and $N_2=N-N_1$ is the number of inputs belonging to class $C_2$. A new input $u(t)$ is assigned to class $C_1$ if $\hat{P}(C_1|u(t))>0.5$ and to class $C_2$ otherwise. As for logistic regression, a different decision critetrion can be used. 
 \subsubsection{Multiclass problem}
-% [TODO] insert formulae slide 18 and do computations (left to the student for joy)
+\[
+    f_u(u|C_i)=\displaystyle\frac{1}{\sqrt{(2\pi)^rdet(\Sigma)}}\exp \left(-\displaystyle\frac{(u(t)-\mu_i)^T\Sigma^{-1}(u(t)-\mu_i)}{2}\right), \quad i=1,2,\dots,M
+\]
+It follows that: 
+\[
+    P(C_i|u(t)) = \displaystyle\frac{f_u(u|C_i)P(C_i)}{\sum_{k=1}^{M}f_u(u|C_k)P(C_k)}=\displaystyle\frac{e^{z_i(t)}}{\sum_{k=1}^{M}e^{z_k(t)}}
+\]
+where 
+\[
+    z_i(t) = u^T(t)\Sigma^{-1}\mu_i - \displaystyle\frac{1}{2}\mu_i^T\Sigma^{-1}\mu_i + \log P(C_i) = u^T(t)\beta+\beta_0 = \varphi^T(t)\theta_i
+\]
 The input space $\mathcal{U}=\mathbb{R}^r$ can thus be divided into $M$ regions defined by a set of $M$ hyperplanes. Each hyperplane represents the linear decisiion boundary between two classes. More precisely, the hyperplane separating classes $k$ and $j$ is described by the equation 
 \[
     (z_k(t)-z_j(t))=0 \quad \text{that is} \quad \varphi^T(t)(\theta_k-\theta_j)=0
 \]
 The required estimates are computed as follows 
-% [TODO] insert from slide 19
+\begin{gather*}
+    \hat{\mu}_i = \displaystyle\frac{1}{N_i}\displaystyle\sum_{t:y(t)=y^i}u(t)  \qquad i=1,2,\dots,M\\
+    \hat{\Sigma}=\displaystyle\sum_{i=1}^{M}\displaystyle\frac{1}{N}\displaystyle\sum_{t:y(t)=y^i}(u(t)-\hat{\mu}_i)(u(t)-\hat{\mu}_i)^T\\
+    \hat{P}(C_i) = \displaystyle\frac{N_i}{N}, \qquad i=1,2,\dots,M
+\end{gather*}
+Where $N_i$ is the number of inputs belonging to class $C_i$\\
 A new input $u(t)$ is assigned to the class $C_k$ such that 
 \[
     k=\argmax_{i\in\{1,2,\dots,M\}}\hat{P}(C_i|u(t))
 \]
 \subsection{Gaussian class denisities with different covariance matrices}
-% [TODO] insert formulae slide 20
+\[
+    f_u(u|C_i)=\displaystyle\frac{1}{\sqrt{(2\pi)^rdet(\Sigma_i)}}\exp \left(-\displaystyle\frac{(u(t)-\mu_i)^T\Sigma_i^{-1}(u(t)-\mu_i)}{2}\right), \quad i=1,2,\dots,M
+\]
+\[
+    P(C_i|u(t)) = \displaystyle\frac{f_u(u|C_i)P(C_i)}{\sum_{k=1}^{M}f_u(u|C_k)P(C_k)}=\displaystyle\frac{e^{z_i(t)}}{\sum_{k=1}^{M}e^{z_k(t)}}
+\]
+where
+\[
+    z_i(t) = -\displaystyle\frac{1}{2}\log det(\Sigma_i) - \displaystyle\frac{1}{2}(u(t)-\mu_i)^T\Sigma_i^{-1}(u(t)-\mu_i) + \log P(C_i) = \varphi^T(t)\theta_i
+\]
 In this case, the input space $\mathcal{U}$ can be divided into $M$ regions defined by $M$ quadratic decision boundaries. The quadratic boundary separatingk classes $k$ and $j$ is described by the equation 
 \[
     (z_k(t)-z_j(t))=0 \quad \text{that is} \quad \varphi^T(t)(\theta_k-\theta_j)=0
 \]
-For this reasonm in this case the approach is called \emph{quadratic discriminant analysis}
+For this reason in this case the approach is called \emph{quadratic discriminant analysis}
 
 \chapter{Classification: deterministic models}
 The decision boundaries are explicitly modeled. This involves the construction of a discriminant function that directly assigns each input $u(t)$ to a specific class 
@@ -2003,15 +2031,15 @@ and
 \end{align*}
 by considering that 
 \begin{align*}
-    \hat{\theta} &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T Y\\
-                 &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi)^{-1}\Phi^T Y\\
-                 &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \hat{\theta}_{LS} \\
+    \hat{\theta} &= (\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T Y\\
+                 &= (\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi(\Phi^T\Phi)^{-1}\Phi^T Y\\
+                 &= (\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi \hat{\theta}_{LS} \\
 \end{align*}     
 we can compute the covariance in the following way:
 \begin{align*}
-    \cov(\hat{\theta}) &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \cov(\hat{\theta}_{LS})\Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}\\
-                       &= (\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi \sigma_w^2 (\Phi^T \Phi)^{-1} \Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}\\
-                       &= \sigma_w^2(\Phi^T\Phi-\lambda I_p)^{-1}\Phi^T\Phi (\Phi^T\Phi-\lambda I_p)^{-1}
+    \cov(\hat{\theta}) &= (\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi \cov(\hat{\theta}_{LS})\Phi^T\Phi (\Phi^T\Phi+\lambda I_p)^{-1}\\
+                       &= (\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi \sigma_w^2 (\Phi^T \Phi)^{-1} \Phi^T\Phi (\Phi^T\Phi+\lambda I_p)^{-1}\\
+                       &= \sigma_w^2(\Phi^T\Phi+\lambda I_p)^{-1}\Phi^T\Phi (\Phi^T\Phi+\lambda I_p)^{-1}
 \end{align*}
 It can also be proven that
 \[
@@ -2100,8 +2128,8 @@ The corresponding prediction error is called the \emph{innovation}
 \]
 Innovation properties 
 \begin{enumerate}
-    \item $\varepsilon(t)$ is a linear function of $y(t).y(t-1),y(t-2)\dots$
-    \item $E[\varepsilon(t)Y^T_{t-1}=0]$
+    \item $\varepsilon(t)$ is a linear function of $y(t),y(t-1),y(t-2)\dots$
+    \item $E[\varepsilon(t)Y^T_{t-1}]=0$
     \item $\varepsilon(t)$ is a zero mean white process: 
         \[
             E[\varepsilon(t)]=0, \quad E[\varepsilon(t+\tau)\varepsilon(t)]=\sigma_\varepsilon^2\delta(\tau)
@@ -2117,10 +2145,10 @@ where
     \tilde{Y}_{t-1}=\{\varepsilon(t-1),\varepsilon(t-2),\dots,\varepsilon(1)\}
 \]
 With reference to the optimal prediction and  filtering problems, we have 
-\[
+\begin{gather*}
     \hat{x}(t|t-1)=E[x(t)|Y_{t-1}]=E[x(t)|\tilde{Y}_{t-1}]\\
     \hat{x}(t|t) = E[x(t)|Y_t]=E[x(t)|\tilde{Y}_t]
-\]
+\end{gather*}
 
 \section{the Kalman filter}
 \subsection{Deterministic state space models: the Luenberger observer}
@@ -2139,9 +2167,125 @@ $\hat{x}_0$: initial guess for $x_0$
     \item $(A,C)$ observable $\implies$ $\lim_{t\to\infty}\hat{x}(t)=x(t)$ with arbitrary dynamics
     \item $(A,C)$ detectable $\implies$ $\lim_{t\to\infty}\hat{x}(t)=x(t)$ but not with arbitrary dynamics
 \end{itemize}
-
 \subsection{Stochastic state space models}
+\begin{align*}
+    x(t+1)&=Ax(t)+Bu(t)+Gw(t) \quad & x(0)=x_0 \quad & x(t)\in\R^n,u(t)\in\R^r,w(t)\in\R^p\\
+    y(t) &= Cx(t) +v(t) & &y(t)\in\R^m
+\end{align*}
 
+\begin{itemize}
+    \item $u(t)$ is a deterministic process 
+    \item $w(t)$ and $v(t)$ are mutually uncorrelated zero-mean white processes 
+    \item $x_0$ is a random vector, uncorrelated with $w(t)$ and $v(t)$
+\end{itemize}
+\begin{gather*}
+    E[w(t+\tau)w(t)^T]=Q\delta(\tau) \quad E[v(t+\tau)v(t)^T]=R\delta(\tau) \quad E[(x_o-\mu_0)(x_o-\mu_0)^T]=P_0
+\end{gather*}
+Problem 1 (optimal prediction): given $A,B,C,Q,R,\mu_0,P_0$ determine the optimal estimate of $x(t)$ from past input and output samples\\
+Problem 2 (optimal filtering): given $A,B,C,Q,R,\mu_0,P_0$ determine the optimal estimate of $x(t)$ from present and past input adn output samples
+\subsection{Derivation of the Kalman filter}
+By applying conditional expectation to the state and output equations, we can write the innovation as: 
+\[
+    \varepsilon(t) = C(x(t)-\hat{x}(t|t-1))+v(t) = Ce_x(t)+v(t)
+\]
+where $e_x(t)$ is the state prediction error
+\[
+    e_x(t) = x(t)-\hat{x}(t|t-1)
+\]
+We define 
+\[
+    P(t|t-1) = E[e_x(t)e_x^T(t)]
+\]
+And derive the covariance matrix of the innovation as follows:
+\begin{align*}
+    E[\varepsilon(t)\varepsilon^T(t)] &= E[(Ce_x(t)+v(t))(Ce_x(t)+v(t))^T]\\
+                                      &= E[Ce_x(t)e_x^T(t)]+E[Ce_x(t)v^T(t)]+E[v(t)e_x^T(t)C^T]+E[v(t)v^T(t)]\\
+                                      & = CP(t|t-1)C^T + R
+\end{align*}
+To get $\hat{x}(t|t)$ we do the following computations:
+\begin{align*}
+    \hat{x}(t|t) &= E[x(t)|\tilde{Y}_t] \\
+                 &= E[x(t)|\varepsilon(t)] + E[x(t)|\tilde{Y}_{T-1}] - E[x(T)]\\
+                 & =E[x(t)]+E[(x(t)-E[x(t)])\varepsilon^T(t)]E[\varepsilon(t)\varepsilon^T(t)]^{-1}\varepsilon(t)+ E[x(t)|\tilde{Y}_{T-1}] - E[x(T)]
+\end{align*}
+Let us break down computation
+\begin{align*}
+    E[(x(t)-E[x(t)])\varepsilon^T(t)] & = E[x(t)\varepsilon^T(t)]-E[x(t)]E[\varepsilon^T(t)]\\
+                                      & = E[x(t)(Ce_x(t)+v(t))^T] \\
+                                      & = E[x(t)e_x^T(t)]C^T+E[x(t)v^T(t)]\\
+                                      & = E[(e_x(t)+\hat{x}(t|t-1))e_x^T(t)] \\
+                                      & = E[e_x(t)e_x^T(t)]+E[\hat{x}(t|t-1)e_x^T(t)]\\
+                                      & = P(t|t-1)
+\end{align*}
+Therefore we get 
+\[
+    \hat{x}(t|t) =P(t|t-1)C^T(CP(t|t-1)C^T + R)^{-1}\varepsilon(t)+\hat{x}(t|t-1)
+\]
+which we rewrite as 
+\[
+    \hat{x}(t|t) =K(t)\varepsilon(t)+\hat{x}(t|t-1)
+\]
+Where $K(t)$ is the Kalman filter gain. The prediction error is
+\[
+    e_x(t+1) = x(t+1) -\hat{x}(t+1|t) = A(x(t)-\hat{x}(t|t))+Gw(t)
+\]
+and its covariance computes as: 
+\begin{align*}
+    P(t+1|t) & = E[e_x(t+1)e_x^T(t+1)] \\
+             & = E[(A(x(t)-\hat{x}(t|t)+Gw(t)))(A(x(t)-\hat{x}(t|t)+Gw(t)))^T] \\
+             & = AP(t|t)A^T + GQG^T
+\end{align*}
+Where $P(t|t)$ is the covariance matrix of the filtering error 
+\[
+    x(t) -\hat{x}(t|t) = x(t) - K(t)\varepsilon(t)-\hat{x}(t|t-1)
+\]
+which we can simply rewrite as 
+\[
+    (I-K(t)C)e_x(t)-K(t)v(t)
+\]
+from which it follows that 
+\[
+    P(t|t) = (I - K(t) C) P(t|t - 1) (I - K(t) C)^T + K(t)RK^T (t)
+\]
+by writing, for the sake of lightening notation, \[P(t|t-1)=P, \quad K(t)=K\]
+we get
+\begin{align*}
+    P(t|t)& = P -PC^TK^T-KCP+KCPC^TK^T+KRK^T\\
+          & = P-PC^TK^T-KCP+K(CPC^T+R)K^T \\
+          & = P _ PC^TK^T-KCP+PCT(CPC^T+R)^{-1}(CPC^T+R)K^T\\
+          & = P-PC^TK^T - KCP + PC^TK^T \\
+          & = P(t|t-1) - K(t)CP(t|t-1)
+\end{align*}
+We have: 
+\[
+    P(t|t)\leq P(t|t-1)
+\]
+\subsection{Kalman filter equations: predictor-corrector form}
+Start:
+\[
+    \hat{x}(0|-1)=\mu_0, P(0|-1)=P_0
+\]
+Correction:
+\begin{align*}
+    &K(t) = P(t|t-1)C^T(CP(t|t-1)C^T+R)^{-1} \tag{1} \\
+    &\varepsilon(t) = y(t) -\hat{y}(t|t-1) = y(t) -C\hat{x}(t|t-1) \tag{2} \\
+    &\hat{x}(t|t) = \hat{x}(t|t-1) + K(t)\varepsilon(t) \tag{3}\\
+    &P(t|t) = (I-K(t)C)P(t|t-1) \tag{4}
+\end{align*}
+Prediction: 
+\begin{align*}
+    & \hat{x}(t+1|t) = A\hat{x}(t|t)+Bu(t) \tag{5}\\
+    & P(t+1|t) = AP(t|t)A^T + GQG^T \tag{6}
+\end{align*}
+Remarks: 
+\begin{itemize}
+    \item The filter is time-varying even if the system is time-invariant 
+    \item $P(t+1|t)$ and $K(t)$ do not depend on the data and can be computed in advance 
+    \item The state estimation is not exact even if $x_0$ is known, because of the presence of $w(t)$ 
+    \item The measurement (innovation) is not fully reliable because of the presence of $v(t)$
+    \item $K(t)$ is the best tradeoff between the use of the model and the use of the measurements
+    \item To start the algorithm in practice we can set $\hat{x}(0|-1)=0, \ P(0|-1)=\alpha I_n$, where $\alpha$ is a positive number that reflects the confidence in the initial estimate $\hat{x}(0|-1)$
+\end{itemize}
 
 
 
@@ -2163,9 +2307,9 @@ The above equation is called the \emph{difference Riccati equation}
 \subsubsection{Theorem 1}
 Let the system be asymptotically stable. Then: 
 \begin{itemize}
-    \item $p(t+1|t)$ converges to a constant matrix $P$ for every initial positive semidefinite condition 
+    \item $P(t+1|t)$ converges to a constant matrix $P$ for every initial positive semidefinite condition 
         \[
-            lim_{t\to\infty}P(t+1|t)=P \quad \forall P_0>\geq0
+            \lim_{t\to\infty}P(t+1|t)=P \quad \forall P_0>\geq0
         \]
         where $P$ is the solution of the \emph{algebraic Riccati equation} 
         \[
@@ -2173,7 +2317,7 @@ Let the system be asymptotically stable. Then:
         \]
     \item As a consequence, the Kalmann filter gain $K(t)$ converges: 
         \[
-            K=lim_{t\to\infty}K(t)=PC^T(CPC^T+R)^{-1}
+            K=\lim_{t\to\infty}K(t)=PC^T(CPC^T+R)^{-1}
         \]
     \item The corresponding Kalmann predictor is asymptotically stable, i.e. all the eigenvalues of $A-K_pC$ are inside the unit disc, where $K_p=AK$
 \end{itemize}
@@ -2189,17 +2333,17 @@ If the assumptions of Th. 1 or Th. 2 are satisfied, it is possible to use the st
 \begin{enumerate}
     \item Start: solve the algebraic Riccati equation to get $P$ and then $K$, set $\hat{x}(0|-1)$
         \item Correction: \begin{gather}
-                \varepsilon(t)=y(t)-\hat{y}(t|t-1)^s=y(t)-C\hat{x}(t|t-1)^s\\
-                \hat{x}(t|t)^s=\hat{x}(t||t-1)^s+K\varepsilon(t)
+                \varepsilon(t)=y(t)-\hat{y}(t|t-1)^s=y(t)-C\hat{x}(t|t-1)^s \tag{1}\\
+                \hat{x}(t|t)^s=\hat{x}(t|-1)^s+K\varepsilon(t) \tag{2}
         \end{gather}
         \item Prediction: 
             \[
-                \hat{x}(t+1|t)^s=A\hat{x}(t|t)^s+Bu(t)
+                \hat{x}(t+1|t)^s=A\hat{x}(t|t)^s+Bu(t) \tag{3}
             \]
 \end{enumerate}
 The suboptimal estimates convege to the optimal ones: 
 \[
-    lim_{t\to\infty}\hat{x}(t|t)^s=\hat{x}(t|t), \quad lim_{t\to\infty}\hat{x}(t+1|t)^s=\hat{x}(t+1|t)
+    \lim_{t\to\infty}\hat{x}(t|t)^s=\hat{x}(t|t), \quad \lim_{t\to\infty}\hat{x}(t+1|t)^s=\hat{x}(t+1|t)
 \]
 
 One nice property of the Kalman filter is that it can also be used for time-varying systems
