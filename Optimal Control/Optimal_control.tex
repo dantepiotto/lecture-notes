@@ -1,4 +1,3 @@
-
 \documentclass{book}
 \usepackage{amsmath, amsthm, graphicx, amsfonts, float}
 \usepackage[english]{babel}
@@ -89,16 +88,16 @@ We use $\mathbf{x}\in\R^{nT}$ and $\mathbf{u}\in\R^{mT}$ to denote, respectively
 \subsubsection{Trajectory of a system}
 
 Definition: A pair ($\bar{\mathbf{x}},\bar{\mathbf{u}})\in\R^{nT} \times \R^{mT}$ is called a trajectory of system \eqref{system} 
-if $\bar{x}_{t+1}=f_t(\bar{x}_t,\bar{u}_t)$ for all $t\in\{0,\dots,T-1\}$., That is, if $\bar{\mathbf{x}},\bar{\mathbf{u}})$ satisfies the system dynamics (the same holds for continuous time systems with proper adjustments). In particular, $\bar{\mathbf{x}}$ is the state trajectory, while $\bar{\mathbf{u}}$ is the input trajectory.
+if $\bar{x}_{t+1}=f_t(\bar{x}_t,\bar{u}_t)$ for all $t\in\{0,\dots,T-1\}$., That is, if $(\bar{\mathbf{x}},\bar{\mathbf{u}})$ satisfies the system dynamics (the same holds for continuous time systems with proper adjustments). In particular, $\bar{\mathbf{x}}$ is the state trajectory, while $\bar{\mathbf{u}}$ is the input trajectory.
 
 \subsubsection{Equilibrium}
 Definition: A state-input pair $(x_e,u_e)\in\R^n\times\R^m$ is called an equilibrium pair of \eqref{system} 
-if $(x_t,u_t)=(x_e,u_e),t\in\N_0$ is a trajectory of the system. \\
+if $(x_t,u_t)=(x_e,u_e),\forall t\in\N_0$ is a trajectory of the system. \\
 Equilibria of time-invariant systems satisfy $x_e=f(x_e,u_e)$
 
 \subsubsection{Linearization of a system about a trajectory}
 Given the dynamics \eqref{system}
-and a trajectory $(\bar{\mathbf{x}},\bar{\mathbf{u}})$, the linearization of (1) about $(\bar{\mathbf{x}},\bar{\mathbf{u}})$ is given by the linear (possibly) time-varying system 
+and a trajectory $(\bar{\mathbf{x}},\bar{\mathbf{u}})$, the linearization of \eqref{system} about $(\bar{\mathbf{x}},\bar{\mathbf{u}})$ is given by the linear (possibly) time-varying system 
 \[
     \Delta x_{t+1} = A_t\Delta x_t + B_t \Delta u_t \quad t\in\N_0
 \]
@@ -112,10 +111,10 @@ with $A_t$ and $B_t$ the Jacobians of $f_t$, with respect to state and input res
 \begin{itemize}
     \item Decision variable: $x\in\R^n$ 
     \item Cost function: $\ell(x):\R^n\to\R$ cost associated to decision $x$
-    \item Constraints (constraint sets): for some given functions $h_i:\R^n\to\R, i=1,\dots,m, \text{ and } g_j:\R^n\to\R,$ the decision vector $x\in\R^n$ needs to satisfy 
+    \item Constraints (constraint sets): for some given functions $h_i:\R^n\to\R,  \text{ and } g_j:\R^n\to\R,$ the decision vector $x\in\R^n$ needs to satisfy 
         \begin{gather*}
             h_i(x)=0 \quad i=1,\dots,m \\
-            g_j(x)=0 \quad j=1,\dots,r
+            g_j(x)\leq0 \quad j=1,\dots,r
         \end{gather*}
         equivalently we can say that we require $x\in X$ with 
         \[
@@ -126,18 +125,18 @@ with $A_t$ and $B_t$ the Jacobians of $f_t$, with respect to state and input res
 
 \subsubsection{Minimization}
 We can write our optimization problem as 
-\begin{gather}
-    \min_{x\in\R^n} \ell(x)\\
-    \text{subj. to } h_i(x) = 0 \quad i=1,\dots,m\\
-    g_j(x)\leq 0 \quad j=1,\dots,r
-\end{gather}
+\begin{align*}
+    \min_{x\in\R^n} &\ell(x)\\
+    \text{subj. to } &h_i(x) = 0 \quad i=1,\dots,m\\
+    &g_j(x)\leq 0 \quad j=1,\dots,r
+\end{align*}
 where $h_i:\R^n\to\R$ and $g_j:\R^n\to\R$\\
 We can write it more compactly as 
-\begin{gather*}
-    \min_{x\in\R^n} \ell(x)\\
-    \text{subj. to } h(x) = 0 
-    g(x)\leq 0 
-\end{gather*}
+\begin{align*}
+    \min_{x\in\R^n} &\ell(x)\\
+    \text{subj. to } &h(x) = 0 \\
+    &g(x)\leq 0 
+\end{align*}
 where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$
 \subsection{Discrete-time optimal control}
 \subsubsection{main ingredients}
@@ -150,7 +149,7 @@ where $h:\R^n\to\R^m$ and $g:\R^n\to\R^r$
         \[
             \begin{array}{l l l}
                 x_1 = f(x_0,u_0) & \quad \text{i.e.} \quad& x_1-f_t(x_0,u_0)=0 \\
-                x_2 = f(x_1,u_1) & \quad \text{i.e.} \quad & x_1-f_t(x_1,u_1)=0 \\
+                x_2 = f(x_1,u_1) & \quad \text{i.e.} \quad & x_2-f_t(x_1,u_1)=0 \\
                 \vdots \\
                 x_T = f(x_{T-1},u_{T-1}) & \quad \text{i.e.} \quad & x_T-f_t(x_{T-1},u_{T-1})=0 \\
             \end{array}
@@ -205,7 +204,7 @@ Note that $\mathcal{F}$ is a space of functions (function space). This is an inf
         \]
     \item Space of trajectories (or trajectory manifold)
         \[
-            \mathcal{T} = \{(x(\cdot),u(\cdot))\in\mathcal{F}|\dot{x}(t)=f_t(x(t),u(t)), t\geq 0\}
+            \mathcal{T} = \{(x(\cdot),u(\cdot))\in\mathcal{F}\ |\ \dot{x}(t)=f_t(x(t),u(t)),\ t\geq 0\}
         \]
 \end{itemize}
 
@@ -251,7 +250,7 @@ Gradient of a vector-valued function: for a vector field $r:\R^n\to\R^m$, the gr
 \[
     \nabla r(x) = \begin{bmatrix}
         \nabla r_1(x) & \cdots & \nabla r_m(x)
-        \end{bmatrix} = \begin{bmatrix}
+    \end{bmatrix} = \begin{bmatrix}
         \displaystyle\frac{\partial r_1(x)}{\partial x_1} & \cdots & \displaystyle\frac{\partial r_m(x)}{\partial x_1} \\
         \vdots & \ddots & \vdots \\
         \displaystyle\frac{\partial r_1(x)}{\partial x_n} & \cdots & \displaystyle\frac{\partial r_m(x)}{\partial x_n} \\
@@ -260,26 +259,61 @@ Gradient of a vector-valued function: for a vector field $r:\R^n\to\R^m$, the gr
 which is the transpose of the Jacobian matrix of $r$
 \subsection{Conditions of optimality}
 \subsubsection{First order necessary condition (FNC) of optimality (unconstrained)}
-Let $x^*$ be an unconstrained local minimum of $\ell:\R^n\to\R$ and assume that $\ell$ is continuously differentiable ($\mathcal{C}^1$) in $B(x^*,\epsilon)$ for some $\epsilon>0$. Then $\nabla \ell(x^*)=0$
+Let $x^*$ be an unconstrained local minimum of $\ell:\R^n\to\R$ and assume that $\ell$ is continuously differentiable ($\mathcal{C}^1$) in $B(x^*,\varepsilon)$\footnote{Ball of radius $\varepsilon$ centered in $x^*$} for some $\varepsilon>0$. Then $\nabla \ell(x^*)=0$
 \subsubsection{Second order necessary condition (FNC) of optimality (unconstrained)}
-If additionally $\ell$ is twice continuously differentiable ($\mathcal{C}^2$) in $B(x^*,\epsilon)$, then $\nabla^2 \ell(x^*)\geq 0$ (The Hessian of $\ell$ is positive semidifinite)
+If additionally $\ell$ is twice continuously differentiable ($\mathcal{C}^2$) in $B(x^*,\varepsilon)$, then $\nabla^2 \ell(x^*)\geq 0$ (The Hessian of $\ell$ is positive semidifinite)
 \subsubsection{Second order sufficient conditions of optimality (unconstrained)}
-Let $\ell:\R^n\to\R\in\mathcal{C}^2$ in $b(x^*,\epsilon)$ for some $\epsilon>0$. Suppose that $x^*\in\R^n$ satisfies 
+Let $\ell:\R^n\to\R\in\mathcal{C}^2$ in $B(x^*,\varepsilon)$ for some $\varepsilon>0$. Suppose that $x^*\in\R^n$ satisfies 
 \[
-    \nabla\ell(x^*) = 0 and \nabla^2\ell(x^*)>0
+    \nabla\ell(x^*) = 0\quad \text{and} \quad \nabla^2\ell(x^*)>0
 \]
 Then $x^*$ is a strict (unconstrained) local minimum of $\ell$
 \subsubsection{Convex set} 
 A set $X\subset \R^n$ is convex if for any two points $x_A$ and $x_B$ in $X$ and for all $\lambda\in[0,1]$, then 
 \[
-    \lambda x_a+(1-\lambda)x_B \in X
+    \lambda x_A + (1-\lambda)x_B \in X
 \]
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.4\linewidth]{cvxset}
+    \caption{Convex set}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.4\linewidth]{ncvxset}
+    \caption{Non convex set}
+    \end{minipage}
+\end{figure}
+
 \subsubsection{Convex functions}
 Let $X \subset \R^n$ be a convex set. A function $\ell:X\to\R$ is convex if for any two points $x_A$ and $x_B$ in $X$ and for all $\lambda\in[0,1]$, then 
 \[
     \ell(\lambda x_A + (1-\lambda)x_B)\leq \lambda\ell(x_A)+ (1-\lambda)\ell(x_B)
 \]
-% TODO slide 12-13 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.35\textwidth]{cvxfcn}
+    \caption{Convex function}
+\end{figure}
+
+A function $\ell$ is \emph{concave} if $-\ell$ is convex. A function $\ell$ is strictly convex if the inequality holds strictly for $x_A\neq x_B$ and $\lambda\in(0,1)$
+\subsubsection{Inequality constraints and convex sets}
+Let $g:\R^n\to\R^p$, we can define a set $X_{\text{ineq}}\subset \R^n$ as
+\[
+    X_{\text{ineq}} = \{x\in\R^n|g(x)\leq 0\}
+\]
+The set $X_{\text{ineq}}$ is convex iff $g$ is a quasi-convex function (e.g., monotone functions on the axis)
+\subsubsection{Equality constraints and convex sets}
+Let $h:\R^n\to\R^p$, we can define a set $X_{\text{eq}}\subset \R^n$ as
+\[
+    X_{\text{eq}} = \{x\in\R^n|h(x)= 0\}
+\]
+The set $X_{\text{eq}}$ is convex iff $h$ is an affine function. Convex sets identified through equality constraints are linear spaces (hyperplanes).
+
+
+
 \subsection{Minimization of convex functions}
 \subsubsection{Proposition}
 Let $X\subset\R^n$ be a convex set and $\ell: X\to\R$ a convex function. Then a local minimum of $\ell$ is also a global minimum \\
@@ -287,16 +321,18 @@ Proof: not done in class but present in slides for funsies
 \subsubsection{Necessary and sufficient condition of optimality (unconstrained)}
 For the unconstrained minimization of a convex function it can be shown that the first order necessary condition of optimality is also sufficient (for a global minimum).
 \subsubsection{Proposition}
-Let $\ell_\R^n \to \R$ be a convex function. Then $x^*$ is a global minimum if and only if $\nabla\ell(x^*)=0$
+Let $\ell:\R^n \to \R$ be a convex function. Then $x^*$ is a global minimum if and only if $\nabla\ell(x^*)=0$
 
 Proof: not done in class but present in slides for funsies
 
-\subsection{Quadratic programming}
+\section{Quadratic programming (unconstrained)}
 Let us consider a special class of optimization problems, namely quadratic optimization problems or quadratic programs: 
 \[
-    \min_{x\in\R^n}x^TQx+b^tx
+    \min_{x\in\R^n}x^TQx+b^Tx
 \]
 with $Q=Q^T\in\R^{n\times n}$ and $b\in\R^n$
+
+
 \subsubsection{optimality conditions}
 First-order necessary condition for optimality: if $x^*$ is a minimum then 
 \[
@@ -304,18 +340,21 @@ First-order necessary condition for optimality: if $x^*$ is a minimum then
 \]
 Second-order necessary condition for optimality: if $x^*$ is a minimum then 
 \[
-    \nabla^2\ell(x^*)\geq 0 \implies 2Q>0
+    \nabla^2\ell(x^*)\geq 0 \implies 2Q\geq0
 \]
 A necessary condition for the existence of minima for a quadratic program is that $Q\geq 0$. Thus, quadratic programs admitting at least a minimum are convex optimization problems.
+
+
 \subsubsection{properties}
 Since quadratic programs are convex programs ($Q\geq 0$ is necessary to have a local minimum), then the following holds: 
-\begin{itemize}
-    \item For a quadratic program necessary conditions of optimality are also sufficient and minima are global
-\end{itemize}
+\begin{center}
+     For a quadratic program necessary conditions of optimality are also sufficient and minima are global
+\end{center}
 If $Q>0$, then there exists a unique global minimum given by 
 \[
     x^* = -\displaystyle\frac{1}{2}Q^{-1}b
 \]
+
 
 \section{Unconstrained Optimization Algorithms}
 \subsection{Iterative descent methods}
@@ -338,21 +377,19 @@ The goal is to
     \item choose a direction $d^k$ along which the cost decreases for $\gamma^k$ sufficiently small;
     \item select a step-size $\gamma^k$ guaranteeing a sufficient decrease. 
 \end{enumerate}
-In oher references these are called line-search methods.
+In other references these are called line-search methods.
 \subsection{Gradient methods}
 Let $x^k$ be such that $\nabla\ell(x^k)\neq 0$. We start by considering the update rule 
 \[
     x^{k+1} = x^k-\gamma^k\nabla\ell(x^k)
 \]
-i.e., we choose $d^k = \nabla\ell(x^k)$
+i.e., we choose $d^k = -\nabla\ell(x^k)$
 
 From the first order Taylor expansion of $\ell$ at $x$ we have 
-\begin{gather*}
-    \begin{array}{r c l}
-        \ell(x^{k+1}) & = & \ell(x^k)+\nabla\ell(x^k)^T(x^{k+1}-x^k)+o(\|x^{k+1}-x^k\|)\\
-                      & = & \ell(x^k)-\gamma^k\|\nabla\ell(x^k)\|^2+o(\gamma^k)
-    \end{array}
-\end{gather*}
+\begin{align*}
+    \ell(x^{k+1}) & =  \ell(x^k)+\nabla\ell(x^k)^T(x^{k+1}-x^k)+o(\|x^{k+1}-x^k\|)\\
+    & =  \ell(x^k)-\gamma^k\|\nabla\ell(x^k)\|^2+o(\gamma^k)
+\end{align*}
 Thus, for $\gamma^k>0$ sufficiently small it can be shown that $\ell(x^k+1)<\ell(x^k)$
 
 The update rule 
@@ -371,7 +408,7 @@ Also, $d^k$ must be gradient related, i.e. $d^k$ must not asymptotically become 
 \subsubsection{selecting the descent direction}
 Several gradient methods can be written as 
 \[
-    x^{k+1} 0 x^k-\gamma^kD^k\nabla\ell(x^k) \quad k=1,2,\dots
+    x^{k+1} = x^k-\gamma^kD^k\nabla\ell(x^k) \quad k=1,2,\dots
 \]
 where $D^k\in\R^{n\times n}$ is  a symmetric positive definite matrix. It can be immediately seen that 
 \[
@@ -453,7 +490,7 @@ with $\Delta x^k$ solution of the quadratic problem \eqref{qp}. Generalized vers
 \]
 
 \subsection{Gradient methods via quadratic optimization}
-Similarly to Newton's method, a descent direction $\Delta x^k=D^k\nabla\ell(x^k)$ can be seen as the direction that minimizes at each iteration a different quadratic approximation of $\ell$ about $x^k$. In fact, consider the quadratic approximation $\ell^k(x)$ about $x^k$ given by 
+Similarly to Newton's method, a descent direction $\Delta x^k=D^k\nabla\ell(x^k)$ can be seen as the direction that minimizes at each iteration a different quadratic approximation of $\ell$ about $x^k$. In fact, consider the quadratic approximation $\ell^k(x)$ of $ \ell$ about $x^k$ given by 
 \[
     \ell^k(x) = \ell(x^k)+\nabla\ell(x^k)^T(x-x^k)+\displaystyle\frac{1}{2}(x-x^k)^T(D^k)^{-1}(x-x^k)
 \]
@@ -476,12 +513,8 @@ we can calculate the minimum of $\ell^k(x)$ and set it as the next iterate $x^{k
     \item Armijo rule
 \end{itemize}
 
-\subsubsection{Armijo rule}
-Step-size is selected following the procedure: 
-\begin{enumerate}
-    \item set $\bar{\gamma}^0>0,\quad \beta\in(0,1),\quad c\in(0,1)$
-\end{enumerate}
-given $d^k$ descent direction we can consider 
+\subsection{Armijo rule}
+Given the descent direction $d^k$ we can consider 
 \[
     g^k(\gamma) = \ell(x^k+\gamma d^k), \quad g:\R\to\R
 \]
@@ -489,22 +522,22 @@ given $d^k$ descent direction we can consider
 The value of $g^k(\gamma)$ for $\gamma=0$ is $\ell(x^k)$. The minimization rule chooses as the value for $\gamma$ the value that minimizes $g^k(\gamma)$. The partial minimization rule would search for a minimum in a restricted set of values for $\gamma$. Let us differentiate $g$ wrt $\gamma$:
 \begin{gather*}
     g'(\gamma)=\displaystyle\frac{d}{d\gamma}g(\gamma)=\displaystyle\frac{d}{d\gamma}\ell(x^k+\gamma d^k)\\
-    g'(0) = \displaystyle\frac{d}{d\gamma}\ell(x^k+\gamma d^k)\at{\gamma=0} = \nabla \ell(x^k)^Td^k\\
+    g'(0) = \displaystyle\frac{d}{d\gamma}\at{\ell(x^k+\gamma d^k)}{\gamma=0} = \nabla \ell(x^k)^Td^k\\
 \end{gather*}
 We compute a linear approximation of $g(\gamma)$:
 \begin{gather*}
     g(\gamma) = g(0) + g'(0)\gamma+o(\gamma)\\
-    \ell(x^k+\gamma d^k) = \ell(x^k)+\nabla\ell(x^k)d^k \gamma + o(\gamma)
+    \ell(x^k+\gamma d^k) = \ell(x^k)+\gamma \nabla\ell(x^k)^Td^k + o(\gamma)
 \end{gather*}
 This is the tangent to the $g(\gamma)$ curve at $\gamma=0$. We also consider the line 
 \[
     \ell(x^k)+c\gamma\nabla\ell(x^k)^Td^k
 \]
-which is a line with a slightly less negative slope given that $c\in(0,1)$
+which is a line with a slightly less negative slope given that $c\in(0,1)$.
 The Armijo rule is applied as follows: 
 \begin{enumerate}
     \item Set $\bar{\gamma}^0>0,\quad\beta\in(0,1),\quad c\in(0,1)$
-    \item While $\ell(x^k+\bar{\gamma}^1d^k)\geq \ell(x^k)+c\bar{\gamma}^i\nabla\ell(x^k)^Td^k$:
+    \item While $\ell(x^k+\bar{\gamma}^id^k)\geq \ell(x^k)+c\bar{\gamma}^i\nabla\ell(x^k)^Td^k$:
         \[
             \bar{\gamma}^{i+1}=\beta\bar{\gamma}^i
         \]
@@ -512,12 +545,28 @@ The Armijo rule is applied as follows:
 \end{enumerate}
 Typical values are $\beta=0.7$ and $c=0.5$
 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{armijo0}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{armijo1}
+    \end{minipage}%
+    \begin{minipage}{.33\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{armijo2}
+    \end{minipage}%
+\end{figure}
+
 \subsubsection{Proposition: convergence with Armijo step-size}
 Let $\{x^k\}$ be a sequence generated by a gradient method $x^{k+1}=x^k-\gamma^kD^k\nabla\ell(x^k)$ with $d_1I\leq D^k \leq d_2I, \quad d_1,d_2>0$. Assume that $\gamma^k$ is chosen by the Armijo rule and $\ell(x)\in \mathcal{C}^1$. Then, every limit point $\bar{x}$ of the sequence $\{x^k\}$ is a stationary point, i.e. $\nabla\ell(\bar{x})=0$
-
-Recall that a vector $x\in\R^n$ is a limit point of a sequence $\{x^k\}$ in $\R^n$ if there exists a subsequnce of $\{x^k\}$ that converges to $x$.
-
-\subsubsection{convergene with constant or diminishing step-size}
+\begin{remark}
+Recall that a vector $x\in\R^n$ is a limit point of a sequence $\{x^k\}$ in $\R^n$ if there exists a subsequence of $\{x^k\}$ that converges to $x$.
+\end{remark}
+\subsubsection{Convergence with constant or diminishing step-size}
 Let $\{x^k\}$ be a sequence generated by a gradient method $x^{k+1}=x^k-\gamma^kD^k\nabla\ell(x^k)$ with $d_1I\leq D^k \leq d_2I, \quad d_1,d_2>0$. Assume that for some $L>0$ 
 \[
     \|\nabla\ell(x)-\nabla\ell(y)\|\leq L\|x-y\|, \qquad \forall x,y\in\R^n
@@ -532,14 +581,14 @@ Then, every limit point $\bar{x}$ of the sequence $\{x^k\}$ is a stationary poin
 
 \subsubsection{Remarks on gradient methods}
 \begin{itemize}
-    \item The propositions do not guarantee that the sequence converges and not even existence of limit points. Then either $\ell(x^k)\to-\infty$ or $\ell(x^k)$ converges to a finite value and $\nabla\ell(x^k)\to 0$. In the second case, one can show that any subsequnce $\{x^{k_p}\}$ converges to some stationary point $\bar{>}$ satisfying $\nabla\ell(\bar{x})=0$
+    \item The propositions do not guarantee that the sequence converges and not even existence of limit points. Then either $\ell(x^k)\to-\infty$ or $\ell(x^k)$ converges to a finite value and $\nabla\ell(x^k)\to 0$. In the second case, one can show that any subsequnce $\{x^{k_p}\}$ converges to some stationary point $\bar{x}$ satisfying $\nabla\ell(\bar{x})=0$
     \item Existence of minima can be guaranteed by excluding $\ell(x^k)\to-\infty$ via suitable assumptions. Assume, e.g., $\ell$ coercive (radially unboundend)
-    \item For general (nonconvex) problems, assuming coecivity, only convergence (of subsequences) to stationary points can be proven.
-    \item for convex programs, assuming coercivity, convergence to global minima is guardanteed since necessary conditions of optimality are also sufficient.
+    \item For general (nonconvex) problems, assuming coercivity, only convergence (of subsequences) to stationary points can be proven.
+    \item for convex programs, assuming coercivity, convergence to global minima is guaranteed since necessary conditions of optimality are also sufficient.
 \end{itemize}
 
 \section{Constrained optimization over convex sets}
-consider the optimization problem 
+Consider the optimization problem 
 \[
     \min_{x\in X}\ell(x)
 \]
@@ -575,27 +624,25 @@ where $(\tilde{x}-x^k)$ is a feasible direction as it is contained in the set by
 
 \subsubsection{Barrier function strategy for inequality constraints}
 Consider the inequality constrained optimization problem 
-\[
-    \min_{x\in\R^d}\ell(x)\\
-    \text{subj. to } g_j(x)\leq 0 \quad j\in \{1,\dots,r\}
-\]  
+\begin{align*}
+    &\min_{x\in\R^d}\ell(x)\\
+    \text{subj. to } &g_j(x)\leq 0 \quad j\in \{1,\dots,r\}
+\end{align*}  
 inequality constraints can be relaxed and embedded in the cost function by means of a barrier function $-\varepsilon \log(x)$. The resulting unconstraind problem reads as 
 \[
     \min_{x\in\R^d} \ell(x) + \varepsilon \displaystyle\sum_{j=1}^{r}-\log(-g_j(x))
 \]
-Implementation: every few iterations shring the barrier parameters $\varepsilon$
+Implementation: every few iterations shrink the barrier parameters $\varepsilon$
 
 Methods such as this go by the name of \emph{interior point methods}
 
-\section[Constrained optimization (equality and inequality constraints): optimality conditions]{Constrained optimization (equality and inequality constraints):\\* optimality conditions}
+\section{Constrained optimization: optimality conditions}
 
-\begin{gather*}
-    \min_{x\in X} \ell(x)\\
-    \begin{array}{l l}
-        \text{subj. to } & g_j(x)\leq 0 \quad j\in\{1,\dots,r\}\\
-                         & h_i(x)=0 \quad i\in\{1,\dots,m\}
-    \end{array}
-\end{gather*}
+\begin{align*}
+    \min_{x\in X}\  &\ell(x)\\
+    \text{subj. to } & g_j(x)\leq 0 \quad j\in\{1,\dots,r\}\\
+    & h_i(x)=0 \quad i\in\{1,\dots,m\}
+\end{align*}
 
 \begin{definition}[Set of active inequality constraints]
     For a point $x$, the set of active inequality constraints at $x$ is $A(x) = \{j\in\{1,\dots,r\}|g_j(x)=0\}$
@@ -606,22 +653,20 @@ Methods such as this go by the name of \emph{interior point methods}
 \subsubsection{Lagrangian function}
 In order to state the first-order necessary conditions of optimality for (equality and inequality) constrained problems it is useful to introduce the Lagrangian function 
 \[
-    L(x,\mu,\lambda)=\ell(x)+\displaystyle\sum_{j=1}^{r}\mu_ig_j(x) + \displaystyle\sum_{i=1}^{m}\lambda_i h_i(x)
+    \mathcal{L}(x,\mu,\lambda)=\ell(x)+\displaystyle\sum_{j=1}^{r}\mu_ig_j(x) + \displaystyle\sum_{i=1}^{m}\lambda_i h_i(x)
 \]
 \begin{theorem}[Karush-Kuhn-Tucker necessary conditions]
     Let $x^*$ be a regular local minimum of 
-    \begin{gather*}
-        \min_{x\in\R^d} \ell(x) \\
-        \begin{array}{l l}
-            \text{subj. to } & g_j(x)\leq 0 \quad j\in\{1,\dots,r\}\\
-                             & h_i(x)=0 \quad i\in\{1,\dots,m\}
-        \end{array}
-    \end{gather*}
+    \begin{align*}
+        \min_{x\in\R^d}\  &\ell(x) \\
+        \text{subj. to }\  & g_j(x)\leq 0 \quad j\in\{1,\dots,r\}\\
+        & h_i(x)=0 \quad i\in\{1,\dots,m\}
+    \end{align*}
     where $\ell,g_j$ and $h_i$ are $\mathcal{C}^1$. \\
-    Then $\exists!$  $\mu_j^*$ and $\lambda_i^*$, called Lagrange multipliers, s.t.\footnote{ $\nabla_1$ denotes the gradient wrt the first variable of the function}
+    Then $\exists!$  $\mu_j^*$ and $\lambda_i^*$, called \emph{Lagrange multipliers}, s.t.
     \[
         \begin{array}{ r c l}
-            \nabla_1L(x^*,\mu^*,\lambda^*) & = & 0 \\             \mu_j^* & \geq & 0 \\
+            \nabla_1\mathcal{L}(x^*,\mu^*,\lambda^*) & = & 0 \\             \mu_j^* & \geq & 0 \\
             \mu^*_jg_j(x^*) & = & 0 \qquad j\in \{1,\dots,r\} 
         \end{array}
     \]
@@ -631,36 +676,37 @@ In order to state the first-order necessary conditions of optimality for (equali
     \]
     for all $y\in\R^n$ such that
     \[
-    \nabla h_i(x)^Ty = 0, \quad i\in\{1,\dots,m\}, \qquad \nabla g_j(x)^Ty = 0, \quad j\in A(x) \quad \text{(i.e.} j\in\{1,\dots,r\} \text{ s.t. } g_j(x)=0\}
+    \nabla h_i(x)^Ty = 0, \quad i\in\{1,\dots,m\}, \qquad \nabla g_j(x)^Ty = 0, \quad j\in A(x) \quad \text{(i.e. } j\in\{1,\dots,r\} \text{ s.t. } g_j(x)=0\}
 \]
 \end{theorem}
 \begin{remark}
-    The condition $\mu^*g_j^*(x^*)=0,j\in\{1,\dots,r\}$, is called complementary slackness
+    The condition $\mu^*g_j^*(x^*)=0,j\in\{1,\dots,r\}$, is called \emph{complementary slackness}
 \end{remark}
 \begin{notation}
-    Points satisfying the KKT necessary conditions of optimality are referred to as KKT points. They are the counterpart of stationary points in constrained optimization.
+    Points satisfying the KKT necessary conditions of optimality are referred to as \emph{KKT points}. They are the counterpart of stationary points in constrained optimization.
 \end{notation}
 \begin{notation}
-    note that $\nabla_{11}$ denotes the hessian of a function wrt the first variable
+    $\nabla_1$ denotes the gradient wrt the first variable of the function
+\end{notation}
+\begin{notation}
+    $\nabla_{11}$ denotes the hessian of a function wrt the first variable
 \end{notation}
 
 
 \subsection{Quadratic programming (constrained)}
 Let us consider quadratic optimization problems with linear equality constraints 
+\begin{align*}
+    \min_{x\in\R^n}\ & x^TQx+q^Tx \\
+    \text{subj. to }\ & Ax=b
+\end{align*}
+with $Q=Q^T\in\R^{n\times n}, q\in\R^n, a\in\R^{m\times n}$ and $b\in\R^m$.
+The Lagrangian function is:
 \[
-    \begin{array}{r l}
-        \min_{x\in\R^n}& x^TQx+q^Tx \\
-        \text{subj. to}& Ax=b
-    \end{array}
-\]
-with $q=Q^T\in\R^{n\times n}, q\in\R^n, a\in\R^{m\times n}$ and $b\in\R^m$
-The Lagrangian function is 
-\[
-    L(x,\lambda) = x^TQx + q^Tx +\displaystyle\sum_{i=1}^{m}\lambda_i(A_ix+b_i) =  x^TQx + q^Tx + \lambda^T(Ax-b)
+    \mathcal{L}(x,\lambda) = x^TQx + q^Tx +\displaystyle\sum_{i=1}^{m}\lambda_i(A_ix+b_i) =  x^TQx + q^Tx + \lambda^T(Ax-b)
 \]
 And the gradient computes as 
 \[
-    \nabla_1 L(x^*,\lambda^*) = 2Qx^* + q + \displaystyle\sum_{i=1}^{m}\lambda_i^*A_i^T =  2Qx^* + q + A^T\lambda^*
+    \nabla_1 \mathcal{L}(x^*,\lambda^*) = 2Qx^* + q + \displaystyle\sum_{i=1}^{m}\lambda_i^*A_i^T =  2Qx^* + q + A^T\lambda^*
 \]
 The equality constraints must also be enforced: 
 \[
@@ -668,26 +714,26 @@ The equality constraints must also be enforced:
 \]
 We can note that 
 \[
-    \nabla_2L(x^*,\lambda^*) = Ax-b
+    \nabla_2\mathcal{L}(x^*,\lambda^*) = Ax-b
 \]
 Therefore, first order conditions of optimality may be written as 
 \[
     \begin{bmatrix}
-        \nabla_1L(x^*,\lambda^*)\\ \nabla_2L(x^*,\lambda^*)
+        \nabla_1\mathcal{L}(x^*,\lambda^*)\\ \nabla_2\mathcal{L}(x^*,\lambda^*)
     \end{bmatrix} = 0
 \]
 This is always the case when only equality constraints are present. Second order necessary conditions for optimality impose that, if $x^*$ is a minimum then 
 \[
-    y^T\nabla^2\mathcal{L}(x^*,\lambda^*)y = y^TQy \geq 0
+    y^T\nabla^2_{11}\mathcal{L}(x^*,\lambda^*)y = y^TQy \geq 0
 \]
 for all $y\in\R^n$ such that 
 \[
-    \nabla h_i(x)^T y = 0 \qquad i\in\{1,\dots,p\} \quad \implies \quad A^Ty = 0
+    \nabla h_i(x)^T y = 0 \qquad i\in\{1,\dots,m\} \quad \implies \quad A^Ty = 0
 \]
-namely, for all $y\in\R^n$ in the null-space of $A^t$
-\section[Constrained optimization (equality and inequality constraints): optimization algorithms]{Constrained optimization (equality and inequality constraints):\\* optimization algorithms}
+namely, for all $y\in\R^n$ in the null-space of $A^T$
+\section{Constrained optimization: optimization algorithms}
 \subsection{Newton's method for equality constrained problems}
-KKT points can be found by solving a root finding problem in variables $x,\lambda$ wrt $r(x,\lambda)=\nabla L(x,\lambda)$. Newton's method for this root finding problem reads as 
+KKT points can be found by solving a root finding problem in variables $x,\lambda$ wrt $r(x,\lambda)=\nabla \mathcal{L}(x,\lambda)$. Newton's method for this root finding problem reads as 
 \[
     \begin{bmatrix}
         x^{k+1} \\ \lambda^{k+1}
@@ -701,27 +747,27 @@ with
 \[
     \begin{bmatrix}
         \Delta x^k \\ \Delta \lambda^k
-    \end{bmatrix} = -(\nabla^2 L(x^k,\lambda^k))^{-1}\nabla L(x^k,\lambda^k)
+    \end{bmatrix} = -(\nabla^2 \mathcal{L}(x^k,\lambda^k))^{-1}\nabla \mathcal{L}(x^k,\lambda^k)
 \]
 where 
 \begin{gather*}
-    \nabla^2L(x^k,\lambda^k)= \begin{bmatrix}
-        \nabla_{11} L(x^*,\lambda^*) & \nabla_{12} L(x^*,\lambda^*)\\
-        \nabla_{21} L(x^*,\lambda^*) & \nabla_{22} L(x^*,\lambda^*)
+    \nabla^2\mathcal{L}(x^k,\lambda^k)= \begin{bmatrix}
+        \nabla_{11} \mathcal{L}(x^*,\lambda^*) & \nabla_{12} \mathcal{L}(x^*,\lambda^*)\\
+        \nabla_{21} \mathcal{L}(x^*,\lambda^*) & \nabla_{22} \mathcal{L}(x^*,\lambda^*)
         \end{bmatrix} = \begin{bmatrix}
         H^k & \nabla h(x^k) \\
         \nabla h(x^k)^T & 0
-        \end{bmatrix} \\ \nabla L(x^k,\lambda^k) = \begin{bmatrix}
+        \end{bmatrix} \\ \nabla \mathcal{L}(x^k,\lambda^k) = \begin{bmatrix}
         \nabla \ell(x^k)+\nabla h(x^k)\lambda^k \\ h(x^k)
     \end{bmatrix} \\
-    H^k = \nabla_{11}^2 L(x^k,\lambda^k) \qquad
-    \nabla_{11}L(x,\lambda) = \nabla^2 \ell(x) + \displaystyle\sum_{i=1}^{m}\lambda_i\nabla^2h_i(x)
+    H^k = \nabla_{11}^2 \mathcal{L}(x^k,\lambda^k) \qquad
+    \nabla_{11}\mathcal{L}(x,\lambda) = \nabla^2 \ell(x) + \displaystyle\sum_{i=1}^{m}\lambda_i\nabla^2h_i(x)
 \end{gather*}
 We can write 
 \[
-    \nabla^2L(x^k,\lambda^k)\begin{bmatrix}
+    \nabla^2\mathcal{L}(x^k,\lambda^k)\begin{bmatrix}
         \Delta x^k \\ \Delta \lambda^k
-    \end{bmatrix} = -\nabla L(x^k,\lambda^k)
+    \end{bmatrix} = -\nabla \mathcal{L}(x^k,\lambda^k)
 \]
 namely 
 \[
@@ -737,35 +783,31 @@ namely
 thus, $\Delta x^k, \Delta\lambda^k$ can be obtained as solution of a linear system of equations in the variables $\Delta x, \Delta\lambda$.
 The linear system of equations can be rewritten as 
 \begin{gather*}
-    H^k\Delta x^k+\nabla H(x^k)\Delta \lambda^k = -\nabla\ell(x^k) - \nabla h(x^k)\lambda^k \\
+    H^k\Delta x^k+\nabla h(x^k)\Delta \lambda^k = -\nabla\ell(x^k) - \nabla h(x^k)\lambda^k \\
     \nabla h(x^k)^T \Delta x^k = -h(x^k)
 \end{gather*}
 and equivalently as 
 \begin{gather*}
-    \nabla\ell(x^k) +H^k\Delta x^k+\nabla H(x^k)\Delta \lambda^{k+1} \\
+    \nabla\ell(x^k) +H^k\Delta x^k+\nabla h(x^k)\Delta \lambda^{k+1} = 0 \\
     h(x^k)+\nabla h(x^k)^T\Delta x^k = 0
 \end{gather*}
 We can observe that the above equations are the necessary and sufficient optimality conditions for the Quadratic Program (QP)
-\[
-    \min_{\Delta x} \nabla\ell(x^k)^T\Delta x + \displaystyle\frac{1}{2}\Delta x^TH^k\Delta x \\
-    \begin{array}{r l}
-        \text{subj. to} & h(x^k) + \nabla h(x^k)^T \Delta x = 0
-    \end{array}
-\]
+\begin{align*}
+    \min_{\Delta x}\  &\nabla\ell(x^k)^T\Delta x + \displaystyle\frac{1}{2}\Delta x^TH^k\Delta x \\
+    \text{subj. to }\  & h(x^k) + \nabla h(x^k)^T \Delta x = 0
+\end{align*}
 Therefore, in the Newton's update, we can obtain $(\Delta x^k, \lambda^{k+1})$ by solving this QP.
 
 \subsection{Sequential Quadratic Programming (SQP)}
 Start from a tentative solution $x^0$. For $k=0,1,\dots$ (up to convergence)
 \begin{enumerate}
     \item Compute $\nabla\ell(x^k),H^k,\nabla h(x^k)$ 
-    \item Obtain ($\Delta x^k, \Delta \lambda^+_{QP}$) from 
-        \begin{equation}\label{sqp}
-            \begin{array}{r l}
-                \Delta x^k = \argmin_{\Delta x} & \nabla \ell(x^k)^T\Delta x +\displaystyle\frac{1}{2}\Delta x^TH^k \Delta x \\
-                text{subj. to} & h(x^k) + \nabla h(x^k)^T \Delta x = 0
-            \end{array}
-        \end{equation}
-        with $\Delta^*_{QP}$ the Lagrange multiplier associated to the optimal solution of \eqref{sqp}
+    \item Obtain ($\Delta x^k, \Delta \lambda^k_{QP}$) from 
+        \begin{align}\label{sqp}
+                \Delta x^k = \argmin_{\Delta x}\  & \nabla \ell(x^k)^T\Delta x +\displaystyle\frac{1}{2}\Delta x^TH^k \Delta x \\
+                \text{subj. to }\  & h(x^k) + \nabla h(x^k)^T \Delta x = 0
+        \end{align}
+        with $\Delta\lambda^k_{QP}$ the Lagrange multiplier associated to the optimal solution of \eqref{sqp}
     \item Choose $\gamma^k$ using Armijo's rule on \emph{merit function} $M_1(x^k+\gamma\Delta x^k)$
     \item Update 
         \begin{gather*}
@@ -776,14 +818,12 @@ Start from a tentative solution $x^0$. For $k=0,1,\dots$ (up to convergence)
 
 \subsection{Barrier function strategy for inequality constraints}
 Consider the inequality optimization problem 
-\[
-    \begin{array}{r l}
-        \min_{x\in\R^d} & \ell(x) \\
-        text{subj. to} & g_j(x) \leq 0 \qquad j\in\{1,\dots,r\}\\
-                       & h(x) = 0
-    \end{array}
-\]
-Inequality constraints can be embedded in the const function by means of a barrier function $-\varepsilon \log(x)$. The resulting unconstrained problem reads as 
+\begin{align*}
+    \min_{x\in\R^d} & \ell(x) \\
+    \text{subj. to } & g_j(x) \leq 0 \qquad j\in\{1,\dots,r\}\\
+    & h(x) = 0
+\end{align*}
+Inequality constraints can be embedded in the cost function by means of a \emph{barrier function} $-\varepsilon \log(x)$. The resulting unconstrained problem reads as 
 \begin{gather*}
     \min_{x\in\R^d}\ell(x) + \varepsilon\displaystyle\sum_{j=1}^{r}-\log(-g_j(x)) \\
     h(x) = 0
@@ -1341,9 +1381,7 @@ First, a trajectory generation task is reformulated into an optimal control prob
     \text{s.t.} x_{t+1} = f(x_t,u_t) \quad t=0,\dots,T-1\\
     x_0 = x_{\text{init}}
 \]
-Where $Q_t,R_t,P_f$ are suitably chosen cost matrices and $(\mathbf{x}^{des},\mathbf{u}^{des})
-
-$ is a "reference curve" describing a desired evolution. 
+Where $Q_t,R_t,P_f$ are suitably chosen cost matrices and $(\mathbf{x}^{des},\mathbf{u}^{des})$ is a "reference curve" describing a desired evolution. 
 
 Note: $(\mathbf{x}^{des},\mathbf{u}^{des})$ is NOT a trajectory. It is based, e.g., on geometric considerations
 
@@ -1372,7 +1410,7 @@ Solve the optimal contro problem % TODO insert
 for some cost matrices $Q_t^{reg}\geq 0 \in \R^{n\times R},Q_t^{reg}\geq 0 \in \R^{n\times m}$ and $Q_T^{reg}\geq 0 \in \R^{n\times n}$ (DoF). 
 Set $P_T=Q_T^{reg}$ and backward iterate $t=T-1,\dots,0$: 
 \[
-    P_t=Q_t^{reg}+A_t^{opt}^T P_{t+1}A_t^{opt}-(A_t^{opt}^T P_{t+1}B_t^{opt}) % TODO finish expression
+    P_t=Q_t^{reg}+{A_t^{opt}}^T P_{t+1}A_t^{opt}-({A_t^{opt}}^T P_{t+1}B_t^{opt}) % TODO finish expression
 \]
 and define for all $t=0,\dots,T-1$, the feedback gain $K_t^{reg}\in\R^{m\times n}$
 % TODO insert expression
@@ -1383,7 +1421,7 @@ Apply the feedback controller designed on the linearization to the nonlinear sys
     u_t = u_t^{opt}+K_t^{reg}(x_t-x_t^{opt})\\ 
     x_{t+1} = f_t(x_t,u_t)
 \end{gather}
-with x_0 given
+with $x_0$ given
 
 Remark: Under suitable assumptions, it can be shown that an infinite horizon trajectory of a nonlinear system, $(x_t,u_t)$ with $t=0,\dots$ is (locally) exponentially stable if and only if the system linearization about the trajectory is exponentially stable. (this can be viewed as a time-varying version of the Lyapunov indirect theorem)
 
@@ -1658,7 +1696,7 @@ where
     \item $\mathcal{X}$ and $\mathcal{U}$ state and input constraint sets, which satisfy $(0,0)\in \text{int}\{\mathcal{X}\times \mathcal{U}\}$.
     \item $\ell_\tau:\R^n\times \R^m \times \mathbb{Z}^+\to \R$ is a positive definite continous stage cost $\forall\tau\in\mathbb{Z}^+$.
 \end{itemize}
-Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can always perform a global change of coordinates $\varpsi:(x,u)\to(\bar{x},\bar{u})$ such that $(x^{eq},u^{eq})\to(0,0)$ which brings us back to the previous case 
+Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can always perform a global change of coordinates $\psi:(x,u)\to(\bar{x},\bar{u})$ such that $(x^{eq},u^{eq})\to(0,0)$ which brings us back to the previous case 
 \begin{theorem}[]
     Consider the discrete-time system
     \[
@@ -1701,7 +1739,7 @@ Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can al
 \end{proof}
 
 \section{Quasi-Infinte Horizon MPC}
-Main idea: Since the terminal constraint introduces nuerical instabilities, relax the terminal condition by introducing a proper terminal cost $\ell_{t+T}$ and constraining the terminal state to be in a proper region $\mahtcal{X}^f$ around the origin
+Main idea: Since the terminal constraint introduces nuerical instabilities, relax the terminal condition by introducing a proper terminal cost $\ell_{t+T}$ and constraining the terminal state to be in a proper region $\mathcal{X}^f$ around the origin
 % TODO slide 11 insert problem
 Assumption: The terminal region is forward invariant wrt a local controller, i.e. there exists $k^{\text{loc}}:\R^n\to\R^m$ such that 
 \[
@@ -1736,7 +1774,7 @@ start with $\varepsilon=\varepsilon^0$, solve the relaxed problem above, decreas
 Remarks: \begin{itemize}
     \item need to initialize with feasible initial trajectory 
         \item alternatively extend the $-\log(\cdot)$ function on the entire domain, i.e. use some function \[
-            b(z)= \begi~n{cases}
+            b(z)= \begin{cases}
                 -\log(z) & z\leq -\delta\\
                 \text{smooth function} & z\geq -\delta
             \end{cases} \qquad \delta>0

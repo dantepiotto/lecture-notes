@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.11.16)  7 DEC 2023 09:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.7.6)  12 JAN 2024 20:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -133,9 +133,9 @@ Language: english 2017/06/06 v3.3r English support from the babel system
 Package babel Info: Hyphen rules for 'canadian' set to \l@english
 (babel)             (\language0). Reported on input line 102.
 Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
-(babel)             (\language74). Reported on input line 105.
+(babel)             (\language12). Reported on input line 105.
 Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
-(babel)             (\language74). Reported on input line 108.
+(babel)             (\language12). Reported on input line 108.
 )) (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
  (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
@@ -270,24 +270,24 @@ File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
 ) (./Optimal_control.aux)
 \openout1 = `Optimal_control.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
  (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count292
@@ -341,7 +341,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 44.
+Package hyperref Info: Link coloring OFF on input line 43.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -351,9 +351,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count298
 )
-LaTeX Info: Redefining \ref on input line 44.
-LaTeX Info: Redefining \pageref on input line 44.
-LaTeX Info: Redefining \nameref on input line 44.
+LaTeX Info: Redefining \ref on input line 43.
+LaTeX Info: Redefining \pageref on input line 43.
+LaTeX Info: Redefining \nameref on input line 43.
  (./Optimal_control.out) (./Optimal_control.out)
 \@outlinefile=\write3
 \openout3 = `Optimal_control.out'.
@@ -381,21 +381,51 @@ Chapter 1.
 
 ]
 Chapter 2.
-[7] [8] [9] [10] [11] [12] [13] [14]
-Overfull \hbox (75.23274pt too wide) has occurred while \output is active
-\OT1/cmr/m/sl/10 2.4.  CONSTRAINED OPTIMIZATION (EQUALITY AND INEQUALITY CONSTRAINTS): OPTIMALITY CONDITIONS \OT1/cmr/m/n/10 15
- []
+[7]
+<./images//cvxset.png, id=390, 296.10625pt x 269.005pt>
+File: ./images//cvxset.png Graphic file (type png)
+<use ./images//cvxset.png>
+Package pdftex.def Info: ./images//cvxset.png  used on input line 280.
+(pdftex.def)             Requested size: 96.73788pt x 87.8812pt.
+<./images//ncvxset.png, id=392, 204.765pt x 236.885pt>
+File: ./images//ncvxset.png Graphic file (type png)
+<use ./images//ncvxset.png>
+Package pdftex.def Info: ./images//ncvxset.png  used on input line 285.
+(pdftex.def)             Requested size: 96.73788pt x 111.91429pt.
+<./images//cvxfcn.png, id=393, 396.48125pt x 329.23pt>
+File: ./images//cvxfcn.png Graphic file (type png)
+<use ./images//cvxfcn.png>
+Package pdftex.def Info: ./images//cvxfcn.png  used on input line 297.
+(pdftex.def)             Requested size: 169.29684pt x 140.5815pt.
 
-[15] [16]
-Overfull \hbox (90.02441pt too wide) has occurred while \output is active
-\OT1/cmr/m/sl/10 2.5.  CONSTRAINED OPTIMIZATION (EQUALITY AND INEQUALITY CONSTRAINTS): OPTIMIZATION ALGORITHMS \OT1/cmr/m/n/10 17
- []
 
-[17] [18
+LaTeX Warning: `h' float specifier changed to `ht'.
 
-]
+[8 <./images//cvxset.png> <./images//ncvxset.png>] [9 <./images//cvxfcn.png>] [10] [11] [12]
+<./images//armijo0.png, id=447, 679.53876pt x 495.8525pt>
+File: ./images//armijo0.png Graphic file (type png)
+<use ./images//armijo0.png>
+Package pdftex.def Info: ./images//armijo0.png  used on input line 552.
+(pdftex.def)             Requested size: 143.65778pt x 104.8206pt.
+<./images//armijo1.png, id=448, 646.415pt x 493.845pt>
+File: ./images//armijo1.png Graphic file (type png)
+<use ./images//armijo1.png>
+Package pdftex.def Info: ./images//armijo1.png  used on input line 556.
+(pdftex.def)             Requested size: 143.65778pt x 109.7464pt.
+<./images//armijo2.png, id=449, 645.41125pt x 479.7925pt>
+File: ./images//armijo2.png Graphic file (type png)
+<use ./images//armijo2.png>
+Package pdftex.def Info: ./images//armijo2.png  used on input line 560.
+(pdftex.def)             Requested size: 143.65778pt x 106.79192pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[13] [14 <./images//armijo0.png> <./images//armijo1.png> <./images//armijo2.png>] [15] [16] [17] [18]
 Chapter 3.
-[19] [20] [21] [22
+[19
+
+] [20] [21] [22
 
 ]
 Chapter 4.
@@ -417,112 +447,12 @@ Overfull \hbox (25.30096pt too wide) has occurred while \output is active
 
 ]
 Chapter 6.
-./Optimal_control.tex:1345: Missing $ inserted.
-<inserted text> 
-                $
-l.1345 
-       
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
 
-./Optimal_control.tex:1345: Missing } inserted.
-<inserted text> 
-                }
-l.1345 
-       
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-./Optimal_control.tex:1345: Too many }'s.
-\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
-                                                  \fi 
-l.1345 
-       
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
-
-./Optimal_control.tex:1347: Missing $ inserted.
-<inserted text> 
-                $
-l.1347 
-       
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-./Optimal_control.tex:1347: Missing } inserted.
-<inserted text> 
-                }
-l.1347 
-       
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-./Optimal_control.tex:1347: Too many }'s.
-\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
-                                                  \fi 
-l.1347 
-       
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
-
-
-Overfull \hbox (8.4987pt too wide) in paragraph at lines 1350--1351
+Overfull \hbox (8.4987pt too wide) in paragraph at lines 1388--1389
 []\OT1/cmr/m/n/10 Idea: by us-ing an op-ti-mal con-trol al-go-rithm, com-pute an open loop (op-ti-mal) state-input tra-jec-tory $(\OT1/cmr/bx/n/10 x[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 u[]\OT1/cmr/m/n/10 )$,
  []
 
-./Optimal_control.tex:1375: Double superscript.
-l.1375     P_t=Q_t^{reg}+A_t^{opt}^
-                                   T P_{t+1}A_t^{opt}-(A_t^{opt}^T P_{t+1}B_...
-I treat `x^1^2' essentially like `x^1{}^2'.
-
-./Optimal_control.tex:1375: Double superscript.
-l.1375 ...A_t^{opt}^T P_{t+1}A_t^{opt}-(A_t^{opt}^
-                                                  T P_{t+1}B_t^{opt}) % TODO...
-I treat `x^1^2' essentially like `x^1{}^2'.
-
-[31]
-./Optimal_control.tex:1386: Missing $ inserted.
-<inserted text> 
-                $
-l.1386 with x_
-              0 given
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-./Optimal_control.tex:1387: Missing $ inserted.
-<inserted text> 
-                $
-l.1387 
-       
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-./Optimal_control.tex:1387: Missing } inserted.
-<inserted text> 
-                }
-l.1387 
-       
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-./Optimal_control.tex:1387: Too many }'s.
-\@par ... \@noitemerr {\@@par }\fi \else {\@@par }
-                                                  \fi 
-l.1387 
-       
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
-
-[32]
+[31] [32]
 Chapter 7.
 [33
 
@@ -534,51 +464,27 @@ Chapter 8.
 
 ]
 Chapter 9.
-[39]
-./Optimal_control.tex:1661: Undefined control sequence.
-<recently read> \varpsi 
-                        
-l.1661 ... a global change of coordinates $\varpsi
-                                                  :(x,u)\to(\bar{x},\bar{u})...
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-[40]
-./Optimal_control.tex:1704: Undefined control sequence.
-<recently read> \mahtcal 
-                         
-l.1704 ...state to be in a proper region $\mahtcal
-                                                  {X}^f$ around the origin
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-[41] [42]
+[39] [40] [41] [42]
 Chapter 10.
 [43
 
 ] (./Optimal_control.aux)
 Package rerunfilecheck Info: File `Optimal_control.out' has not changed.
-(rerunfilecheck)             Checksum: FB97F8ACC1773C58AB69AB321A277809;14974.
+(rerunfilecheck)             Checksum: D2DCF9AD821233926868CF6130CB4B70;14760.
  ) 
 Here is how much of TeX's memory you used:
- 10777 strings out of 478287
- 168620 string characters out of 5849288
- 496267 words of memory out of 5000000
- 28645 multiletter control sequences out of 15000+600000
+ 10849 strings out of 478287
+ 170128 string characters out of 5849290
+ 496266 words of memory out of 5000000
+ 28712 multiletter control sequences out of 15000+600000
  479062 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,20n,63p,569b,531s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on Optimal_control.pdf (43 pages, 389591 bytes).
+ 60i,20n,63p,455b,531s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on Optimal_control.pdf (43 pages, 491931 bytes).
 PDF statistics:
- 770 PDF objects out of 1000 (max. 8388607)
- 663 compressed objects within 7 object streams
- 188 named destinations out of 1000 (max. 500000)
- 505 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 785 PDF objects out of 1000 (max. 8388607)
+ 668 compressed objects within 7 object streams
+ 190 named destinations out of 1000 (max. 500000)
+ 543 words of extra memory for PDF output out of 10000 (max. 10000000)
 

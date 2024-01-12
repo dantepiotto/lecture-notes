@@ -917,10 +917,10 @@ Let $\mathcal{M}_{p_1}(\theta),\mathcal{M}_{p_2}(\theta)$ such that $p_1<p_2$ ($
     x=N\displaystyle\frac{J(\hat{\theta^1_N})J(\hat{\theta^2_N})}{J(\hat{\theta^2_N})}
 \]
 where $\hat{\theta}^1_N,\hat{\theta}^2_N$ are PEM (or LS) estimates: intuitively:
-\begin{itemize}
+\begin{enumerate}
     \item $x$ large: the decrease in the loss function is significant, hence $\mathcal{M}_{p_2}(\theta)$ is better
     \item x small: $\mathcal{M}_{p_1}(\theta)$ and $\mathcal{M}_{p_2}(\theta)$ are almost equivalent so that $\mathcal{M}_{p_1}(\theta)$ should be chosen according to the parsimony principle
-\end{itemize}
+\end{enumerate}
 How to quantify "large" and "small"?
 \begin{itemize}
     \item If $\mathcal{M}_{p_1}(\theta)$ is not large enough to include the true system: \[
@@ -1003,7 +1003,7 @@ where $f(N,p)$ penalizes high order models.
 \[
     AIC=NlogJ(\hat{\theta}_N)+2p
 \]
-AIC and FPE are asymptotically equivalent. They do not give consistend estimates of $n$ (the probability of overestimating the order is non-null). To get consistent estimates, the penalizing function must be such that
+AIC and FPE are asymptotically equivalent. They do not give consistent estimates of $n$ (the probability of overestimating the order is non-null). To get consistent estimates, the penalizing function must be such that
 \[
     \begin{cases}
         f(N,p)=kpg(N)\\
