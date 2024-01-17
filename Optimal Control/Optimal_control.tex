@@ -1,5 +1,5 @@
 \documentclass{book}
-\usepackage{amsmath, amsthm, graphicx, amsfonts, float}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float, bm}
 \usepackage[english]{babel}
 \graphicspath{ {./images/} }
 
@@ -835,7 +835,11 @@ Implementation: every few iterations shrink the barrier parameters $\varepsilon$
 \chapter{Optimality conditions for optimal control}
 \section{boh}
 \subsection{Dynamics as equality constraints}
-Let us rerwrite the nonlinear dynamics of a dt system as an implicit equality constraint $h:\R^{nT}\times \R^{mT}\to\R^{nT}$ 
+We consider nonlinear, discrete-time systems described by 
+\begin{equation} \label{system2}
+    x_{t+1} = f_t(x_t,u_t) \qquad t\in\N_0
+\end{equation}
+Let us rewrite the nonlinear dynamics of a dt system as an implicit equality constraint $h:\R^{nT}\times \R^{mT}\to\R^{nT}$ 
 \[
     h\traj:=\begin{bmatrix}
         f_0(x_0,u_0)-x_1 \\ \vdots \\ f_{T-1}(x_{T-1},u_{T-1})-x_T
@@ -846,87 +850,104 @@ so that a curve $\traj$ is a trajectory of the system if it satisfies the (possi
     h\traj = 0
 \]
 \subsection{system trajectories and trajectory manifold}
-We can now define the trajectory manifold $\mathcal{T}\subset \R^{nT}\times \R^{mT}$ of (ref) % TODO fix
-\[
-    \mathcal{T} := \{(\mathbf(x),\mathbf(u))\in\R^{nT}\times\R^{mT}|h(\mathbf(x),\mathbf(u))=0\}=\{(\mathbf(x),\mathbf(u))\in\R^{nT}\times\R^{mT}|x_{t+1}=f_y(x_t,u_t),t=0,\dots,T-1\}
-\]
-Let $\traj\in\mathcal{T}$ be a trajectory of the system, i.e. a point on the trajectory manifold $\mathcal{T}$. The tangent space to $\mathcal{T}$ at a given trajectory (point) $\traj$, denoted as $T_\traj\mathcal{T}$, is the set of trajectories satisfying the linearization of $x_{t+1} = f_t(x_t,u_t)$ about the trajectory $\traj$
-That is, $T_\traj\mathcal{T}=\{(\mathbf{\Delta x, \Delta u})\in\R^{nT}\times\R^{mT}|\nabla_1h(\mathbf{x},\mathbf{u})^T\mathbf{\Delta x} + \nabla_2h(\mathbf{x},\mathbf{u})^T\mathbf{\Delta u} = 0\}$ is the set of trajectories $(\mathbf{\Delta x, \Delta u})$ of
+We can now define the trajectory manifold $\mathcal{T}\subset \R^{nT}\times \R^{mT}$ of \eqref{system2}
+\begin{align*}
+    \mathcal{T} := &\left\{\left(\mathbf(x),\mathbf(u)\right)\in\R^{nT}\times\R^{mT}|h\left(\mathbf(x),\mathbf(u)\right)=0\right\}\\=&\left\{\left(\mathbf(x),\mathbf(u)\right)\in\R^{nT}\times\R^{mT}|x_{t+1}=f_t\left(x_t,u_t\right),t=0,\dots,T-1\right\}
+\end{align*}
+Let $\traj\in\mathcal{T}$ be a trajectory of the system, i.e. a point on the trajectory manifold $\mathcal{T}$. The tangent space to $\mathcal{T}$ at a given trajectory (point) $\traj$, denoted as $T_{(\bar{\mathbf{x}},\bar{\mathbf{u}})}\mathcal{T}$, is the set of trajectories satisfying the linearization of $x_{t+1} = f_t(x_t,u_t)$ about the trajectory $(\bar{\mathbf{x}},\bar{\mathbf{u}})$.
+That is, $T_{(\bar{\mathbf{x}},\bar{\mathbf{u}})}\mathcal{T}=\{(\mathbf{\Delta x, \Delta u})\in\R^{nT}\times\R^{mT}|\nabla_1h(\mathbf{x},\mathbf{u})^T\mathbf{\Delta x} + \nabla_2h(\mathbf{x},\mathbf{u})^T\mathbf{\Delta u} = 0\}$ is the set of trajectories $(\mathbf{\Delta x, \Delta u})$ of
 \[
     \Delta x_{t+1} = A_t\Delta x_t + B_t \Delta u_t
 \]
 with 
 \begin{gather*}
-    A_t = \nabla_1f_t(\bar{x}_t,\bar{u}_t)^T
+    A_t = \nabla_1f_t(\bar{x}_t,\bar{u}_t)^T\\
     B_t = \nabla_2f_t(\bar{x}_t,\bar{u}_t)^T
 \end{gather*}
 
 
 \section{Unconstrained optimal control problem (d-t)}
 We look for a solution of the discrete-time optimal control problemm 
-\[
-    \begin{array} {r l}
+\begin{align*}
         \min_{\mathbf{x}\in\R^n,\mathbf{u}\in\R^m} & \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)\\
-        \text{subj. to} & x_{t+1} = f_t(x_t,u_t), \quad t\in\{0,\dots,T-1\} 
-    \end{array}
-\]
+        \text{subj. to } & x_{t+1} = f_t(x_t,u_t), \quad t\in\{0,\dots,T-1\} 
+\end{align*}
 with given initial condition $x_0 = x_{\text{init}}\in \R^n$. 
 
-From now on, we will assume that functions $\ell_t(\cdot,\cdot),\ell_T(\cdot),f_t(\cdot,\cdot)$ are twice continuosly differentiable, i.e. the are $\mathcal{C}^2$
-% TODO slide 8-9
-%
+From now on, we will assume that functions $\ell_t(\cdot,\cdot),\ell_T(\cdot),f_t(\cdot,\cdot)$ are twice continuosly differentiable, i.e. they are class $\mathcal{C}^2$
+Consider the discrete-time system \eqref{system2}. We can introduce the compact notation 
+\[
+    \mathbf{x} := \begin{bmatrix}
+        x_1 \\ \vdots \\ x_T
+    \end{bmatrix} \qquad \mathbf{u} := \begin{bmatrix}
+        u_0 \\ \vdots \\ u_{T-1}
+    \end{bmatrix}
+\]
+which allows us to write the cost function compactly as 
+\[
+    \ell({\mathbf{x},\mathbf{u}}) := \sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T)
+\]
+and the equality constraint represented by the dynamics 
+\[
+    h(\mathbf{x},\mathbf{u}) := \begin{bmatrix}
+        f_0(x_0,u_0)-x_1 \\ \vdots \\ f_{T-1}(x_{T-1}u_{T-1})-x_T
+    \end{bmatrix}
+\]
+In light of this compact notation, we can rewrite the optimal control law problem as 
+\begin{align*}
+    \min_{\mathbf{x}\in\R^{nT},\mathbf{u}\in\R^{mT}} &\ell(\mathbf{x},\mathbf{u})\\
+    \text{subj. to } & h(\mathbf{x},\mathbf{u})=0
+\end{align*}
+where $\ell:\R^{nT}\times\R^{mT}\to\R$ and $h:\R^{nT}\times\R^{mT}\to\R^{nT}$. This is a constrained nonlinear optimization problem with decision variable $(\mathbf{x},\mathbf{u})$
+
 \section{KKT conditions for unconstrained optimal control}
 the Lagrangian function has the form 
-\begin{multline*}
-    \mathcal{L}(\mathbf{x,u,\lambda}) = \ell(\mathbf{x,u})+\mathbf{\lambda}^Th(\mathbf{x,u}) = \\
-    \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda^T_{t+1}(f_t(x_t,u_t)-x_{t+1}) \\
-    = \displaystyle\sum_{t=0}^{T-1}(\ell_t(x_t,u_t)+\lambda^T_{t+1}(f_t(x_t,u_t)-x_{t+1})+\ell_T(x_T) \\
-    =\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\mathbf{\lambda})
-\end{multline*}
-where $\mathbf{\lambda}\in\R^{nT}$ and 
-\begin{gather*}
-    \mathcal{L}_0(x_0,u_0,\mathbf{\lambda}) = \ell_0(x_0,u_0)+\lambda_1^T f_0(x_0,u_0)\\
-    \mathcal{L}_t(x_t,u_t,\mathbf{\lambda}) = \ell_t(x_t,u_t)+\lambda_1^T f_t(x_t,u_t)-\lambda_tx_t\\
-    \mathcal{L}_T(x_T,\mathbf{\lambda}) = \ell_T(x_T) - \lambda_T^Tx_T
-\end{gather*}
-Let $(\mathbf{x}^*,\mathbf{u}^*)$ be a regular point for the dynamics constraints and an optimale (state-input) trajectory. Then there exists $\mathbf{\lambda}^*$ such that $\nabla \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)=0$ 
+\begin{align*}
+    \mathcal{L}(\mathbf{x,u,\lambda}) &= \ell(\mathbf{x,u})+\boldsymbol{\lambda}^Th(\mathbf{x,u}) \\
+    &= \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda^T_{t+1}(f_t(x_t,u_t)-x_{t+1}) \\
+    &= \displaystyle\sum_{t=0}^{T-1}\left(\ell_t(x_t,u_t)+\lambda^T_{t+1}(f_t(x_t,u_t)-x_{t+1})\right)+\ell_T(x_T) \\
+    &=\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})
+\end{align*}
+where $\boldsymbol{\lambda}\in\R^{nT}$ and 
+\begin{align*}
+    \mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda}) &= \ell_0(x_0,u_0)+\lambda_1^T f_0(x_0,u_0)\\
+    \mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda}) &= \ell_t(x_t,u_t)+\lambda_1^T f_t(x_t,u_t)-\lambda_tx_t\\
+    \mathcal{L}_T(x_T,\boldsymbol{\lambda}) &= \ell_T(x_T) - \lambda_T^Tx_T
+\end{align*}
+Let $(\mathbf{x}^*,\mathbf{u}^*)$ be a regular point for the dynamics constraints and an optimal (state-input) trajectory. Then there exists $\boldsymbol{\lambda}^*$ such that $\nabla \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*)=0$ 
 
-Let us explicitly write condition $\nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = 0 $ 
+Let us explicitly write condition $\nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*) = 0 $ 
 \[
-    \nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = \begin{bmatrix}
-        \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)\\
-        \nabla_2\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*)
+    \nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*) = \begin{bmatrix}
+        \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*)\\
+        \nabla_2\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*)
     \end{bmatrix} = 0
 \]
 Let us note that 
 \[
-    \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*) = \at{\begin{bmatrix}
-            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_1)_1}\\
+    \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*) = \at{\begin{bmatrix}
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})}{\partial (x_1)_1}\\
             \vdots \\
-            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_1)_n}\\
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})}{\partial (x_1)_n}\\
             \vdots \\
-            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_T)_1}\\
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})}{\partial (x_T)_1}\\
             \vdots \\
-            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})}{\partial (x_T)_n}
+            \displaystyle\frac{\partial \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})}{\partial (x_T)_n}
     \end{bmatrix}}{\mathbf{x}=\mathbf{x}^*}
 \]
-Since $\mathcal{L}(\mathbf{x}^,\mathbf{u}^,\mathbf{\lambda}^)= \displaystyle\sum_{t=0}^{T}\mathcal{L}(x_t,u_t,\mathbf{\lambda})$, we can explpot this sparsity and write 
-\[
-    \begin{array}{l l}
-        \nabla_2\mathcal{L}_0(x_0,u_0,\mathbf{\lambda}) = 0 & \nabla_2\ell_0(x_0,u_0)\nabla_2f_0(x_0,u_0)\lambda_0\\
-                                                            & \\
-                                                            \begin{bmatrix}
-                                                                \nabla_1\mathcal{L}_t(x_t,u_t,\mathbf{\lambda})\\
-                                                                \nabla_2\mathcal{L}_t(x_t,u_t,\mathbf{\lambda})
-                                                            \end{bmatrix} = 0 &  
-                                                            \begin{bmatrix}
-                                                                \nabla_1\ell_t(x_t,u_t) + \nabla_1f_t(x_t,u_t)\lambda_{t+1}-\lambda_t \\
-                                                                \nabla_2\ell_t(x_t,u_t) + \nabla_2f_t(x_t,u_t)\lambda_{t+1}
-                                                            \end{bmatrix} = 0 \quad t=1,\dots,T-1 \\
-                                                            & \\
-        \nabla_1\mathcal{L}_t(x_t,\mathbf{\lambda}) = 0 & \nabla\ell_T(x_T)-\lambda_T = 0
-    \end{array}
-\]
+Since $\mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})= \displaystyle\sum_{t=0}^{T}\mathcal{L}(x_t,u_t,\boldsymbol{\lambda})$, we can exploit this sparsity and write 
+\begin{align*}
+    \nabla_2\mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda}) = 0 \qquad & \nabla_2\ell_0(x_0,u_0)\nabla_2f_0(x_0,u_0)\lambda_0\\
+    \begin{bmatrix}
+        \nabla_1\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})\\
+        \nabla_2\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})
+    \end{bmatrix} = 0 \qquad &  
+    \begin{bmatrix}
+        \nabla_1\ell_t(x_t,u_t) + \nabla_1f_t(x_t,u_t)\lambda_{t+1}-\lambda_t \\
+        \nabla_2\ell_t(x_t,u_t) + \nabla_2f_t(x_t,u_t)\lambda_{t+1}
+    \end{bmatrix} = 0 \quad t=1,\dots,T-1 \\
+    \nabla_1\mathcal{L}_t(x_t,\boldsymbol{\lambda}) = 0\qquad & \nabla\ell_T(x_T)-\lambda_T = 0
+\end{align*}
 Let us introduce some notation: 
 \begin{gather*} 
     \nabla_1\ell_t(x_t^*,u_t^*) = a_t\in \R^n\\
@@ -942,12 +963,12 @@ So we can rewrite the KKT conditions for unconstrained optimal control as:
 \end{flalign*}
 
 \subsection{Indirect methods for optimal control}
-Solving the optimality conditions: 
+Based on solving the optimality conditions: 
 \begin{itemize} % TODO look in recording
     \item Guess some $u_t^0,\quad t= 0,\dots,T-1 \quad k=0$ 
     \item run "forward" 
         \[
-            x_{t+1}^0 = f-t(x_t^0,u_t^0) \quad x_0
+            x_{t+1}^0 = f_t(x_t^0,u_t^0) \quad x_0
         \]
     \item run "backward"
         \[
@@ -963,32 +984,63 @@ Solving the optimality conditions:
 
 \section{KKT conditions for constrained optimal control}
 We look for a solution of the discrete-time optimal control problem
-\[
-    \begin{array}{r l}
+\begin{align*}
         \min_{x_0\in\R^n,\mathbf{x}\in\R^{nT},\mathbf{U}\in\R^{mT}} & \displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) \\
-        \text{subj. to} & x_{t+1} = f_t(x_t,u_t), \quad t=0,\dots,T-1\\
+        \text{subj. to } & x_{t+1} = f_t(x_t,u_t), \quad t=0,\dots,T-1\\
                         & r(x_0,x_T) = 0 \\
                         & g_t(x_t,u_t)\leq 0 ,\quad t=0,\dots,T-1
-    \end{array}
-\]
+\end{align*}
 where 
 \begin{itemize}
     \item $\ell_t:\R^n\times\R^m\to\R$ is the stage cost,
     \item $\ell_T:\R^n\to\R$ is the terminal cost,
-    \item $r\R^n\times\R^n\to\R^{p_0}$ identifies a boundary constraint on initial and final states,
-    \item $g_t:\R^n\times\R^m\to\R^p$ for each $t$ identifies point-wise constraints on state and input at some time $t$
+    \item $r: \R^n\times\R^n\to\R^{p_0}$ identifies a \emph{boundary constraint} on initial and final states,
+    \item $g_t:\R^n\times\R^m\to\R^p$ for each $t$ identifies \emph{point-wise constraints} on state and input at some time $t$
 \end{itemize}
 The Lagrangian function has the form 
-\begin{gather*}
-    \begin{array}{r c l}
-        \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda},\mathbf{\mu}) &=& \ell(\mathbf{x},\mathbf{u})+\mathbf{\lambda}_d^T h(\mathbf{x},\mathbf{u})+ \lambda_b^T r(x_0,x_T) + \mathbf{\mu}^Tg(\mathbf{x},\mathbf{u}) \\ 
-                                                                         &=&\displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda_{d,t+1}(f_t(x_t,u_t)-x_{t+1})+\lambda_b^Tr(x_0,x_T) + \displaystyle\sum_{t=0}^{T-1}\mu_t^Tg_t(x_t,u_t)\\
-                                                                         &=&\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\mathbf{\lambda},\mathbf{\mu})
-    \end{array}
-\end{gather*}
+\begin{align*}
+    \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda},\mathbf{\mu}) =& \ell(\mathbf{x},\mathbf{u})+\boldsymbol{\lambda}_d^T h(\mathbf{x},\mathbf{u})+ \lambda_b^T r(x_0,x_T) + \mathbf{\mu}^Tg(\mathbf{x},\mathbf{u}) \\ 
+    =&\displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda_{d,t+1}(f_t(x_t,u_t)-x_{t+1})+\lambda_b^Tr(x_0,x_T) + \displaystyle\sum_{t=0}^{T-1}\mu_t^Tg_t(x_t,u_t)\\
+    =&\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda},\mathbf{\mu})
+\end{align*}
+where
+\begin{align*}
+    \mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda},\boldsymbol{\mu}) &= \ell_0(x_0,u_0)+\lambda_{d,1}^T f_0(x_0,u_0) + \lambda_{b,0}r_0(x_0)\\
+    \mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda}) &= \ell_t(x_t,u_t)+\lambda_1^T f_t(x_t,u_t)-\lambda_tx_t+\mu_t^Tg_t(x_t,u_t)\\
+    \mathcal{L}_T(x_T,\boldsymbol{\lambda}) &= \ell_T(x_T) - \lambda_T^Tx_T + \lambda_{b,T}^Tr_T(x_T)
+\end{align*}
+and we assumed $r(x_0,x_T)=\col(r_0(x_0),r_T(x_T))$ and $\lambda_b = \col(\lambda_{b,0},\lambda_{b,T})$.
 
-% TODO finish
+Let $(\mathbf{x}^*,\mathbf{u}^*)$ be a regular point for the dynamics constraints and an optimal (state-input) trajectory. Then there exists $\boldsymbol{\lambda}^*$ such that $\nabla \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*)=0$ 
 
+Let us explicitly write condition $\nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*,\boldsymbol{\mu}^*) = 0 $ 
+\[
+    \nabla_{(1,2)} \mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*,\boldsymbol{\mu}^*) = \begin{bmatrix}
+        \nabla_1\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*,\boldsymbol{\mu}^*)\\
+        \nabla_2\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*,\boldsymbol{\mu}^*)
+    \end{bmatrix} = 0
+\]
+Since $\mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda}^*,\boldsymbol{\mu}^*)= \displaystyle\sum_{t=0}^{T}\mathcal{L}(x_t,u_t,\boldsymbol{\lambda})$, we can exploit this sparsity and write 
+\begin{align*}
+    \begin{bmatrix}
+        \nabla_1\mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda},\boldsymbol{\mu}) \\
+        \nabla_2\mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda},\boldsymbol{\mu}) 
+    \end{bmatrix} = 0 \qquad &
+    \begin{bmatrix}
+        \nabla_1\ell(x_0,u_0)\nabla_1f_0(x_0,u_0)\lambda_1+\nabla r_0(x_0)\lambda_{b,0}+\nabla_1g_t(x_0,\mu_0)\\
+        \nabla_2\ell_0(x_0,u_0)\nabla_2f_0(x_0,u_0)\lambda_1 + \nabla_2g_t(x_0,u_0)\mu_0\\
+    \end{bmatrix} = 0\\
+    \begin{bmatrix}
+        \nabla_1\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})\\
+        \nabla_2\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})
+    \end{bmatrix} = 0 \qquad &  
+    \begin{bmatrix}
+        \nabla_1\ell_t(x_t,u_t) + \nabla_1f_t(x_t,u_t)\lambda_{t+1}-\lambda_t + \nabla_1g_t(x_t,u_t)\mu_t\\
+        \nabla_2\ell_t(x_t,u_t) + \nabla_2f_t(x_t,u_t)\lambda_{t+1} + \nabla_2g_t(x_t,u_t)\mu_t
+    \end{bmatrix} = 0 \quad t=1,\dots,T-1 \\
+    \nabla_1\mathcal{L}_t(x_t,\boldsymbol{\lambda}) = 0\qquad & \nabla\ell_T(x_T)-\lambda_T + \nabla r_T(x_T)\lambda_{b,T} = 0
+\end{align*}
+for $(x_t,u_t,\lambda_t,\mu_t) = (x_t^*,u_t^*,\lambda_t^*,\mu_t^*)$
 
 
 
@@ -1011,12 +1063,12 @@ The Lagrangian function has the form
 Consider a linear quadratic optimal control problem as: 
 \[
     \begin{array}{r l}
-        \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}[x_t^Tq_tx_t+u_t^TR_tu_t] + \displaystyle\frac{1}{2}x_T^tq_Tx_T\\
+        \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}[x_t^TQ_tx_t+u_t^TR_tu_t] + \displaystyle\frac{1}{2}x_T^TQ_Tx_T\\
         \text{subj. to} & x_{t+1} = A_tx_t + B_tu_t \quad t=0,\dots,T-1\\
                         &x_0 = x_{\text{init}}
     \end{array}
 \]
-We assume $Q_t=Q_t^T\geq 0 \forall t=0,\dots,T-1$, $Q_t = Q_t^T \geq 0$, and $R_t=R_t^T > 0 \forall t=0,\dots,T-1$
+We assume $Q_t=Q_t^T\geq 0,\ $ for $ t=0,\dots,T-1$, $Q_T = Q_T^T \geq 0$, and $R_t=R_t^T > 0 \ $ for $t=0,\dots,T-1$
 
 \section{First order optimality condition}
 \begin{gather*}
@@ -1027,13 +1079,14 @@ We assume $Q_t=Q_t^T\geq 0 \forall t=0,\dots,T-1$, $Q_t = Q_t^T \geq 0$, and $R_
 \end{gather*}
 therefore 
 \begin{gather*}
-    \lambda_t^* = A_t^T\lambda_t+1^* + Q_tx_t^* \quad t= T_1,\dots,0\\
+    \lambda_t^* = A_t^T\lambda_{t+1}^* + Q_tx_t^* \quad t= T_1,\dots,0\\
     \lambda_T^* = Q_Tx_T^* \\
     B_t^T\lambda_{t+1}^* + R_tu_t^* = 0 \quad t=0,\dots,T-1
 \end{gather*}
-Remark: second order optimality conditions 
+\begin{remark}
+second order optimality conditions 
 \[
-    y^T\nabla^2_{(1,2)(1,2)}\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\mathbf{\lambda}^*,)y \geq 0
+    y^T\nabla^2_{(1,2)(1,2)}\mathcal{L}(\mathbf{x}^*,\mathbf{u}^*,\boldsymbol{\lambda}^*,)y \geq 0
 \]
 For vectors $y$ satisfying the "linear approximation of the constraint". The hessian turns out as 
 \[
@@ -1043,8 +1096,8 @@ For vectors $y$ satisfying the "linear approximation of the constraint". The hes
         0 & & & Q_n
     \end{bmatrix}
 \]
-% TODO end of remark do some formatting
-Because $R_t>0$ it is invertible. Therefore, we can write 
+\end{remark}
+Because $R_t>0$ it is invertible, we can write 
 \[
     u_t^* = -R_t^{-1}B_t^T\lambda_{t+1}^*
 \]
@@ -1058,22 +1111,21 @@ Assuming that it holds for some $t\leq T-1$, then we have
 \]
 Now, considering the constraint represented by the dynamics 
 \[
-    u_t^* = -R_t^{-1}N_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)
+    u_t^* = -R_t^{-1}B_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)
 \]
 Solving by $u^*_t$ yields 
 \[
     u_t^* = -(R_t+B_t^Tp_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx^*_t \quad t=0,\dots,T-1
 \]
-% TODO slide 17 and hamiltonian system
-we now get 
+we get 
 \begin{gather*}
     u_t^* = -R_t^{-1}B_t^Tp_{t+1}x_{t+1}^* \\
-    = -R_t^{-1}B_t^Tp_{t+1}(A_tx_t^*+B_tu_t^*)
+    = -R_t^{-1}B_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)
 \end{gather*}
 we multiply both sides by $R_t$: 
 \begin{gather*}
     R_tu_t^* = -B_t^TP_{t+1}(A_tx_t^*+B_tu_t^*)\\
-    R_tu_t^* = -B_t^TP_{t+1}A_tx_t^*-B_t^TP_{t+1}B_tu_t^*)\\
+    R_tu_t^* = -B_t^TP_{t+1}A_tx_t^*-B_t^TP_{t+1}B_tu_t^*\\
     (R_t+B_t^TP_{t+1}B_t)u_t^* = -B_t^TP_{t+1}A_tx_t^*
 \end{gather*}
 The matrix on the left is clearly positive definite, therefore: 
@@ -1086,7 +1138,7 @@ which we can write as
 \]
 that is, the optimal control is a state feedback with gain $-(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}$
 \[
-    x_{t+1} = A_tx_t^*-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx_t^*
+    x_{t+1}^* = A_tx_t^*-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_tx_t^*
 \]
 which we can rewrite as 
 \[
@@ -1094,15 +1146,15 @@ which we can rewrite as
 \]
 which is a closed loop system. We multiply both sides by $P_{t+1}$ and obtain 
 \[
-    P_{t+1}x_{t+1}^* = P_{t+1}(\cdots)x_t^*
+    P_{t+1}x_{t+1}^* = P_{t+1}(A_t-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t)x_t^*
 \]
 On the left side of the equation we have obtained $\lambda_{t+1}^*$
 \[
-    \lambda_{t+1}^* =P_{t+1}(\cdots)x_t^*
+    \lambda_{t+1}^* =P_{t+1}(A_t-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t)x_t^*
 \]
-Remembering that $\lambda_t^* = A_t^T+\lambda_{t+1}^*+Q_tx_t^*$ we multiply both sides by $A_t^T$ and then add $Q_tx^*_t$ and obtain 
+Remembering that $\lambda_t^* = A_t^T\lambda_{t+1}^*+Q_tx_t^*$ we multiply both sides by $A_t^T$ and then add $Q_tx^*_t$ and obtain 
 \[
-    A_t^T\lambda_{t+1}^*+Q_tx_t^*=A_t^TP_{t+1}(\cdots)x_t^* + Q_tx_t^*
+    A_t^T\lambda_{t+1}^*+Q_tx_t^*=A_t^TP_{t+1}(A_t-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t)x_t^* + Q_tx_t^*
 \]
 and because 
 \[
@@ -1110,35 +1162,46 @@ and because
 \]
 then 
 \[
-    P_tx_t^* = [A_t^TP_{t+1}(\cdots)+Q_t]x_t^*
+    P_tx_t^* = [A_t^TP_{t+1}(A_t-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t)+Q_t]x_t^*
 \]
 so 
 \[
-    P_tx_t^* = \left[A_t^TP_{t+1}A_t-a_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t\right]x_t^*
+    P_tx_t^* = \left[A_t^TP_{t+1}A_t-A_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t\right]x_t^*
 \]
 from which 
 \begin{equation}\label{Riccati}
-    P_T = \left[A_t^TP_{t+1}A_t-a_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t\right]
+    P_t = A_t^TP_{t+1}A_t-A_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t+Q_t
 \end{equation}
 because $\lambda_T^*=Q_Tx_T^*$ we have that 
 \[
     P_T = Q_T
 \]
-Therefore, by propagating equation \eqref{Riccati} back in time, $P_t$ can be calculated. equation \eqref{Riccati} is called difference Riccati equation
+Therefore, by propagating equation \eqref{Riccati} back in time, $P_t$ can be calculated. Equation \eqref{Riccati} is called difference Riccati equation
 \begin{itemize}
-    \item gains $K_t^*$ can be precomputed offline and the unsed for different $x_0$ 
+    \item gains $K_t^*$ can be precomputed offline and then used for different $x_0$ 
     \item It can be shown that if $T\to\infty$ the gains $K_t^*$ converge and asymptotically stabilize the system
 \end{itemize}
-% TODO slide 7
+\subsubsection{Other formulations of the Riccati equation}
+The usual Riccati recursion reads:
+\[
+    P_t = Q_t + A_t^TP_{t+1}A_t - A_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t
+\]
+by exploiting the matrix inversion lemma\footnote{$(A+BC)^{-1} = A^{-1}-A^{-1}B(I+CA^{-1}B)^{-1}CA^{-1}$}, we can write: 
+\begin{align*}
+    P_t &= Q_t + A_t^TP_{t+1}A_t - A_t^TP_{t+1}B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1}A_t\\
+    P_t &= Q_t + A_t^TP_{t+1}(I-B_t(R_t+B_t^TP_{t+1}B_t)^{-1}B_t^TP_{t+1})A_t\\
+    P_t &= Q_t + A_t^TP_{t+1}(I-B_t((I+B_t^TP_{t+1}B_tR_t^{-1})R_t)^{-1}B_t^TP_{t+1})A_t\\
+    P_t &= Q_t + A_t^TP_{t+1}(I-B_tR_t^{-1}(I+B_t^TP_{t+1}B_tR_t^{-1})^{-1}B_t^TP_{t+1})A_t\\
+    P_t &= Q_t + A_t^TP_{t+1}(I-B_tR_t^{-1}B_t^TP_{t+1})A_t\\
+    P_t &= Q_t + A_t^T(I-B_tR_t^{-1}B_t^TP_{t+1})P_{t+1}A_t
+\end{align*}
 \section{Infinite horizion LQ optimal control}
 Consider the infinite-horizon optimal control problem
-\[
-    \begin{array}{r l}
-        \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{\infty}\displaystyle\frac{1}{2}[x_t^TQx_t+u_t^TRu_t] \\
-        \text{subj. to} & x_{t+1} = Ax_t + Bu_t \quad t=0,\dots,T-1\\
+\begin{align*}
+        \min_{\substack{x_1,x_2,\dots \\ u_0,u_1,\dots}} & \displaystyle\sum_{t=0}^{\infty}\displaystyle\frac{1}{2}\left[x_t^TQx_t+u_t^TRu_t\right] \\
+        \text{subj. to } & x_{t+1} = Ax_t + Bu_t \quad t=0,1,\dots\\
                         &x_0 = x_{\text{init}}
-    \end{array}
-\]
+\end{align*}
 where 
 \begin{itemize}
     \item $x\in\R^n$ and $u\in\R^m$
@@ -1172,7 +1235,7 @@ Let the pair $(A,B)$ be controllable and the pair $(A,C)$ with $Q=C^TC$ be obser
     \item there exists a unique positive definite $P_\infty$ equilibrium solution of the Difference Riccati Equation. That is, $P_\infty$ is a solution of \[
             P_\infty = Q+A^TP_\infty A-A^TP\infty B(R+B^TP_\infty B)^{-1}B^TP_\infty A
         \]
-        which is called Algebraic Riccati Equation 
+        which is called \emph{Algebraic Riccati Equation }
         \item the optimal control is a feedback of the state given by:
             \begin{flalign*}
                 & K^* = -(R+B^TP_\infty B)^{-1}(B^TP_\infty A)\\
@@ -1233,24 +1296,26 @@ and by defining $J(\mathbf{u}):=\ell(\Phi(\mathbf{u}),\mathbf{u})$
 This goes by the name of \emph{reduced} or \emph{condensed optimal control problem}. The procedure of writing $\mathbf{x}$ as a function of $\mathbf{u}$ and then plugging it into the optimal control problem is called shooting.
 \begin{remark}
     if we consider path input constraints 
-    \[
+    \begin{align*}
         g_0(u_0)\leq 0 \\
         \vdots \\
-        g_{T-1}(u_{T-1})\leq 0 \\
-    \]
+        g_{T-1}(u_{T-1})\leq 0 
+    \end{align*}
     the problem becomes 
-    \[
-        \min_{\mathbf{u}\in\R^{mT}} J(\mathbf{u}) \\
-        text{subj to}
-    \]
+    \begin{align*}
+        \min_{\mathbf{u}\in\R^{mT}} & J(\mathbf{u}) \\
+        \text{subj to } & g_0(u_0)\leq 0 \\
+        & \vdots \\
+        & g_{T-1}(u_{T-1})\leq 0 
+    \end{align*}
 \end{remark}
 \begin{remark}
      if we have constraints of the type 
-     \[
-        g_0(x_0,u_0)\leq 0\\
-        \vdots \\
-        g_{T-1}(x_{T-1},u_{T-1})\leq 0\\
-     \]
+     \begin{align*}
+         &g_0(x_0,u_0)\leq 0\\
+         &\vdots \\
+         &g_{T-1}(x_{T-1},u_{T-1})\leq 0\\
+     \end{align*}
      They can be rewritten as functions of $x_0$ and $\mathbf{u}$ only, however $\Phi(\cdot)$ must be explicitly known
 \end{remark}
 
@@ -1261,6 +1326,18 @@ We can apply the gradient method, i.e.
 \]
 We can formally write the expression of $\nabla J(\mathbf{u})=\nabla \ell(\Phi(\mathbf{u}),\mathbf{u})$ by using the chain rule of differentiation. 
 % TODO slide 14 (16/31)
+Consider\[
+    J(\mathbf{u}) = \ell(\phi(\mathbf{u}),\mathbf{u})
+\]
+Suppose $\mathbf{u}\in\R$, we have: 
+\[
+    \displaystyle\frac{d}{d\mathbf{u}}J(\bar{\mathbf{u}}) = \at{\displaystyle\frac{\partial\ell(\mathbf{x},\mathbf{u})}{\partial\mathbf{x}}}{\substack{\mathbf{x} = \phi(\bar{\mathbf{u}})\\ \mathbf{u} = \bar{\mathbf{u}}}}\at{\displaystyle\frac{\partial\phi(\mathbf{u})}{\partial\mathbf{u}}}{\mathbf{u} = \bar{\mathbf{u}}} + \at{\displaystyle\frac{\partial\ell(\mathbf{x},\mathbf{u})}{\partial\mathbf{u}}}{\substack{\mathbf{x} = \phi(\bar{\mathbf{u}})\\ \mathbf{u} = \bar{\mathbf{u}}}}
+\]
+In general, we have $\mathbf{u}\in\R^{mT}$, Therefore
+\[
+    \nabla J(\mathbf{u}) = \nabla\phi(\mathbf{u})\nabla_1\ell(\phi(\mathbf{u}),\mathbf{u})+\nabla_2\ell(\phi(\mathbf{u}),\mathbf{u})
+\]
+However, notice that the calculation of $\nabla J(\mathbf{u})$ requires $\nabla\phi(\mathbf{u})$, which may be difficult to compute.
 \[
     \nabla\Phi(\mathbf{u}) = \nabla \begin{bmatrix}
         \Phi_{1,1}(\mathbf{u})\\
@@ -1279,11 +1356,11 @@ We can formally write the expression of $\nabla J(\mathbf{u})=\nabla \ell(\Phi(\
     \end{bmatrix}
 \]
 where $\Phi_{t,j}:\R^{mT}\to \R$, therefore the above matrix is a matrix of scalars.
-Let us introduce an auxiliary function $\mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda}):\R^{nT}\times \R^{mT} \times\R^{nT}\to \R$ given by 
+Let us introduce an auxiliary function $\mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda}):\R^{nT}\times \R^{mT} \times\R^{nT}\to \R$ given by 
 \[
-    \mathcal{L}(\mathbf{x},\mathbf{u},\mathbf{\lambda})=\ell(\mathbf{x},\mathbf{u})+h(\mathbf{x},\mathbf{u})^T\mathbf{\lambda}
+    \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})=\ell(\mathbf{x},\mathbf{u})+h(\mathbf{x},\mathbf{u})^T\boldsymbol{\lambda}
 \]
-where $\mathbf{\lambda}\in\R^{nT}$ is a "costate vector" and 
+where $\boldsymbol{\lambda}\in\R^{nT}$ is a "costate vector" and 
 \[
     h(\mathbf{x},\mathbf{u}) = \begin{bmatrix}
          f_0(x_0,u_0)-x1\\
@@ -1291,27 +1368,42 @@ where $\mathbf{\lambda}\in\R^{nT}$ is a "costate vector" and
          f_{T-1}(x_{T-1}u_{T-1})-x_T
     \end{bmatrix}
 \]
-To compute $\nabla J(\mathbf{u})$ let us evaluate $\mathcal{l}(\cdot)$ for $\mathbf{x} = \Phi(\mathbf{u})$. Since $h(\Phi(\mathbf{u},)\mathbf{u})=0$ it holds that 
+To compute $\nabla J(\mathbf{u})$ let us evaluate $\mathcal{L}(\cdot)$ for $\mathbf{x} = \Phi(\mathbf{u})$. Since $h(\Phi(\mathbf{u},)\mathbf{u})=0$ it holds that 
 \[
-    \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\mathbf{\lambda}) = J(\mathbf{u}) \quad \forall \lambda\in\R^{nT}
+    \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) = J(\mathbf{u}) \quad \forall \lambda\in\R^{nT}
 \]
 Therefore 
 \[
-    \nabla \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\mathbf{\lambda}) = \nabla J(\mathbf{u}) \quad \forall \mathbf{\lambda}
+    \nabla \mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) = \nabla J(\mathbf{u}) \quad \forall \boldsymbol{\lambda}
 \]
 hence we can write 
 \[
-    \nabla J (\mathbf{u}) = \nabla\Phi(\mathbf{u})(\nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda})+\nabla_2\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}
+    \nabla J (\mathbf{u}) = \nabla\Phi(\mathbf{u})(\nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1 h(\Phi(\mathbf{u}),\mathbf{u})\boldsymbol{\lambda})+\nabla_2\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\Phi(\mathbf{u}),\mathbf{u})\boldsymbol{\lambda}
 \]
-which hodls for every $\mathbf{\lambda}$. Therefore, for a given $\mathbf{u}$, we can cleverly select $\mathbf{\lambda}=\mathbf{\lambda}(\mathbf{u})$ such that: 
+which holds for every $\boldsymbol{\lambda}$. Therefore, for a given $\mathbf{u}$, we can cleverly select $\boldsymbol{\lambda}=\boldsymbol{\lambda}(\mathbf{u})$ such that: 
 \[
-    \nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}(\mathbf{u})
+    \nabla_1\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_1h(\Phi(\mathbf{u}),\mathbf{u})\boldsymbol{\lambda}(\mathbf{u}) = 0
 \]
 which leads to 
 \[
-    \nabla J(\mathbf{u}) = \nabla_2\ell(\Phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\Phi(\mathbf{u}),\mathbf{u})\mathbf{\lambda}(\mathbf{u})
+    \nabla J(\mathbf{u}) = \nabla_2\ell(\phi(\mathbf{u}),\mathbf{u})+\nabla_2 h(\phi(\mathbf{u}),\mathbf{u})\boldsymbol{\lambda}(\mathbf{u})
 \]
-
+By recalling that 
+\[
+    \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda}) = \ell(\mathbf{x},\mathbf{u})+\boldsymbol{\lambda}^Th(\mathbf{x},\mathbf{u})
+\]
+We have
+\[
+    \nabla J(\mathbf{u}) = \nabla\phi(\mathbf{u})\nabla_1\mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})+\nabla_2\mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})
+\]
+so that choosing $\boldsymbol{\lambda} = \boldsymbol{\lambda}(\mathbf{u})$ such that
+\[
+    \nabla_1\mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}(\mathbf{u})) = 0
+\]
+it holds 
+\[
+    \nabla J(\mathbf{u}) = \nabla_2\mathcal{L}(\Phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}(\mathbf{u}))
+\]
 
 
 
@@ -1322,13 +1414,13 @@ Then
 \[
     \nabla J(\mathbf{u^*}) = 0
 \]
-that is, if there exists a $\mathbf{\lambda}^*$ such that 
+that is, if there exists a $\boldsymbol{\lambda}^*$ such that 
 \[
-    \nabla_1\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\mathbf{\lambda}^*)=0
+    \nabla_1\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\boldsymbol{\lambda}^*)=0
 \]
 it holds 
 \[
-    \nabla_2\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\mathbf{\lambda}^*)=0
+    \nabla_2\mathcal{L}(\Phi(\mathbf{u}^*),\mathbf{u}^*,\boldsymbol{\lambda}^*)=0
 \]
 
 \subsection{explicit computation of } % TODO fix title and bolds

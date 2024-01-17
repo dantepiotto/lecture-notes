@@ -62,18 +62,19 @@
 \contentsline {section}{\numberline {3.1}boh}{19}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Dynamics as equality constraints}{19}{subsection.3.1.1}%
 \contentsline {subsection}{\numberline {3.1.2}system trajectories and trajectory manifold}{19}{subsection.3.1.2}%
-\contentsline {section}{\numberline {3.2}Unconstrained optimal control problem (d-t)}{19}{section.3.2}%
+\contentsline {section}{\numberline {3.2}Unconstrained optimal control problem (d-t)}{20}{section.3.2}%
 \contentsline {section}{\numberline {3.3}KKT conditions for unconstrained optimal control}{20}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Indirect methods for optimal control}{21}{subsection.3.3.1}%
-\contentsline {section}{\numberline {3.4}KKT conditions for constrained optimal control}{21}{section.3.4}%
+\contentsline {section}{\numberline {3.4}KKT conditions for constrained optimal control}{22}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Linear Quadratic (LQ) optimal control}{23}{chapter.4}%
 \contentsline {section}{\numberline {4.1}First order optimality condition}{23}{section.4.1}%
+\contentsline {subsubsection}{Other formulations of the Riccati equation}{25}{section*.34}%
 \contentsline {section}{\numberline {4.2}Infinite horizion LQ optimal control}{25}{section.4.2}%
 \contentsline {chapter}{\numberline {5}Optimality Conditions for Unconstrained Optimal Control via Shooting}{27}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Reduced optimal control problem}{27}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Algorithms for optimal control problem solution}{28}{section.5.2}%
 \contentsline {subsection}{\numberline {5.2.1}First order necessary condition for optimality}{29}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}explicit computation of }{29}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.2}explicit computation of }{30}{subsection.5.2.2}%
 \contentsline {chapter}{\numberline {6}Optimal Control based trajectory generation and tracking}{31}{chapter.6}%
 \contentsline {section}{\numberline {6.1}main strategy idea over a finite horizon}{31}{section.6.1}%
 \contentsline {section}{\numberline {6.2}LQR based trajectory tracking}{31}{section.6.2}%
@@ -86,18 +87,18 @@
 \contentsline {subsection}{\numberline {7.1.4}DP for LQP – Summary}{35}{subsection.7.1.4}%
 \contentsline {subsection}{\numberline {7.1.5}LQ for time-invariant systems and cost}{35}{subsection.7.1.5}%
 \contentsline {section}{\numberline {7.2}Infinite Horizon Linear Quadratic Problems}{35}{section.7.2}%
-\contentsline {subsubsection}{Time invariant cost and dynamics}{35}{section*.34}%
+\contentsline {subsubsection}{Time invariant cost and dynamics}{35}{section*.35}%
 \contentsline {chapter}{\numberline {8}Numerical methods for nonlinear optimal control}{37}{chapter.8}%
 \contentsline {chapter}{\numberline {9}Model Predictive Control}{39}{chapter.9}%
 \contentsline {section}{\numberline {9.1}Introductionn}{39}{section.9.1}%
-\contentsline {subsubsection}{Motivations}{39}{section*.35}%
-\contentsline {subsubsection}{Idea}{39}{section*.36}%
-\contentsline {subsubsection}{prediction horizon vs time horizon}{39}{section*.37}%
-\contentsline {subsubsection}{optimal control problem to be solved at each t}{40}{section*.38}%
+\contentsline {subsubsection}{Motivations}{39}{section*.36}%
+\contentsline {subsubsection}{Idea}{39}{section*.37}%
+\contentsline {subsubsection}{prediction horizon vs time horizon}{39}{section*.38}%
+\contentsline {subsubsection}{optimal control problem to be solved at each t}{40}{section*.39}%
 \contentsline {section}{\numberline {9.2}MPC with Zero Terminal Constraint}{40}{section.9.2}%
 \contentsline {section}{\numberline {9.3}Quasi-Infinte Horizon MPC}{41}{section.9.3}%
 \contentsline {subsection}{\numberline {9.3.1}Practical framework}{41}{subsection.9.3.1}%
 \contentsline {section}{\numberline {9.4}Optimal control with constraints}{41}{section.9.4}%
 \contentsline {chapter}{\numberline {10}Reinforcement Learning}{43}{chapter.10}%
 \contentsline {section}{\numberline {10.1}Notation}{43}{section.10.1}%
-\contentsline {subsubsection}{problem formulation}{43}{section*.39}%
+\contentsline {subsubsection}{problem formulation}{43}{section*.40}%
