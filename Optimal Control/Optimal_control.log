@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.7.6)  17 JAN 2024 20:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.7.6)  20 JAN 2024 17:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -391,17 +391,17 @@ Chapter 1.
 ]
 Chapter 2.
 [7]
-<./images//cvxset.png, id=390, 296.10625pt x 269.005pt>
+<./images//cvxset.png, id=420, 296.10625pt x 269.005pt>
 File: ./images//cvxset.png Graphic file (type png)
 <use ./images//cvxset.png>
 Package pdftex.def Info: ./images//cvxset.png  used on input line 280.
 (pdftex.def)             Requested size: 96.73788pt x 87.8812pt.
-<./images//ncvxset.png, id=392, 204.765pt x 236.885pt>
+<./images//ncvxset.png, id=422, 204.765pt x 236.885pt>
 File: ./images//ncvxset.png Graphic file (type png)
 <use ./images//ncvxset.png>
 Package pdftex.def Info: ./images//ncvxset.png  used on input line 285.
 (pdftex.def)             Requested size: 96.73788pt x 111.91429pt.
-<./images//cvxfcn.png, id=393, 396.48125pt x 329.23pt>
+<./images//cvxfcn.png, id=423, 396.48125pt x 329.23pt>
 File: ./images//cvxfcn.png Graphic file (type png)
 <use ./images//cvxfcn.png>
 Package pdftex.def Info: ./images//cvxfcn.png  used on input line 297.
@@ -411,17 +411,17 @@ Package pdftex.def Info: ./images//cvxfcn.png  used on input line 297.
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [8 <./images//cvxset.png> <./images//ncvxset.png>] [9 <./images//cvxfcn.png>] [10] [11] [12]
-<./images//armijo0.png, id=447, 679.53876pt x 495.8525pt>
+<./images//armijo0.png, id=478, 679.53876pt x 495.8525pt>
 File: ./images//armijo0.png Graphic file (type png)
 <use ./images//armijo0.png>
 Package pdftex.def Info: ./images//armijo0.png  used on input line 552.
 (pdftex.def)             Requested size: 143.65778pt x 104.8206pt.
-<./images//armijo1.png, id=448, 646.415pt x 493.845pt>
+<./images//armijo1.png, id=479, 646.415pt x 493.845pt>
 File: ./images//armijo1.png Graphic file (type png)
 <use ./images//armijo1.png>
 Package pdftex.def Info: ./images//armijo1.png  used on input line 556.
 (pdftex.def)             Requested size: 143.65778pt x 109.7464pt.
-<./images//armijo2.png, id=449, 645.41125pt x 479.7925pt>
+<./images//armijo2.png, id=480, 645.41125pt x 479.7925pt>
 File: ./images//armijo2.png Graphic file (type png)
 <use ./images//armijo2.png>
 Package pdftex.def Info: ./images//armijo2.png  used on input line 560.
@@ -452,48 +452,64 @@ Overfull \hbox (25.30096pt too wide) has occurred while \output is active
 \OT1/cmr/m/n/10 30 \OT1/cmr/m/sl/10 CHAPTER 5.  OPTIMALITY CONDITIONS FOR UNCONSTRAINED OPTIMAL CONTROL VIA SHOOTING
  []
 
-[30]
+[30] [31]
+Overfull \hbox (25.30096pt too wide) has occurred while \output is active
+\OT1/cmr/m/n/10 32 \OT1/cmr/m/sl/10 CHAPTER 5.  OPTIMALITY CONDITIONS FOR UNCONSTRAINED OPTIMAL CONTROL VIA SHOOTING
+ []
+
+[32
+
+]
 Chapter 6.
 
-Overfull \hbox (8.4987pt too wide) in paragraph at lines 1480--1481
+Overfull \hbox (8.4987pt too wide) in paragraph at lines 1539--1540
 []\OT1/cmr/m/n/10 Idea: by us-ing an op-ti-mal con-trol al-go-rithm, com-pute an open loop (op-ti-mal) state-input tra-jec-tory $(\OT1/cmr/bx/n/10 x[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 u[]\OT1/cmr/m/n/10 )$,
  []
 
-[31
-
-] [32]
+[33] [34]
 Chapter 7.
-[33
+[35
 
-] [34] [35] [36
-
-]
+] [36]
 Chapter 8.
-[37] [38
+[37
+
+] [38] [39] [40]
+./Optimal_control.tex:2011: Undefined control sequence.
+l.2011 ... therefore we obtain the so-called \empg
+                                                  {Algebraic Riccati Equation}:
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[41] [42
 
 ]
 Chapter 9.
-[39] [40] [41] [42]
+[43] [44] [45] [46]
 Chapter 10.
-[43
+[47
 
 ] (./Optimal_control.aux)
 Package rerunfilecheck Info: File `Optimal_control.out' has not changed.
-(rerunfilecheck)             Checksum: D2DCF9AD821233926868CF6130CB4B70;14760.
+(rerunfilecheck)             Checksum: D8966C46AF06B8D44E063B28AA13B49C;16482.
  ) 
 Here is how much of TeX's memory you used:
- 10962 strings out of 478287
- 171592 string characters out of 5849290
- 498187 words of memory out of 5000000
- 28808 multiletter control sequences out of 15000+600000
- 482120 words of font info for 74 fonts, out of 8000000 for 9000
+ 10991 strings out of 478287
+ 171911 string characters out of 5849290
+ 501196 words of memory out of 5000000
+ 28821 multiletter control sequences out of 15000+600000
+ 483980 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  60i,20n,63p,511b,531s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on Optimal_control.pdf (43 pages, 516205 bytes).
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfr
+m1000.pfb>
+Output written on Optimal_control.pdf (47 pages, 552209 bytes).
 PDF statistics:
- 802 PDF objects out of 1000 (max. 8388607)
- 681 compressed objects within 7 object streams
- 193 named destinations out of 1000 (max. 500000)
- 543 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 866 PDF objects out of 1000 (max. 8388607)
+ 736 compressed objects within 8 object streams
+ 208 named destinations out of 1000 (max. 500000)
+ 591 words of extra memory for PDF output out of 10000 (max. 10000000)
 
