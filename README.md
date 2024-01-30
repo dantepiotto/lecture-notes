@@ -7,6 +7,9 @@ https://www.ejmastnak.com/tutorials/vim-latex/intro/
 
 ## Up to date notes: 
 Robotics
+Optimal Control
+LEDS
+RTOS
 
 ## Corrections/Suggestions
 Notes are mainly taken during lectures and may present inaccuracies or missing portions. Feel free to suggest any changes or corrections in the Discussion tab.
