@@ -61,7 +61,7 @@ Consider the continuous-time system ($t\in\R$)
 \end{itemize}
 We will mainly work with time invariant systems, $\dot{x}(t)=f(x(t),u(t))$. 
 
-We consider nonlinear, discrete-time systems described by 
+We consider nonlinear, discrete-time systems described by:
 \[
     x(t+1)=f_t(x(t),u(t)) \quad t\in\N_0
 \]
@@ -788,7 +788,7 @@ The linear system of equations can be rewritten as
 \end{gather*}
 and equivalently as 
 \begin{gather*}
-    \nabla\ell(x^k) +H^k\Delta x^k+\nabla h(x^k)\Delta \lambda^{k+1} = 0 \\
+    \nabla\ell(x^k) +H^k\Delta x^k+\nabla h(x^k)\lambda^{k+1} = 0 \\
     h(x^k)+\nabla h(x^k)^T\Delta x^k = 0
 \end{gather*}
 We can observe that the above equations are the necessary and sufficient optimality conditions for the Quadratic Program (QP)
@@ -937,7 +937,7 @@ Let us note that
 \]
 Since $\mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda})= \displaystyle\sum_{t=0}^{T}\mathcal{L}(x_t,u_t,\boldsymbol{\lambda})$, we can exploit this sparsity and write 
 \begin{align*}
-    \nabla_2\mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda}) = 0 \qquad & \nabla_2\ell_0(x_0,u_0)\nabla_2f_0(x_0,u_0)\lambda_0\\
+    \nabla_2\mathcal{L}_0(x_0,u_0,\boldsymbol{\lambda}) = 0 \qquad & \nabla_2\ell_0(x_0,u_0) + \nabla_2f_0(x_0,u_0)\lambda_1\\
     \begin{bmatrix}
         \nabla_1\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})\\
         \nabla_2\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda})
@@ -968,12 +968,13 @@ Based on solving the optimality conditions:
     \item Guess some $u_t^0,\quad t= 0,\dots,T-1 \quad k=0$ 
     \item run "forward" 
         \[
-            x_{t+1}^0 = f_t(x_t^0,u_t^0) \quad x_0
+            x_{t+1}^0 = f_t(x_t^0,u_t^0) \quad x_0 = x_{\text{init}}
         \]
     \item run "backward"
         \[
-            a
+            \lambda_t^0 = A_t^T\lambda_{t+1}^0 + a_t^0
         \]
+        starting from $\lambda_T^0 = \nabla \ell (x_T^0)$
     \item given $\lambda_t^0 \quad t=1,\dots,T$ solve:
         \[
             \nabla_2\ell(x_t^0,u_t) + \nabla_2f(x_t^0,u_t)\lambda_{t+1}^0 = 0 \quad t=0,\dots,T-1
@@ -999,7 +1000,7 @@ where
 \end{itemize}
 The Lagrangian function has the form 
 \begin{align*}
-    \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda},\mathbf{\mu}) =& \ell(\mathbf{x},\mathbf{u})+\boldsymbol{\lambda}_d^T h(\mathbf{x},\mathbf{u})+ \lambda_b^T r(x_0,x_T) + \mathbf{\mu}^Tg(\mathbf{x},\mathbf{u}) \\ 
+    \mathcal{L}(\mathbf{x},\mathbf{u},\boldsymbol{\lambda},\boldsymbol{\mu}) =& \ell(\mathbf{x},\mathbf{u})+\boldsymbol{\lambda}_d^T h(\mathbf{x},\mathbf{u})+ \lambda_b^T r(x_0,x_T) + \mathbf{\mu}^Tg(\mathbf{x},\mathbf{u}) \\ 
     =&\displaystyle\sum_{t=0}^{T-1}\ell_t(x_t,u_t)+\ell_T(x_T) + \displaystyle\sum_{t=0}^{T-1}\lambda_{d,t+1}(f_t(x_t,u_t)-x_{t+1})+\lambda_b^Tr(x_0,x_T) + \displaystyle\sum_{t=0}^{T-1}\mu_t^Tg_t(x_t,u_t)\\
     =&\displaystyle\sum_{t=0}^{T}\mathcal{L}_t(x_t,u_t,\boldsymbol{\lambda},\mathbf{\mu})
 \end{align*}
@@ -1077,7 +1078,7 @@ We assume $Q_t=Q_t^T\geq 0,\ $ for $ t=0,\dots,T-1$, $Q_T = Q_T^T \geq 0$, and $
 \end{gather*}
 therefore 
 \begin{gather*}
-    \lambda_t^* = A_t^T\lambda_{t+1}^* + Q_tx_t^* \quad t= T_1,\dots,0\\
+    \lambda_t^* = A_t^T\lambda_{t+1}^* + Q_tx_t^* \quad t= T-1,\dots,0\\
     \lambda_T^* = Q_Tx_T^* \\
     B_t^T\lambda_{t+1}^* + R_tu_t^* = 0 \quad t=0,\dots,T-1
 \end{gather*}
@@ -1243,9 +1244,69 @@ Let the pair $(A,B)$ be controllable and the pair $(A,C)$ with $Q=C^TC$ be obser
 \end{itemize}
 \remark The observability of $(A,C)$ guardantees that if the stage cost goes to zero, then the state trajectory goes to zero.
 
+\section{Affine LQR}
+Consider a LQR problem with affine cost and affine dynamics 
+\begin{align*}
+    \min_{\substack{x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1} \begin{bmatrix}
+        q_t \\ r_t
+    \end{bmatrix}^T \begin{bmatrix}
+        x_t \\ u_t
+    \end{bmatrix}  + \begin{bmatrix}
+        x_t \\ u_t
+    \end{bmatrix}^T \begin{bmatrix}
+        Q_t & S_t^T \\ S_t & R_t
+    \end{bmatrix} \begin{bmatrix}
+        x_t \\ u_t
+    \end{bmatrix} + q_t^Tx_T + x_T^TQ_Tx_T\\ 
+    \text{subj. to } & x_{t+1} = A_tx_t + B_tu_t + c_t \quad t = 0,\dots,T-1 
+\end{align*}
+where $Q_t=Q_t^T\geq 0$, $R_t=R_t^T>0$, $S_t$ such that the problem is convex, i.e. $Q_t-S_t^TR_t^{-1}S_t\geq 0$
 
-
-
+This problem can be conveniently solved by augmenting the state as 
+\[
+    \tilde{x}_t := \begin{bmatrix}
+        1 \\ x_t
+    \end{bmatrix}
+\]
+we can rewrite the cost and system matrices as 
+\[
+    \tilde{Q}_t := \begin{bmatrix}
+        0 & q_t^T \\ q_t  & Q_t
+    \end{bmatrix} \quad \tilde{S}_t := \begin{bmatrix}
+        r_t & S_t
+    \end{bmatrix} \quad \tilde{R}_t := R_t \quad \tilde{A}_t := \begin{bmatrix}
+        1 & 0 \\ c_t & A_t
+    \end{bmatrix} \quad \tilde{B}_t := \begin{bmatrix}
+        0 \\ B_t
+    \end{bmatrix}
+\]
+Then, we solve the associated LQR problem 
+\begin{align*}
+    \min_{\substack{x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}  \begin{bmatrix}
+        \tilde{x}_t \\ u_t
+    \end{bmatrix}^T \begin{bmatrix}
+        \tilde{Q}_t & \tilde{S}_t^T \\ \tilde{S}_t & \tilde{R}_t
+    \end{bmatrix} \begin{bmatrix}
+        \tilde{x}_t \\ u_t
+    \end{bmatrix} + \tilde{x}_T^TQ_T\tilde{x}_T\\ 
+    \text{subj. to } & \tilde{x}_{t+1} = \tilde{A}_t\tilde{x}_t + \tilde{B}_tu_t  \quad t = 0,\dots,T-1 \\
+    & x_0 = x_{\text{init}}
+\end{align*}
+The optimal solution of the problem reads 
+\begin{align*}
+    u_t^* &= K_t^*x_t^* + \sigma_t^*\\ 
+    x_{t+1}^* &= A_tx_t^* + B_tu_t^*
+\end{align*}
+where 
+\begin{align*}
+    K_t^* &= -(R_t+B_t^TP_{t+1}B_t)^{-1}(S_t+B_t^TP_{t+1}A_t)\\ 
+    \sigma_t^* &= -(R_t+B_t^TP_{t+1}B_t)^{-1}(r_t+B_t^Tp_{t+1}+B_t^TP_{t+1}c_t)\\
+\end{align*}
+\begin{align*}
+    p_t &= q_t + A_t^TP_{t+1} + A_t^TP_{t+1}C_t + {K_t^*}^T(R_t+B_t^TP_{t+1}B_t)\sigma_t^*\\
+    P_T &= Q_t + A_t^TP_{t+1}A_t - {K_t^*}^*T(R_t+B_t^TP_{t+1}B_t)K_t^*
+\end{align*}
+with $P_T = Q_T$ and $p_T = q_T$
 
 
 
@@ -1278,7 +1339,7 @@ so that
 \]
 Note: Given any arbitrary $\bar{u}_0,\dots,\bar{u}_{T-1}$, we have that $\Phi_{t+1}(\bar{\mathbf{u}}) = f_t(\Phi_t(\bar{\mathbf{u}}),u_t)$ by construction. This is equivalent to the equality constraint for the optimal control problem.
 
-\section{Reduced optimal control problem}
+\section{Reduced optimal control problem}\label{shoot}
 We can rewrite the optimal control problem as 
 \[
     \min_{\mathbf{u}\in\R^{mT}} \displaystyle\sum_{t=0}^{T-1}\ell_t(\Phi_t(\mathbf{u}),u_t)+\ell_T(\Phi_T(\mathbf{u}))
@@ -1507,6 +1568,136 @@ with the additional condition
 \[
     x_1^* = f(x_{\text{init}},u_0) \quad \text{and} \quad \lambda_T^* = \nabla\ell_T(x_T^*)
 \]
+
+
+
+
+\chapter{Newton's method for Optimal Control}
+We look for a solution to the discrete-time optimal control problem 
+\begin{align*}
+    \min{\substack{\mathbf{x}\in\R^{nT}\\\mathbf{u}\in\R^{mT}}} & \displaystyle\sum_{t=0}^{T-1} \ell_t(x_t,u_t)+\ell_T(x_T)
+\end{align*}
+with given initial condition $x_0=x_{\text{init}}\in\R^n$, where $\ell_t:\R^n\times\R^m\to\R$ is the so-called stage cost while $\ell_T:\R^n\to\R$ is the terminal cost. In this chapter, we will use the following assumption:\\
+\emph{Assumption}: Functions $\ell_t(\cdot,\cdot),\ell_T(\cdot),f_t(\cdot,\cdot)$ are $\mathcal{C}^2$
+
+\section{Newton's method for unconstrained optimization}
+Given an unconstrained problem: 
+\begin{align*}
+    \min_{z} & \ell(z)\\  
+    \text{subj. to } & z\in\R^d
+\end{align*}
+where $\ell:\R^d\to\R$, Newton's method applied to this problem reads:
+\[
+    z^{k+1} = z^k-\gamma^k\nabla^2\ell(z^k)^{-1}\nabla \ell(z^k) = z^k-\gamma^k\Delta z^k
+\]
+where $\gamma^k>0$ chosen according to Arimjo, constant or diminishing rules. The descent direction $\Delta z^k$ can be calculated as the solution of the QP 
+\[
+    \Delta z^k = \argmin_{\Delta z}\nabla\ell(z^k)^T\nabla z + \displaystyle\frac{1}{2} \Delta z^T\nabla^2\ell(z^k)\Delta z
+\]
+Newton's method applied to the reduced optimization problem (see section \ref{shoot}) reads as: 
+\[
+    \mathbf{u}^{k+1} = \mathbf{u}^k - \gamma^k \Delta\mathbf{u}^k
+\]
+where 
+\[
+    \Delta\mathbf{u}^k = \argmin_{\Delta u} \nabla J(\mathbf{u}^k)^T \Delta\mathbf{u} + \displaystyle\frac{1}{2}\Delta \mathbf{u}^T\nabla^2J(\mathbf{u}^k)\Delta\mathbf{u}
+\]
+\section{Calculation of $\nabla^2J(u)$}
+In order to calculate $\nabla^2J(\mathbf{u})$ we move from:
+\[
+    \nabla J(\mathbf{u}) = \nabla \phi(\mathbf{u}) \nabla_1\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) + \nabla_2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})
+\]
+differentiating again this equation we have:
+\begin{align*}
+    \nabla^2J(\mathbf{u}) = &\nabla^2\phi(\mathbf{u})\nabla_1\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) + \nabla\phi(\mathbf{u})\nabla_{11}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\nabla \phi(\mathbf{u})^T + \nabla\phi(\mathbf{u})\nabla_{12}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\\ &+ \nabla_{22}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) + \nabla_{21}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\nabla\phi(\mathbf{u})^T\\
+     =& \nabla\phi(\mathbf{u})\nabla_{11}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\nabla \phi(\mathbf{u})^T + \nabla\phi(\mathbf{u})\nabla_{12}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\\ &+ \nabla_{22}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) + \nabla_{21}^2\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda})\nabla\phi(\mathbf{u})^T
+\end{align*}
+since $\boldsymbol{\lambda}=\boldsymbol{\lambda}(\mathbf{u})$ such that $\nabla_1\mathcal{L}(\phi(\mathbf{u}),\mathbf{u},\boldsymbol{\lambda}) =0$
+
+In this case, we also need to take into account $\nabla \phi(\mathbf{u})$. 
+
+\section{Algorithm}
+\subsubsection{Step 1 : Descent direction calculation}
+Evaluate $\nabla_1f_t(x_t^k,u_t^k),\nabla_2f_t(x_t^k,u_t^k),\nabla_1\ell_t(x_t^k,u_t^k),\nabla_2\ell_t(x_t^k,u_t^k),\nabla\ell_T(x_T^k)$\\ 
+Solve backwards the co-state equation, with $\lambda_T^k = \nabla\ell_T(x_T^k)$
+\[
+    \lambda_t^k = \nabla_1f_t(x_t^k,u_t^k)\lambda_{t+1}^k + \nabla_1\ell(x_t^k,u_t^k) \quad t = T-1,\dots,1
+\]
+Compute for all $t= 0,\dots,T-1$
+\begin{gather*}
+    Q_t^k := \nabla_{11}^2\ell_t(x_t^k,u_t^k) + \nabla^2_{11}f_t(x_t^k,u_t^k)\cdot \lambda_{t+1}^k, \quad R_t^k := \nabla_{22}^2\ell_t(x_t^k,u_t^k) + \nabla^2_{22}f_t(x_t^k,u_t^k)\cdot \lambda_{t+1}^k\\
+    S_t^k := \nabla_{22}^2\ell_t(x_t^k,u_t^k) + \nabla^2_{22}f_t(x_t^k,u_t^k)\cdot \lambda_{t+1}^k
+\end{gather*}
+and $Q_T^k := \nabla_{22}^2 \ell_T(x_T^k)$. Compute the descent direction solving 
+\begin{align*}
+    \min_{\mathbf{\Delta x, \Delta u}}  &\displaystyle\sum_{t=0}^{T-1}\begin{bmatrix}
+        \nabla_1\ell_t(x_t^k,u_t^k)\\
+        \nabla_1\ell_t(x_t^k,u_t^k)
+    \end{bmatrix}^T \begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix} + \displaystyle\frac{1}{2}\begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix}^T \begin{bmatrix}
+        Q_t^k & {S_t^k}^T \\ S_t^k & R_t^k
+    \end{bmatrix}\begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix} 
+     + \nabla\ell_T(x_T^k)^T\Delta x_T + \displaystyle\frac{1}{2}\Delta x_T^TQ_T^k\Delta x_T\\
+    \text{subj to } & \Delta x_{t+1} = \nabla_1f_t(x_t^k,u_t^k)^T\Delta x_t + \nabla_2f_t(x_t^k,u_t^k)^T\Delta u_t \quad t=0,\dots,T-1 \\ 
+    & \Delta x_0 = 0
+\end{align*}
+\subsubsection{Step 2: compute new input sequence}
+Implement setp-size selection rule 
+\[
+    u_t^{k+1} = u_t + \gamma^k\Delta u_t^k
+\]
+\subsubsection{Step 3: compute new state trajectory}
+Forward integrate (open-loop), for all $t=0,\dots,T-1$, with $x_0^{k+1}=x_{\text{init}}$
+\[
+    x_{t+1}^{k+1} = f_t(x_{t}^{k+1},u_t^{k+1})
+\]
+\subsection{Regularization}
+In many cases the matrices $Q_t^k,R_t^k$ and $S_t^k$ may not be positive definite. A viable choice is to implement a "first order" update solving the affine LQR problem using, in their place, the matrices 
+\begin{align*}
+    & \tilde{Q}_t^k := \nabla_{11}^2\ell_t(x_t^k,u_t^k), & & \tilde{R}_t^k := \nabla_{22}^2\ell_t(x_t^k,u_t^k)\\
+    & \tilde{S}_t^k := \nabla_{12}^2\ell_t(x_t^k,u_t^k), & & \tilde{Q}_T^k := \nabla^2\ell_T(x_T^k)
+\end{align*}
+\subsection{Robustified step 2 update: closed-loop state-input trajectory update}
+Idea: approximate $\Delta x_t \approx x_t^{k+1}-x_t^k$\\ 
+\textbf{Initialization}: consider an initial guess trajectory $(\mathbf{x}^0,\mathbf{u}^0)$\\
+For each iter $k$, \\
+\textbf{Step 1:} solve the affine LQR
+\begin{align*}
+    \min_{\mathbf{\Delta x, \Delta u}}  &\displaystyle\sum_{t=0}^{T-1}\begin{bmatrix}
+        \nabla_1\ell_t(x_t^k,u_t^k)\\
+        \nabla_1\ell_t(x_t^k,u_t^k)
+    \end{bmatrix}^T \begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix} + \displaystyle\frac{1}{2}\begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix}^T \begin{bmatrix}
+        Q_t^k & {S_t^k}^T \\ S_t^k & R_t^k
+    \end{bmatrix}\begin{bmatrix}
+        \Delta x_t \\ \Delta u_t
+    \end{bmatrix} 
+     + \nabla\ell_T(x_T^k)^T\Delta x_T + \displaystyle\frac{1}{2}\Delta x_T^TQ_T^k\Delta x_T\\
+    \text{subj to } & \Delta x_{t+1} = \nabla_1f_t(x_t^k,u_t^k)^T\Delta x_t + \nabla_2f_t(x_t^k,u_t^k)^T\Delta u_t \quad t=0,\dots,T-1 \\ 
+    & \Delta x_0 = 0
+\end{align*}
+and obtain gain matrices $K_t^k$ and feed-forward actions $\sigma_t^k$ for all $t=0,\dots,T-1$\\ 
+\textbf{Step 2:} compute new state-input trajectory 
+
+Forward integrate(closed-loop), for all $t=0,\dots,T-1$ with $x_0^{k+1}=x_{\text{init}}$
+\begin{align*}
+    &u_t^{k+1} = u_t^k + \gamma^k(\sigma_t^k + K_t^k\Delta x_t^k) + K_t^k(x_t^{k+1}-x_t^k - \gamma^k\Delta x_t)\\ 
+    & x_{t+1}^{k+1} = f_t(x_t^{k+1},u_t^{k+1})
+\end{align*}
+which results as 
+\begin{align*}
+    &u_t^{k+1} = u_t^k + K_t^k(x_t^{k+1}-x_t^k ) + \gamma^k\sigma_t^k  \\ 
+    & x_{t+1}^{k+1} = f_t(x_t^{k+1},u_t^{k+1})
+\end{align*}
+
 
 
 
@@ -1871,7 +2062,6 @@ which should hold for all $x_t$, therefore we obtain the so-called \emph{Differe
 Setting $P_T=Q_T$, it is possible to otbain $P_t$ via a backward integration for $t=T-1,\dots,=$
 
 \subsection{DP for LQP – Summary}
-% TODO insert slide 12
 Consider a linear quadratic control problem 
 \begin{align*}
     \min_{\substack{x_1,\dots,x_T \\ u_0,\dots,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}\displaystyle\frac{1}{2}\begin{bmatrix}
@@ -2008,7 +2198,7 @@ It is possible to write
     \end{bmatrix} \\
     \displaystyle\frac{1}{2}x_t^TPx_t&= \displaystyle\frac{1}{2}x_t^T\left(Q +A^TPA-(S^T+A^TPB)(R+B^TPB^{-1})(S^T+B^TPA)\right)
 \end{align*}
-which should hold for all $x_t$, therefore we obtain the so-called \empg{Algebraic Riccati Equation}:
+which should hold for all $x_t$, therefore we obtain the so-called \emph{Algebraic Riccati Equation}:
 \[
     Q +A^TPA-(S^T+A^TPB)(R+B^TPB^{-1})(S^T+B^TPA)
 \]
@@ -2066,7 +2256,7 @@ Idea: at each sampling time $t$ solve an optimal control problem and apply the f
 For each $t$
 \begin{enumerate}
     \item Measure the current state $x_t$ 
-    \item Compute the optimal trajectory $x^*_{t|t},\dots,x^*_{t+T|t},u^*_{t|t},\dots,u^*_{t+T-1|t}$\footnote{$x^*_{\tau|t}$ signifies the optimal state trajectory at instant $\tau$ for the optimal control problem starting at instant $t$, similarly for $u^*_{\tau|t}$}
+    \item Compute the optimal trajectory $x^*_{t|t},\dots,x^*_{t+T|t},u^*_{t|t},\dots,u^*_{t+T-1|t}$\footnote{$x^*_{\tau|t}$ signifies the optimal state trajectory at instant $\tau$ for the optimal control problem starting at instant $t$, similarly for $u^*_{\tau|t}$} with initial state $x_t$
     \item Apply the first control input $u^*_{t|t}$
     \item Measure $x_{t+1}$ and repeat
 \end{enumerate}
@@ -2078,27 +2268,23 @@ Two time-scales:
 \end{itemize}
 \subsubsection{optimal control problem to be solved at each t}
 At each time instant $t$, solve 
-\begin{gather*}
-    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
-    \begin{array}{l l }
-        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau), \quad t\in\{0,\dots,T-1\}\\
-                         & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U}  \\
+\begin{align*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
+        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau) \quad \tau=t,\dots,t+T-1\\
+                         & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U} \qquad \tau=t,\dots,t+T\\
                          & x_t = x_t^{\text{meas}}\text{\footnotemark}
-    \end{array}
-\end{gather*}
+\end{align*}
 \footnotetext{$x_t^{\text{meas}}$ is the measured state at time isntant $t$}
 
 \section{MPC with Zero Terminal Constraint} 
 At each time instant $t$, solve
-\begin{gather*}
-    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
-    \begin{array}{l l }
-        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau), \quad t\in\{0,\dots,T-1\}\\
-                          & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U}  \\
+\begin{align*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau) \\
+        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau) \quad \tau=t,\dots,t+T-1\\
+                          & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U} \qquad \tau=t,\dots,t+T-1\\ 
                           & x_t = x_t^{\text{meas}} \\
                           & x_{t+T}=0
-    \end{array}
-\end{gather*}
+\end{align*}
 where 
 \begin{itemize}
     \item $x_{\tau}$ and $u_\tau$ state and input predictions at future time $\tau$ computed at current time $t$ 
@@ -2113,11 +2299,10 @@ Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can al
     \[
         x_{t+1}=f(x_t,u_t)
     \]
-    with $f:\R^n\times\R^m\to\R^n$ Lipschitz continuous wrt $x$. If the stage cost is continuous and positive definite for all $\tau$, then the Zero Terminal Constraint MPC scheme is recursively feasible and the origin is asymptotically stable for the resulting closed-loop system.
+    with $f:\R^n\times\R^m\to\R^n$ Lipschitz continuous wrt $x$. If the stage cost is continuous, bounded and positive definite for all $\tau$, then the Zero Terminal Constraint MPC scheme is recursively feasible and the origin is asymptotically stable for the resulting closed-loop system.
     Assumptions: the optimal control problem at $t=0$ is feasible and some regularity on the constraint funcitinos ($g_t(x_t,u_t)\leq0$)
 \end{theorem}
 \begin{proof}[Proof (sketch of)]
-
     \begin{itemize}
         \item Recursive Feasibility
             \begin{itemize}
@@ -2136,14 +2321,14 @@ Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can al
                 \item The idea is to use the optimal cost $J^*(x_t^{\text{meas}})$ as a Lyapunov function 
                 \item First note that $J^*(x)\geq 0, \forall x\in\mathcal{X}$ and $J^*(x)=0 \iff x=0$
                     \item Then observe that 
-                        \begin{align}
+                        \begin{align*}
                             J^*(x_{t+1}^{\text{meas}}) & =\displaystyle\sum_{\tau=t+1}^{t+T}\ell_{\tau}(x_{\tau|t+1}^*,u_{\tau|t+1})\\
-                                                       &\leq \displaystyle\sum_{\tau=t+1}^{t+T}\ell_{\tau}(x_{\tau|t}^*,u_{\tau|t})+\ell_{t+T}(0,0)\\
-                                                       & =J^*(x_t^{\text{meas}})-\ell_t(x_{\tau|t}^*,u_{\tau|t})=J^*(x_t^{\text{meas}})-\ell_t(x_t^{\text{meas}},u_t^{\text{MPC}})
-                        \end{align}
+                                                       &\leq \displaystyle\sum_{\tau=t+1}^{t+T-1}\ell_{\tau}(x_{\tau|t}^*,u_{\tau|t}^*)+\ell_{t+T}(0,0)\\
+                                                       & =J^*(x_t^{\text{meas}})-\ell_t(x_{\tau|t}^*,u^*_{\tau|t})=J^*(x_t^{\text{meas}})-\ell_t(x_t^{\text{meas}},u_t^{\text{MPC}})
+                        \end{align*}
                         Thus
                         \[
-                            J^*(x_{t+1}^{\text{meas}})-J^*(x_t^{\text{meas}})<0, \quad \forall x_t{\text{meas}}\neq 0
+                            J^*(x_{t+1}^{\text{meas}})-J^*(x_t^{\text{meas}})<0, \quad \forall x_t^{\text{meas}}\neq 0
                         \]
             \end{itemize}
     \end{itemize}
@@ -2151,7 +2336,13 @@ Remark: in the more general case in which $(x^{eq},u^{eq})\neq (0,0)$, we can al
 
 \section{Quasi-Infinte Horizon MPC}
 Main idea: Since the terminal constraint introduces nuerical instabilities, relax the terminal condition by introducing a proper terminal cost $\ell_{t+T}$ and constraining the terminal state to be in a proper region $\mathcal{X}^f$ around the origin
-% TODO slide 11 insert problem
+\begin{align*}
+    \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{\tau=t}^{t+T-1}\ell_t(x_\tau,u_\tau)+\ell_{t+T}(x_{t+T})\\
+        \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau) \quad \tau=t,\dots,t+T-1\\
+                          & x_\tau \in \mathcal{X}, u_\tau \in \mathcal{U} \qquad \tau=t,\dots,t+T-1\\ 
+                          & x_t = x_t^{\text{meas}} \\
+                          & x_{t+T}\in\mathcal{X}^f
+\end{align*}
 Assumption: The terminal region is forward invariant wrt a local controller, i.e. there exists $k^{\text{loc}}:\R^n\to\R^m$ such that 
 \[
     x\in\mathcal{X}^f \implies f(x,k^{\text{loc}}(x))\in\mathcal{X}^f
@@ -2161,27 +2352,33 @@ Result: Under this assumption it can be proven that for a proper terminal cost a
 \begin{itemize}
     \item Quadratic stage cost and terminal cost: 
         \begin{align*}
-            \ell_\tau(x,u)=x^TQx+u^TRu\\
-            \ell_{t+T}(x) = x^TPx
+            &\ell_\tau(x,u)=x^TQx+u^TRu\\
+            &\ell_{t+T}(x) = x^TPx
         \end{align*}
         where $P$ is computed in a way that $x^TPx$ is an upper bound for the optimal infinite-horizon cost-to-go
     \item Ellipsoidal terminal region: 
         \[
-            \mathcal{X}^f = \{x\in\R^n|x^TPx\\leq\alpha\}
+            \mathcal{X}^f = \{x\in\R^n|x^TPx\leq\alpha\}
         \]
-        for a proper $\alpha$ which is forwar invariant wrt the LQR controller $K^{\text{lqr}}$
+        for a proper $\alpha$ which is forward invariant wrt the LQR controller $K^{\text{lqr}}$
     \item Hence, at each sampling time $t$, we solve the following problem: 
-        % TODO slide 14
+        \begin{align*}
+            \min_{\substack{x_0,x_1,\dots,x_T\\u_0,\dots,u_{T-1}}} & \displaystyle\sum_{\tau=t}^{t+T-1}x_\tau^TQx_\tau + u_\tau^TRu_\tau + x_{t+T}^TPx_{t+T}\\
+            \text{subj.\ to } & x_{\tau+1}=f(x_\tau,u_\tau) \quad \tau=t,\dots,t+T-1\\
+            & x_t = x_t^{\text{meas}} \\
+            & u_\tau \in \mathcal{U} \qquad \tau=t,\dots,t+T-1\\ 
+            & x_{t+T}^TPx_{t+T}\leq \alpha
+        \end{align*}
         and we apply to the real system the first optimal input $u^*_{t|t}(x_t^{\text{meas}})$
 \end{itemize}
 
 \section{Optimal control with constraints}
 when dealing with constrained optimal control, with constraints $g(x_t,u_t)\leq 0$ barrier functions can be used: 
-\[
-    \min_{x_1,\dots,x_T,u_0,...,u_{T-1}} \displaystyle\sum_{t=0}^{T-1}[\ell_t(x_t,u_t)-\varepsilon\log(-g(x_t,u_t))]+\ell_T(x_T)\\
-    \text{subj to} x_{t+1}=f_t(x_t,u_t) \quad t=0,\dots,T-1
-\]
-start with $\varepsilon=\varepsilon^0$, solve the relaxed problem above, decrease $\varepsilon>0$
+\begin{align*}
+    \min_{\substack{x_1,\dots,x_T\\u_0,...,u_{T-1}}} & \displaystyle\sum_{t=0}^{T-1}[\ell_t(x_t,u_t)-\varepsilon\log(-g(x_t,u_t))]+\ell_T(x_T)\\
+    \text{subj to } &x_{t+1}=f_t(x_t,u_t) \quad t=0,\dots,T-1
+\end{align*}
+start with $\varepsilon=\varepsilon^0$, solve the relaxed problem above, decrease $\varepsilon>0$\\
 Remarks: \begin{itemize}
     \item need to initialize with feasible initial trajectory 
         \item alternatively extend the $-\log(\cdot)$ function on the entire domain, i.e. use some function \[

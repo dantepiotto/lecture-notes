@@ -70,6 +70,7 @@
 \contentsline {section}{\numberline {4.1}First order optimality condition}{23}{section.4.1}%
 \contentsline {subsubsection}{Other formulations of the Riccati equation}{25}{section*.34}%
 \contentsline {section}{\numberline {4.2}Infinite horizion LQ optimal control}{25}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Affine LQR}{26}{section.4.3}%
 \contentsline {chapter}{\numberline {5}Optimality Conditions for Unconstrained Optimal Control via Shooting}{27}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Reduced optimal control problem}{27}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Algorithms for optimal control problem solution}{28}{section.5.2}%
@@ -77,37 +78,46 @@
 \contentsline {subsection}{\numberline {5.2.2}Explicit computation of the gradient of the shooting cost function}{30}{subsection.5.2.2}%
 \contentsline {section}{\numberline {5.3}Optimality conditions for unconstrained optimal control}{30}{section.5.3}%
 \contentsline {subsection}{\numberline {5.3.1}Hamiltonian function and optimality conditions}{30}{subsection.5.3.1}%
-\contentsline {chapter}{\numberline {6}Optimal Control based trajectory generation and tracking}{33}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Main strategy idea over a finite horizon}{33}{section.6.1}%
-\contentsline {section}{\numberline {6.2}LQR based trajectory tracking}{33}{section.6.2}%
-\contentsline {subsubsection}{Step 1 - linearize the system}{33}{section*.35}%
-\contentsline {subsubsection}{Step 2 - calculate the LQ optimal controller}{34}{section*.36}%
-\contentsline {subsubsection}{Step 3 - track the generated (optimal) trajectory}{34}{section*.37}%
-\contentsline {section}{\numberline {6.3}Affine LQR for trajectory tracking}{34}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Continuous time Optimal Control}{35}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Hamiltonian function}{35}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Pontryagin Minimum Principle}{35}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Continuous-time LQ Optimal Control Problem}{36}{section.7.3}%
-\contentsline {chapter}{\numberline {8}Dynamic Programming}{37}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Dynamic programming Recursion}{37}{section.8.1}%
-\contentsline {subsection}{\numberline {8.1.1}Optimal Control Policy and Trajectory}{38}{subsection.8.1.1}%
-\contentsline {subsection}{\numberline {8.1.2}DP Advantages and Limitations}{38}{subsection.8.1.2}%
-\contentsline {subsection}{\numberline {8.1.3}Linear Quadratic Optimal Control via DP}{38}{subsection.8.1.3}%
-\contentsline {subsection}{\numberline {8.1.4}DP for LQP – Summary}{39}{subsection.8.1.4}%
-\contentsline {subsection}{\numberline {8.1.5}LQ for time-invariant systems and cost}{39}{subsection.8.1.5}%
-\contentsline {section}{\numberline {8.2}Infinite Horizon Linear Quadratic Problems}{40}{section.8.2}%
-\contentsline {subsection}{\numberline {8.2.1}DP Recursion in Infinite Horizon LQ Problem}{40}{subsection.8.2.1}%
-\contentsline {subsubsection}{Time invariant cost and dynamics}{41}{section*.38}%
-\contentsline {chapter}{\numberline {9}Model Predictive Control}{43}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Introductionn}{43}{section.9.1}%
-\contentsline {subsubsection}{Motivations}{43}{section*.39}%
-\contentsline {subsubsection}{Idea}{43}{section*.40}%
-\contentsline {subsubsection}{prediction horizon vs time horizon}{43}{section*.41}%
-\contentsline {subsubsection}{optimal control problem to be solved at each t}{44}{section*.42}%
-\contentsline {section}{\numberline {9.2}MPC with Zero Terminal Constraint}{44}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Quasi-Infinte Horizon MPC}{45}{section.9.3}%
-\contentsline {subsection}{\numberline {9.3.1}Practical framework}{45}{subsection.9.3.1}%
-\contentsline {section}{\numberline {9.4}Optimal control with constraints}{45}{section.9.4}%
-\contentsline {chapter}{\numberline {10}Reinforcement Learning}{47}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Notation}{47}{section.10.1}%
-\contentsline {subsubsection}{problem formulation}{47}{section*.43}%
+\contentsline {chapter}{\numberline {6}Newton's method for Optimal Control}{33}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Newton's method for unconstrained optimization}{33}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Calculation of $\nabla ^2J(u)$}{33}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Algorithm}{34}{section.6.3}%
+\contentsline {subsubsection}{Step 1 : Descent direction calculation}{34}{section*.35}%
+\contentsline {subsubsection}{Step 2: compute new input sequence}{34}{section*.36}%
+\contentsline {subsubsection}{Step 3: compute new state trajectory}{34}{section*.37}%
+\contentsline {subsection}{\numberline {6.3.1}Regularization}{34}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Robustified step 2 update: closed-loop state-input trajectory update}{35}{subsection.6.3.2}%
+\contentsline {chapter}{\numberline {7}Optimal Control based trajectory generation and tracking}{37}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Main strategy idea over a finite horizon}{37}{section.7.1}%
+\contentsline {section}{\numberline {7.2}LQR based trajectory tracking}{37}{section.7.2}%
+\contentsline {subsubsection}{Step 1 - linearize the system}{37}{section*.38}%
+\contentsline {subsubsection}{Step 2 - calculate the LQ optimal controller}{38}{section*.39}%
+\contentsline {subsubsection}{Step 3 - track the generated (optimal) trajectory}{38}{section*.40}%
+\contentsline {section}{\numberline {7.3}Affine LQR for trajectory tracking}{38}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Continuous time Optimal Control}{39}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Hamiltonian function}{39}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Pontryagin Minimum Principle}{39}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Continuous-time LQ Optimal Control Problem}{40}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Dynamic Programming}{41}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Dynamic programming Recursion}{41}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}Optimal Control Policy and Trajectory}{42}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}DP Advantages and Limitations}{42}{subsection.9.1.2}%
+\contentsline {subsection}{\numberline {9.1.3}Linear Quadratic Optimal Control via DP}{42}{subsection.9.1.3}%
+\contentsline {subsection}{\numberline {9.1.4}DP for LQP – Summary}{43}{subsection.9.1.4}%
+\contentsline {subsection}{\numberline {9.1.5}LQ for time-invariant systems and cost}{43}{subsection.9.1.5}%
+\contentsline {section}{\numberline {9.2}Infinite Horizon Linear Quadratic Problems}{44}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}DP Recursion in Infinite Horizon LQ Problem}{44}{subsection.9.2.1}%
+\contentsline {subsubsection}{Time invariant cost and dynamics}{45}{section*.41}%
+\contentsline {chapter}{\numberline {10}Model Predictive Control}{47}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Introductionn}{47}{section.10.1}%
+\contentsline {subsubsection}{Motivations}{47}{section*.42}%
+\contentsline {subsubsection}{Idea}{47}{section*.43}%
+\contentsline {subsubsection}{prediction horizon vs time horizon}{47}{section*.44}%
+\contentsline {subsubsection}{optimal control problem to be solved at each t}{48}{section*.45}%
+\contentsline {section}{\numberline {10.2}MPC with Zero Terminal Constraint}{48}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Quasi-Infinte Horizon MPC}{49}{section.10.3}%
+\contentsline {subsection}{\numberline {10.3.1}Practical framework}{49}{subsection.10.3.1}%
+\contentsline {section}{\numberline {10.4}Optimal control with constraints}{50}{section.10.4}%
+\contentsline {chapter}{\numberline {11}Reinforcement Learning}{51}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Notation}{51}{section.11.1}%
+\contentsline {subsubsection}{problem formulation}{51}{section*.46}%
