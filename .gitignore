@@ -1,6 +1,14 @@
 *.log
+*.fdb_latexmk
+*.fls 
+*.out
+*.synctex.gz 
+*.toc
+*.aux
 **/adaptive control with prof serrani
 **/Le-Gorrec
 **/ML
 **/MSMS
 /RTOS/*RTOS
+**/Mobile Robotics
+**/MM4A
