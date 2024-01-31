@@ -5,6 +5,10 @@
 *.synctex.gz 
 *.toc
 *.aux
+*.bib
+*.run.xml
+*.bbl
+*.blg
 **/adaptive control with prof serrani
 **/Le-Gorrec
 **/ML
