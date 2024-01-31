@@ -1,7 +1,42 @@
-\documentclass[english]{lectures}
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath, amsthm, graphicx, physics}
+\documentclass{book}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float, bm}
 \usepackage[english]{babel}
+\graphicspath{ {./images/} }
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,237mm},
+ left=20mm,
+ top=30mm,
+ }
+ \usepackage[hidelinks]{hyperref}
+
+\newcommand\eval[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\deriv}[1]{\displaystyle\frac{d}{d #1}}
+\newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\theoremstyle{remark}
+\newtheorem*{notation}{Notation}
+\newtheorem*{result}{Result}
+\newtheorem*{observation}{Observation}
+\newtheorem*{corollary}{Corollary}
 
 \title{STAC}
 \author{Dante Piotto}
@@ -9,14 +44,19 @@
 
 
 
-\createtheorem{result}{Result}{SteelBlue3!10}{SteelBlue3!90}{black}
+% \createtheorem{result}{Result}{SteelBlue3!10}{SteelBlue3!90}{black}
+
+\title{System Theory and Advanced Control}
+\author{Dante Piotto}
+\date{fall semester 2022}
 
 \begin{document}
 
-%\maketitle
+\maketitle
+\tableofcontents
 
-\section*{Introduction}
-System Theory and Advanced Control notes, transcribed from notes taken during the lectures held in the fall semester of 2022
+% \section*{Introduction}
+% System Theory and Advanced Control notes, transcribed from notes taken during the lectures held in the fall semester of 2022
 
 \chapter{Dynamic system representation}
 \section{system classification}
@@ -127,17 +167,17 @@ becomes
 where
 \begin{gather*}
     \dot{z}=\frac{d\Phi}{dx}\left( f(x)+g(x)u \right) \text{ therefore}\\
-    \dot{z}=\eval{\frac{d\Phi}{dx}f(x)}_{x=\Phi^{-1}(z)}+\eval{\frac{d\Phi}{dx}g(x)}_{x=\Phi^{-1}(z)}u
+    \dot{z}=\eval{\frac{d\Phi}{dx}f(x)}{x=\Phi^{-1}(z)}+\eval{\frac{d\Phi}{dx}g(x)}{x=\Phi^{-1}(z)}u
 \end{gather*}
 Hence
 \begin{gather*}
-    \tilde{f}(z):=\eval{\frac{d\Phi}{dx}f(x)}_{x=\Phi^{-1}(z)}\\
-    \tilde{g}(z):=\eval{\frac{d\Phi}{dx}g(x)}_{x=\Phi^{-1}(z)}
+    \tilde{f}(z):=\eval{\frac{d\Phi}{dx}f(x)}{x=\Phi^{-1}(z)}\\
+    \tilde{g}(z):=\eval{\frac{d\Phi}{dx}g(x)}{x=\Phi^{-1}(z)}
     \tilde{h}(z):=h(\Phi^{-1}(z))
 \end{gather*}
 
 \begin{result}
-    Let $\Phi:\R^n\to\R^n$ be a smooth function, $\bar{x}\in \R^n$ and suppose that $\eval{\frac{d\Phi}{dx}}_{\bar{x}}$ is non singular. Then $\Phi(\cdot)$ is a local diffeomorphism at $\bar{x}$. If $\eval{\frac{d\Phi}{dx}}_{\bar{x}} \quad \forall \bar{x} \in \R^n$, and $\Phi(\cdot)$ is radially unbounded, then $\Phi(\cdot)$ is a global diffeomorphism
+    Let $\Phi:\R^n\to\R^n$ be a smooth function, $\bar{x}\in \R^n$ and suppose that $\eval{\frac{d\Phi}{dx}}{\bar{x}}$ is non singular. Then $\Phi(\cdot)$ is a local diffeomorphism at $\bar{x}$. If $\eval{\frac{d\Phi}{dx}}{\bar{x}} \quad \forall \bar{x} \in \R^n$, and $\Phi(\cdot)$ is radially unbounded, then $\Phi(\cdot)$ is a global diffeomorphism
 \end{result}
 
 \subsection{Diagonalization of a matrix}
@@ -370,7 +410,8 @@ Divergence of a quadratic form: $\nabla V(x)=2x^TP$
         P_{not symm}=P_{symm}+P_{antisymm} \qquad P_{symm}=\frac{P+P^T}{2} \quad P_{antisymm}=\frac{P-P^T}{2}\\
         \implies x^TPx=x^T(P_{symm}+P_{antisymm})x=x^TP_{symm}x+x^TP_{antisymm}x\\
         (x^TP_{symm}x)^T=x^TP_{symm}^Tx=x^TP_{symm}x\\
-        (x^TP_{antisymm}x)^T=x^TP_{antisymm}^Tx=-x^TP_{antisymm}x \implies x^TP_{antisymm}x=0 \text{ because } x^TP_{antisymm}x \text{ is a scalar}
+        (x^TP_{antisymm}x)^T=x^TP_{antisymm}^Tx=-x^TP_{antisymm}x \implies \\ 
+        \implies x^TP_{antisymm}x=0 \text{ because } x^TP_{antisymm}x \text{ is a scalar}
     \end{gather*}
 \end{observation}
 
@@ -409,7 +450,7 @@ $\Omega_c$ are ellipsoids with their principal axes direct as the eigenvectors o
     \]
     with $Q$ generic. The integrand is a sum of exponential vanishing terms, and therefore the integral exists. We have that
     \begin{gather*}
-        PA+A^TP=\int_0^\infty e^{A^Ts}Qe^{As}A\,ds\ + \int_0^\infty A^Te^{A^Ts}Qe^{As}\,ds\ =\int_0^\infty \frac{d}{ds} e^{A^Ts}Qe^{As}\,ds\ = \eval{e^{A^Ts}Qe^{As}}_0^\infty = -Q
+        PA+A^TP=\int_0^\infty e^{A^Ts}Qe^{As}A\,ds\ + \int_0^\infty A^Te^{A^Ts}Qe^{As}\,ds\ =\int_0^\infty \frac{d}{ds} e^{A^Ts}Qe^{As}\,ds\ = \eval{e^{A^Ts}Qe^{As}}{0}^\infty = -Q
     \end{gather*}
     If $Q$ is symmetric, i.e. $Q=Q^T$, then
     \[
@@ -535,8 +576,14 @@ eigenvalues go \textbf{BRRR}
 \chapter{Reachability and controllability}
 \section{Reachability}
 \begin{definition}[Reachability]
-    Set of reachable states  at time $t_1$: \(\mathcal{R}^+(t_1)=\{x\in \R^n : x = \Psi(t_1)u([0,t_1)) \text{ for some }u([0,t_1)) \in \R^m\}\)\\
-    Reachable set: \(\mathcal{R}^+:=\mathcal{R}^+(\infty)\)
+    Set of reachable states  at time $t_1$:
+    \[
+        \mathcal{R}^+(t_1)=\{x\in \R^n : x = \Psi(t_1)u([0,t_1)) \text{ for some }u([0,t_1)) \in \R^m\}
+        \]
+    Reachable set:
+    \[
+        \mathcal{R}^+:=\mathcal{R}^+(\infty)
+    \]
 \end{definition}
 \begin{theorem}
     \(\mathcal{R}^+=Im(R) \qquad R=\begin{bmatrix}
@@ -559,10 +606,10 @@ eigenvalues go \textbf{BRRR}
     \(R_t=\begin{bmatrix}
         B & AB & \cdots & A^{n-1} | A^nB & A^{n+1} & \cdots
     \end{bmatrix}\). By the Cayley Hamilton theorem we have that
-    \[
+    \begin{gather*}
     \varphi_A(A)=A^n+\alpha_1A^{n-1}+\dots+\alpha_nI_n=0 \implies A^nB+\alpha_1A^{n-1}B+\dots+\alpha_nB=0\\
     \implies A^nB \text{ is L.D from } \{B,AB,\dots,A^{n-1}B\}
-    \]
+    \end{gather*}
     This can be extended to $A^{n+1}$ by premultiplying by A.\\
     From this proof we have the added observation that for D-T systems if a state is reachable it is reachable in at most $n$ steps
 \end{proof}
@@ -686,7 +733,7 @@ Controllability properties are invariant to change of coordinates, and are there
     \end{bmatrix}=n \) due to it being fully controllable, we conclude that \((A+BK,B)\) is fully controllable $\forall K$
 \end{proof}
 \subsection{controllablilty canonical form}
-\[
+\begin{gather*}
 A_c=\begin{pmatrix}
     0 & 1 & 0 & \cdots & 0 \\
     0 & 0  & 1 & \cdots & 0 \\
@@ -694,8 +741,8 @@ A_c=\begin{pmatrix}
     -\alpha_n & -\alpha_{n-1} & -\alpha_{n-2}& \cdots & -\alpha_1
 \end{pmatrix} \qquad B_c=\begin{pmatrix}
     0 \\ \vdots \\ 0 \\1
-\end{pmatrix} \quad \varphi_A(\lambda)=det(\lambda I-A)=\lambda^n+\alpha_1\lambda^{n-1}+\dots+\alpha_{n-1}\lambda +\alpha_n
-\]
+\end{pmatrix} \\ \varphi_A(\lambda)=det(\lambda I-A)=\lambda^n+\alpha_1\lambda^{n-1}+\dots+\alpha_{n-1}\lambda +\alpha_n
+\end{gather*}
 
 \begin{theorem}
     $m=1$\\
@@ -1016,7 +1063,7 @@ The resulting system is no longer a cascade and results completely decoupled
 \end{flalign*}
 
 \subsection{Observability canonical form}
-\[
+\begin{gather*}
 A_c=\begin{pmatrix}
     0 & 0 & \cdots & 0 & -\alpha_n \\
     1 & 0 & \cdots & 0 & -\alpha_{n-1} \\
@@ -1025,8 +1072,8 @@ A_c=\begin{pmatrix}
     0 & 0 & \cdots & 1 & -\alpha_1 \\
 \end{pmatrix} \qquad C_o=\begin{pmatrix}
     0 & \cdots & 0 & 1
-\end{pmatrix} \quad \varphi_A(\lambda)=det(\lambda I-A)=\lambda^n+\alpha_1\lambda^{n-1}+\dots+\alpha_{n-1}\lambda +\alpha_n
-\]
+\end{pmatrix} \\ \varphi_A(\lambda)=det(\lambda I-A)=\lambda^n+\alpha_1\lambda^{n-1}+\dots+\alpha_{n-1}\lambda +\alpha_n
+\end{gather*}
 
 \begin{theorem}[p=1]
     A pair $(A,C)$ is similar to $(A_o,C_o)$ $\iff$ the system is completely observable
@@ -1296,7 +1343,7 @@ Suppose that $rankR<n$ and $rankO<n$. We would like to find a change of coordina
 \end{itemize}
 \begin{figure*}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{images/Ult_Kalman.png}
+    \includegraphics[width=0.8\linewidth]{images/Ult_Kalman}
 \end{figure*}
 
 Connections fromt the top to the bottom would all violate non-reachability/non-observability properties of the subsystems, while most connections from the bottom to the top are permissible.
@@ -1309,7 +1356,7 @@ Connections fromt the top to the bottom would all violate non-reachability/non-o
         \end{bmatrix}
     \]
     makes the system in the following Kalman form:
-    \[
+    \begin{gather*}
         \tilde{A} = TAT^{-1} := \begin{pmatrix}
             A_{R,NO} & A_{R,NO}' & A_{R,NO}'' & A_{R,NO}'''\\
             0 & A_{R,O} & 0 & A_{R,O}'\\
@@ -1317,10 +1364,10 @@ Connections fromt the top to the bottom would all violate non-reachability/non-o
             0 & 0 & 0 & A_{NR,O}
         \end{pmatrix} \quad \tilde{B}=TB:= \begin{pmatrix}
             B_{R,NO}\\B_{R,O}\\0\\0
-        \end{pmatrix} \quad \tilde{C} = CT^{-1}:=\begin{pmatrix}
+        \end{pmatrix} \\ \tilde{C} = CT^{-1}:=\begin{pmatrix}
             0 & C_{R,O} & 0 & C_{NR,O}
         \end{pmatrix}
-    \]
+    \end{gather*}
     where
     \begin{gather*}
         (A_{R,NO},B_{R,NO}) \text{ is completely controllable} \qquad \qquad \qquad (A_{R,O},C_{R,O}) \text{ is completely observable}\\
@@ -1329,7 +1376,7 @@ Connections fromt the top to the bottom would all violate non-reachability/non-o
             0 & A_{R,O}
         \end{pmatrix}, \begin{pmatrix}
             B_{R,NO}\\B_{R,O}
-        \end{pmatrix} \right) \text{ is completely controllable} \quad \left( 
+        \end{pmatrix} \right) \text{ is completely controllable} \\ \left( 
             \begin{pmatrix}
                 A_{R,O} & A'_{R,O}\\
                 0 & A_{NR,O}
@@ -1364,8 +1411,8 @@ Let $(x^\star, u^\star)$ be the solution of the system inversion
 \end{observation}
 \subsection{Linearization}
 \begin{align*}
-    \dot{x}=f(x,u)=f(x^\star, u^\star)+ \eval{\frac{\partial f(x,u)}{\partial x}}_{x^\star,u^\star}(x-x^\star)+ \eval{\frac{\partial f(x,u)}{\partial u}}_{x^\star,u^\star} (u-u^\star) + h.o.t(\tilde{x},\tilde{u})\\
-    y=h(x)=h(x^\star)+ \eval{\frac{\partial h(x)}{\partial x}}_{x^\star}(x-x^\star)+h.o.t(\tilde{x})
+    \dot{x}=f(x,u)=f(x^\star, u^\star)+ \eval{\frac{\partial f(x,u)}{\partial x}}{x^\star,u^\star}(x-x^\star)+ \eval{\frac{\partial f(x,u)}{\partial u}}{x^\star,u^\star} (u-u^\star) + h.o.t(\tilde{x},\tilde{u})\\
+    y=h(x)=h(x^\star)+ \eval{\frac{\partial h(x)}{\partial x}}{x^\star}(x-x^\star)+h.o.t(\tilde{x})
 \end{align*}
 
 \begin{gather*}
@@ -1376,7 +1423,7 @@ Let $(x^\star, u^\star)$ be the solution of the system inversion
         \frac{\partial f_n(x,u)}{\partial x_1} & \frac{\partial f_n(x,u)}{\partial x_2} & \cdots & \frac{\partial f_n(x,u)}{\partial x_n}
     \end{pmatrix}_{x=x^\star,u=u^\star} \qquad \quad B=\begin{pmatrix}
         \frac{\partial f_1(x,u)}{\partial u} \\ \frac{\partial f_2(x,u)}{\partial u} \\ \vdots \\ \frac{\partial f_n(x,u)}{\partial u}
-    \end{pmatrix}_{x=x^\star, u=u^\star} \qquad \quad C^T=\begin{pmatrix}
+    \end{pmatrix}_{x=x^\star, u=u^\star} \quad \quad C^T=\begin{pmatrix}
         \frac{\partial h(x)}{\partial x} \\ \frac{\partial h(x)}{\partial x} \\ \vdots \\ \frac{\partial h(x)}{\partial x}
     \end{pmatrix}_{x=x^\star}
 \end{gather*}
@@ -1530,7 +1577,11 @@ If $(x(0),\sigma(0))$ are sufficiently close to $(x^\star(\alpha),\bar{\sigma}^\
 \end{gather*}
 
 \begin{result}
-    $\exists \epsilon_1, \epsilon_2$ (small) positive numbers such that if $\|\dot{y}^\star(t)\|\leq\epsilon_1$ and $\forall (x_0,\sigma_0)$ such that $\|(x_0,\sigma_0)-(x^\star(y^\star(0)),\bar{\sigma}^\star(y^\star(0)))\|\leq\epsilon_2$ then the following holds:
+    $\exists \epsilon_1, \epsilon_2$ (small) positive numbers such that if $\|\dot{y}^\star(t)\|\leq\epsilon_1$ and $\forall (x_0,\sigma_0)$ such that
+    \[
+        \|(x_0,\sigma_0)-(x^\star(y^\star(0)),\bar{\sigma}^\star(y^\star(0)))\|\leq\epsilon_2
+    \]
+    then the following holds:
     \begin{itemize}
         \item The trajectories of the closed loop system are bounded
         \item $\exists c,T>0$ such that $\|y(t)-y^\star(t)\|\leq c\epsilon_1 \quad \forall t \geq T$
@@ -1588,7 +1639,7 @@ Similarly to what done with the Brunowsky canonical form, we can obtain a diffeo
         \Phi_1(x):=\frac{dh(x)}{dx}\\\vdots\\\Phi_r(x):=\frac{dL_f^{r-1}h(x)}{dx}\\ \Phi_{r+1}(x)\\\vdots\\\Phi_n(x)
     \end{pmatrix}
 \]
-constructed such that $rank\eval{\frac{d\Phi(x)}{dx}}_{x=\bar{x}}=n.$
+constructed such that $rank\eval{\frac{d\Phi(x)}{dx}}{x=\bar{x}}=n.$
 Remark: it is always possible to choose $\Phi_i(x),i=r+1,\dots,n$ such that $L_g\Phi_i(x)=0$ for all $x$ in a neighbourhood of $x$\\
 With this change of coordinates
 \[
