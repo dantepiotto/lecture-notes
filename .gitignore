@@ -12,8 +12,9 @@
 **/adaptive control with prof serrani
 **/Le-Gorrec
 **/ML
-**/MSMS
-/RTOS/*RTOS
+/MSMS/*MSMS*
+/MSMS/images/
+/RTOS/*RTOS*
 **/Mobile Robotics
 **/MM4A
 script.sh

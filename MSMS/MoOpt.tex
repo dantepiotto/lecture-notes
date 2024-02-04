@@ -1,0 +1,323 @@
+\documentclass{book}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath, amsthm, amssymb, graphicx, amsfonts, float, bm, tcolorbox}
+\usepackage[english]{babel}
+\graphicspath{ {./images/} }
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    total={170mm,237mm},
+    left=20mm,
+    top=30mm,
+}
+
+\newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\deriv}[1]{\displaystyle\frac{d}{d #1}}
+\newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
+
+\usepackage[hidelinks]{hyperref}
+\tcbuselibrary{theorems}
+\usepackage{cleveref}
+\newtcbtheorem{Definition}{Definition}{colback=BlueViolet!5,colframe=BlueViolet!100}{def}
+\newtcbtheorem{Theorem}{Theorem}{colback=Green!5,colframe=Green!100}{theo}
+
+
+
+
+
+\title{Multi-Objective Optimization}
+\author{Dante Piotto}
+\date{fall semester 2023}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{Multi-Objective Optimization}
+Optimization problem:
+\begin{align*}
+    \min &J(x)\\
+    \text{subj. to} & g(x)\leq 0 \\
+    & h(x) = 0
+\end{align*}        
+with $x\in\R^n$, $J\in\R^k$.
+\section{Domination}
+\begin{Definition}{Pareto optimal points}{}
+    A point $c_0$ in the attainable set $A$ is Pareto optimal iff 
+    \[
+        \nexists c \in A \text{ s.t. } c_i\leq c_{0i} \forall \text{ and } c_i < c_{0i} \text{ for at least one } i
+    \]
+    The set of Pareto optimal points is the \textcolor{red}{Pareto set}\\
+    A point in the design space is a Pareto point if no feasible point exists that reduces one criterion without increasing the value of some other ones
+\end{Definition}
+\begin{Definition}{Domination relation}{}
+    A vector $J(x_1)$ dominates a vector $J(x_2)$ if:
+    \begin{itemize}
+        \item $J(x_1)$ is at least as good as $J(x_2)$ for all the objectives 
+        \item $J(x_1)$ is strictly better than $J(x_2)$ for at least one objective
+    \end{itemize}
+\end{Definition}
+\begin{Definition}{Local optimality in the Pareto sense}{}
+    A vector $J(x)$ is locally optimal in the Pareto sense if there exists $\delta>0$ such that there is no vector $J(x')$ which dominates $J(x)$, with 
+    \[
+        x'\in\R^n \cap B(x,\delta)
+    \]
+    where $B(x,\delta)$ is a ball of center $x$ and radius $\delta$
+\end{Definition}
+\begin{Definition}{Global optimality in the Pareto sense}{} 
+    A vector $J(\bar{x})$ is globally optimal in the Pareto sense (or optimal in the Pareto sense) if there does not exist any $J(x')$ that dominates $J(\bar{x})$ 
+\end{Definition}
+\begin{Definition}{Negative cone}{}
+    A negative cone is defined in the following way:
+    \[
+        C^- = \left\{x\ |\ J(x)\in\R^k \text{ and } J(x)\leq 0 \right\}
+    \]
+\end{Definition}
+\begin{Theorem}{Contact Theorem}
+    A vector $x$ is optimal in the Pareto sense for a multi-objective optimisation problem if 
+    \[
+        (C^-+x)\cap F = {x}
+    \]
+    where $F$ corresponds to the feasible subspace
+\end{Theorem}
+\section{Relations derived from domination}
+\begin{Definition}{Optimality in the lexicographic sense}{}
+    A solution $J^\star\in S^k$ is optimal in the lexicographic sense if 
+    \[
+        J^\star\leq_{\text{lex}}J, \quad \forall J \in S^k \backslash \{J^\star\}
+    \]
+    where 
+    \[
+        J \leq_{\text{lex}} J', \quad \forall J, J' \in S^k
+    \]
+    if there exists an index value $q^\star$ such that 
+    \[
+        J_q = J_q', \forall q\ |\ 1 \leq q \leq q^\star-1 \text{ and } J_{q^\star}<J_{q^\star}' 
+    \]
+\end{Definition}
+The definition involves the requirement that the decision maker has \textcolor{red}{sorted} the objective functions by decreasing preference
+\begin{Definition}{Extremal optimality}{}
+    A solution $J^\star\in S^k$ is extreme optimal if, given a weight vector 
+    \[
+        \lambda\in\R^k, \quad \text{such that } \lambda_i\geq 0 \text{ and } \displaystyle\sum_{i}\lambda_i = 1
+    \]
+    $J^\star$ is an optimal solution of the mono-criterion minimisation problem with the following objective function: 
+    \[
+        \displaystyle\sum_{i=1}^{k}\lambda_i \cdot J_i
+    \]
+    which means that
+    \[
+        \displaystyle\sum_{i=1}^{k}\lambda_i \cdot J_i^\star\leq \displaystyle\sum_{i=1}^{k} \lambda_i\cdot J_i, \quad \forall J \in S^k\backslash\{J^\star\}
+    \]
+\end{Definition}
+This relation allows to add preferences between objective functions by using weights
+\newpage
+\begin{Definition}{Maximal optimality}{}
+    A solution $J^\star\in S^k$ is max-optimal if the value of the worst objective is as small as possible, i.e.:
+    \[
+        \max_{q\in\{1,\dots,k\}}J^\star_q\leq \max_{q\in\{1,\dots,k\}} J, \quad \forall J \in S^k\backslash \{J^\star\}
+    \]
+\end{Definition}
+This relation does \textcolor{red}{not} allow one to add preferences between objective functions.
+
+\begin{Definition}{Tradeoff surface}{}
+    The set of globally Pareto optimal points constitutes the \textcolor{red}{tradeoff surface} or \textcolor{red}{Pareto front}
+\end{Definition}
+\begin{Definition}{Characteristic points}{}
+    \begin{itemize}
+        \item The point with coordinates obtained by minimising each objective function separately is called \textcolor{red}{Ideal point} 
+        \item The point with coordinates corresponding to the worst values obtained for each objective function when the solution set is restrticted to the tradeoff surface is calle \textcolor{red}{Nadir point}
+    \end{itemize}
+\end{Definition}
+\chapter{Scalar methods for M-o Optimization}
+\section{A priori articulation methods}
+\subsection{weighted-sum-of-objective-functions method}
+Take the weighted sum of objective functions 
+\begin{align*}
+    \min & J_{eq}(x) = \displaystyle\sum_{i=1}^{k}w_i\cdot J_i(x)\\ 
+    \text{subj. to } & g(x)\leq 0 \\ 
+    & h(x) = 0
+\end{align*}
+Where $w_i\geq 0$. Let us consider a case with two objective functions:
+\[
+    J_{eq}(x) = w_1J_1(x) + w_2J_2(x)
+\]
+Which is the expression of a line in the $J_1,J_2$ plane.
+Minimising $J_{eq}(x)$ is equivalent to looking for a constant $C$ of the following line equation, which must be as small as possible:
+\[
+    J_2(x) = -\displaystyle\frac{w_1}{w_2}J_1(x)+C
+\]
+This method consists of finding lines tangent to the set $S$ 
+% TODO insert figure slide 6
+If the process is repeated for several weight values, the solutions found produce a tradeoff surface, \textcolor{red}{only} when the set $S$ is convex.
+
+\subsection{Distance-to-a-reference-objective method}
+The new mono-objective function correpsonds to a "distance". Let us introduce the vector $F$, whose $k$ components correspond to an ideal objective, in a sense defined by the decision maker. 
+\begin{Definition}{Absolute distance}{}
+    \[
+        L_r(J(x)) = \left[\displaystyle\sum_{i=1}^{k}|F_i-J_i(x)|^r\right]^{\displaystyle\frac{1}{r}}
+    \]
+    with $1\leq r < \infty$
+\end{Definition}
+when $r\to\to\infty$, the multi-objective method is called the \textcolor{red}{min-max method} (or the Tchebichev method), and 
+\[
+    L_\infty(J(x)) = \max_{i\in\{1,\dots,k\}}|F_i-J_i(x)|
+\]
+On the other hand, the relative distance is defined as 
+\begin{Definition}{Relative distance}{}
+    \[
+        L_r^{\text{Rel}}(J(x)) = \left[\displaystyle\sum_{i=1}^{k}\left|\displaystyle\frac{F_i-J_i(x)}{F_i}\right|^r\right]^{\displaystyle\frac{1}{r}}
+    \]
+    with $1\leq r < \infty$
+\end{Definition}
+If the $L_2$ distance is used, the following problem is obtained: 
+\begin{align*}
+    \min & J_{eq}(x) =\sqrt{ \displaystyle\sum_{i=1}^{k}\left[F_i-J_i(x)\right]^2}\\
+    \text{subj. to } & g(x)\leq 0 \\ 
+    & h(x) = 0
+\end{align*}
+When these methods are used to search for Pareto optimal solutions, it is not necessary to include the square root operator. The choice of a reference point has a lot of influence on the quality of the result. This method allows us to approximate the tradeoff surface, but the surface is "seen" from a reference point.
+
+To plot an iso-value curve, we proceed in the same way as with the weighted-sum-of-objective-functions method. We have to find $x$ such that $C$ in the following expression is minimal: 
+\[
+    C = w_1 [F_1-J_1(x)]^2 + w_2[F_2-J_2(x)]^2
+\]
+So, the goal is to find the smallest $C$ such that the ellipse is "tangential" to $S$
+
+In the min-max method (with weights), the iso-value curve is simpler: 
+\[
+    \begin{cases}
+        J_1(x) = C \quad \text{if } w_1[J_1(x)-F_1]> w_2[J_2(x)-F_2]\\
+        J_2(x) = C \quad \text{if } w_1[J_1(x)-F_1]< w_2[J_2(x)-F_2]
+    \end{cases}
+\]
+A good reference point must be found, however this method allows to discover solutions hidden inside concavities under some conditions.
+\subsection{Goal attainment method}
+An equivalent formulation fo the weighted min-max method is to minimise a scalar coefficient $\lambda$ which represents the gap relative to the initial objective $F$ along a search direction $w$
+\begin{align*}
+    \text{minimise } &\lambda\\ 
+    \text{with } & J_1(x)-w_1\cdot\lambda\leq F_1\\
+    & \vdots \\
+    & J_k(x)-w_k\cdot\lambda\leq F_k\\
+    & g(x)\leq 0 \\ 
+    & h(x) = 0 
+\end{align*}
+To obtain the tradeoff surface, choose several search directions. This method is quite sensitive to the choice of the weights, with the weights that do not reflect any preference as with the weighted-sum-of-objective-functions method. 
+\begin{itemize}
+    \item the weights do not have any physical significance
+    \item In general, a two-pass procedure has to be elaborated 
+    \item The main advantage remains that this method allows to work with a set of solutions $S$ which is not necessarily convex 
+\end{itemize}
+\subsection{Goal programming method}
+The approach is the following:
+\begin{itemize}
+    \item Choose an initial vector of objective functions $F$ 
+    \item With each objective, associate two new "slack" variables related to teh initial vector of objective functions 
+    \item Minimise on of the two variables, with the choice of the variable made by using the desired type of overstep (over or under the objective)
+\end{itemize}
+\begin{align*}
+    \text{minimise } & (d_1^+ \text{ or } d_1^-,\dots,d_k^+ \text{ or } d_k^-)\\
+    \text{with } & J_1(x) = F_1 + d_1^+-d_1^-
+    & \vdots \\
+    & J_k(x) = F_k + d_k^+-d_k^-
+    & g(x)\leq 0 \\ 
+    & h(x) = 0 
+\end{align*}
+where $d_i^+,d_i^- \geq 0$ and $d_i^+\cdot d_i^+ = 0$\\ 
+This method transforms a Mo-O problem into the minimisation of a vector, and to minimise this vector, we can proceed in various ways: 
+\begin{itemize}
+    \item Minimise a weighted sum of slack variables. The weights define the preferences relative to the objective functions 
+        \item minimise lexicographically the coordinates of the vector. For example, we can proceed by the following steps: 
+            \begin{itemize}
+                \item Minimise $d_1^+$
+                \item Minimise $d_2^-$ while keeping $d_1^+$ constant
+                \item Minimise $d_3^+$ while keeping $d_1^+$ and $d_2^-$ constant
+                \item Minimise $d_4^++d_4^-$ while keeping $d_1^+$, $d_2^-$ and $d_3^+$ constant
+            \end{itemize}
+\end{itemize}
+The goal programming method is subject to the same criticisms as the goal attainement method, namely that in some cases it can fail to discover solutions hidden in concavities.
+
+\subsection{Lexicographic method}
+This method consists in considering objective functions one after the other and minimising a mono-objective problem while the problem is completed gradually with constraints. This method has a drawback: the choice of the sequence of objective functions to be minimised is somewhat arbitrary. Two distinct leicographic optimisations with distinct sequences of objective functions do not produce the same solution.
+
+\subsection{Compromise method}
+This method allows to transform a Mo-O problem into a mono-objective one with additional constraints as follows:
+\begin{itemize}
+    \item Selection of an objective function to be optimised with high priority
+    \item Definition of a vector of initial constraints 
+    \item The "main" objective function is conserved, while all other objective functions are transformed into inequality constraints
+\end{itemize}
+\begin{align*}
+    \text{minimise } & J_1(x)\\
+    \text{with } & J_2(x) \leq \varepsilon_2\\
+    & \vdots \\
+    & J_k(x) \leq \varepsilon_k\\
+    & g(x)\leq 0 \\ 
+    & h(x) = 0 
+\end{align*}
+
+\subsection{Hybrid method}
+Combination of several methods. The best known is the \textcolor{red}{Corley method}. It is composed of the weighted-sum-of-objective-functions and compromise methods. 
+\begin{align*}
+    \text{minimise } & \displaystyle\sum_{i=1}^{k}w_i \cdot J_i(x)\\
+    \text{with } & J_j(x) \leq \varepsilon_j \quad j=1,\dots,k\\
+    & g(x)\leq 0 \\ 
+    & h(x) = 0 
+\end{align*}
+The "new" constraints allow to restrict the search space. This method allows to combine the advantages of two methods, so it is efficient in various kinds of optimisation problems, whether convex or not. Nevertheless, a difficulty arises due to the number of parameters to be tuned.
+
+\section{A posteriori articulation of preferences}
+\subsection{Normal boundary intersection method}
+It was developed in response to limitations in the weighted-sum approach. This method allows to compute a regular distribution of Pareto optimal points, even with non-convex front of varying curvature. 
+\begin{align*}
+    \max &\beta \\
+    \text{with } &\alpha+\beta n = J(x)\\ 
+     & g(x) \leq 0 \\ 
+     & h(x) = 0
+\end{align*}
+If $\alpha$ points are chosen uniformly along the \textcolor{red}{convex hull of individual minima (CHIM)} a set of fairly evenly distributed Pareto points can be reasonably expected
+
+\subsection{Min-max method}
+It is formulated as 
+\begin{align*}
+    \min &\max_{i=1,\dots,k} |J_i(x)| \\
+    \text{with }& g(x) \leq 0 \\ 
+     & h(x) = 0
+\end{align*}
+Even if the idea is simple, its implementation is not obvious, so it is preferable to rely on this equivalent formulation
+\begin{align*}
+    \min\ & \beta \\
+    \text{with } & J_i(x)\leq \beta, \quad i=1,\dots,k\\
+     & g(x) \leq 0 \\ 
+     & h(x) = 0
+\end{align*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
