@@ -1,0 +1,183 @@
+
+\documentclass{book}
+\usepackage{amsmath, amsthm, graphicx, amsfonts, float, bm}
+\usepackage[english]{babel}
+\graphicspath{ {./images/} }
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,237mm},
+ left=20mm,
+ top=30mm,
+ }
+ \usepackage[hidelinks]{hyperref}
+
+\newcommand\at[2]{\left.#1\right|_{#2}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\deriv}[1]{\displaystyle\frac{d}{d #1}}
+\newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\theoremstyle{remark}
+\newtheorem*{notation}{Notation}
+
+\title{Distributed Autonomous Systems M}
+\author{Dante Piotto}
+\date{spring semester 2024}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{Introduction and scenarios}
+\section{Distributed Autonomous System}
+Each agent $i\in\{1,\dots,N\}$ has 
+\begin{itemize}
+    \item local physical and/or cyber state $x_i$
+    \item computational and sensing capabilities
+    \item communication capability: exchange messages with "neighbours"
+\end{itemize}
+
+
+\section{Scenarios and applications of distributed systems}
+\begin{itemize}
+    \item Averaging: distributed estimation, opinion dynamics
+    \item Distrbuted control in cooperative robotics
+    \item Distributed optimization 
+        \begin{itemize}
+            \item distributed machine learning
+            \item distributed decision-making in cooperative robotics
+            \item distributed optimal control in energy systems and cooperative robotics
+        \end{itemize}
+\end{itemize}
+
+
+\section{Measurement filtering in wireless sensor networks}
+Consider a network of $N$ sensors with local sensing, computation and communication. Agent $i,i\in\{1,\dots,N\}$, takes a local measurement from the environment (temperature, pressure, etc.). Let $x_{i0}\in\R$ be the scalar local measurement
+Agents are interested in agreeing on the average of the measurements, 
+\[
+    x_{\text{avg}}=\displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}x_{i0}
+\]
+to have a better estimate of the environment quantity
+
+Consider the following "distributed algorithm" based on "local" linear averaging, for each $i\in\{1,\dots,N\}$
+\begin{gather*}
+    x_i^0=x_{i0}\\
+    x_i^{k+1} = \text{average}(x_i^k,\{x_j^k,j\text{ "neighbour" of }i\}), \qquad k\in\N
+\end{gather*}
+generalizing coefficients of the update: 
+\begin{gather*}
+    x_i^0=x_{i0}\\
+    x_i^{k+1} = \displaystyle\sum_{j=1}^{N} a_{ij}x_j^k \qquad k\in\N
+\end{gather*}
+\begin{remark}
+    $a_{ij}\geq 0$ and $\sum_{j=1}^{N}a_{ij}=1$
+\end{remark}
+\begin{remark}
+    $a_{ij}=0$, for some $j\in\{1,\dots,N\}$, i.e. $a_{ij}=0$ if $i$ does not have access to the estimate of $j$
+\end{remark}
+
+
+\section{Parameter Estimation in Wireless Sensor Networks}
+
+Consider a network of $N$ sensors with local sensing, computation and communication aiming at estimating a common parameter $\theta^*\in\R$
+Each sensor $i$ measures 
+\[
+    y_i=B_i\theta^* + v_i
+\]
+with $y_i\in\R^{m_1},B_i$ known matrix and $v_i$ a random measurement noise. Assume $v_1,\dots,v_N$ independent and Gaussian, with zero mean and covariance $E[v_iv_i^T]=\Sigma_i$. Assume $\sum_{i=1}^{N}m_i\geq m$ and $\begin{bmatrix}
+    B_1 \\ \vdots \\ B_N
+\end{bmatrix} $ full rank
+Compute a least-squares estimate 
+\[
+    \hat\theta = \argmin_\theta \displaystyle\sum_{i=1}^{N}(y_i-B_i\theta)^T\Sigma_i^{-1}(y_i-B_i\theta)
+\]
+The optimal solution is 
+\begin{align*}
+    \hat\theta &= \left(\displaystyle\sum_{i=1}^{N}B_i^T\Sigma_i^{-1}B_i \right)^{-1} \displaystyle\sum_{i=1}^{N}B_i^T\Sigma_i^{-1}y_i\\ 
+    & =  \left(\displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}B_i^T\Sigma_i^{-1}B_i \right)^{-1} \displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}B_i^T\Sigma_i^{-1}y_i\\ 
+\end{align*}
+The optimal solution can be obtained by computing two averages $\frac{1}{N}\displaystyle\sum_{i=1}^{N}\beta_i$ and $\frac{1}{N}\displaystyle\sum_{i=1}^{N}\beta_i$
+
+\subsection{Opinion Dynamics in Social Influence Networks}
+Group of $N$ individuals, with $x_i^k$ being the opinion of individual $i$ at time $k$. Opinions are updated according to 
+\[
+    x_i^{k+1} = \displaystyle\sum_{j=1}^{N}a_{ij}x_j^k
+\]
+
+
+\section{Main questions in averaging algorithms}
+\begin{itemize}
+    \item Do node estimates converge? Do they converge to a common value ("reach consensus")?
+    \item Do they reach consensus to the average ("average consensus")?
+    \item How can we model communication  in general networks?
+    \item Can we answer the above questions for general networks and communication protocols?
+    \item What assumptions do we need on the communication network?
+\end{itemize}
+
+\section{Distributed control in cooperative robotics}
+Team of $N$ (mobile) robots aiming to execute complex tasks
+\subsubsection{Basic tasks}
+\begin{itemize}
+    \item rendevous, containment
+    \item formation, flocking
+    \item coverage
+\end{itemize}
+\subsubsection{Complex tasks}
+\begin{itemize}
+    \item pickup and delivery
+    \item surveillance and patrolling
+    \item exploration
+    \item satellite constellation
+\end{itemize}
+\subsection{Main questions in cooperative robotics}
+\begin{itemize}
+    \item Do robot states asymptotically converge? 
+    \item Do the asympototic staes satisfy the global, desired task?
+    \item How can we model communication in (general) robotic networks?
+    \item What assumptions do we need on the communication network?
+    \item Can we answer the above questions for general networks and communication protocols?
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+\chapter{Graph theory}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
