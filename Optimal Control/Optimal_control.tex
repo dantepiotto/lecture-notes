@@ -2054,7 +2054,7 @@ It is therefore possible to write
     \end{bmatrix} \begin{bmatrix}
         x_t \\ K_t^* x_t
     \end{bmatrix} \\
-    \displaystyle\frac{1}{2}x_t^TP_tx_t&= \displaystyle\frac{1}{2}x_t^T\left(Q_t +A_t^TP_{t+1}A_t-(S_t^T+A_t^TP_{t+1}B_t)(R_t+B_t^TP_{t+1}B_t^{-1})(S_t^T+B_t^TP_{t+1}A_t)\right)
+    \displaystyle\frac{1}{2}x_t^TP_tx_t&= \displaystyle\frac{1}{2}x_t^T\left(Q_t +A_t^TP_{t+1}A_t-(S_t^T+A_t^TP_{t+1}B_t)(R_t+B_t^TP_{t+1}B_t^{-1})(S_t^T+B_t^TP_{t+1}A_t)\right)x_t
 \end{align*}
 which should hold for all $x_t$, therefore we obtain the so-called \emph{Difference Riccati Equation}:
 \[
