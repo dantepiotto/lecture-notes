@@ -55,7 +55,7 @@ going from 3D to 2D implies a loss of information
 \subsection{stereo vision}
 
 Standard stereo geometry:\\
--Cameras arranged so that there is only horiz translation between the two CRF. Naming b the distance between the two CRF the transformation between the CRF is
+-Cameras arranged so that there is only horiz translation between the two CRF. Naming $b$ the distance between the two CRF the transformation between the CRF is
 \begin{equation}
 	p_L-p_R = \begin{bmatrix}
 	b\\
@@ -839,11 +839,11 @@ In the 1D case, the optimal edge detection consists in finding local extrema of 
 In the 2D case, the optimal filter results to be composed of the sequence of Gaussian smoothing, gradient computation and NMS along the gradient direction. 
 2D convolution by a gaussian can be sped up through separability:
 \begin{align*}
-    \tilde{I}_x(x,y) = \frac{\partial}{\partial x} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial x}\\
-    \tilde{I}_y(x,y) = \frac{\partial}{\partial y} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial y}\\
-    G(x,y)=G(x)G(y)\\
-    \implies \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
-    \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
+    \tilde{I}_x(x,y) =& \frac{\partial}{\partial x} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial x}\\
+    \tilde{I}_y(x,y) =& \frac{\partial}{\partial y} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial y}\\
+    G(x,y) =& G(x)G(y)\\
+    \implies \tilde{I}_x(x,y) =& I(x,y) \ast (G'(x)G(y))  =(I(x,y)\ast G'(x))\ast G(y)\\
+    \tilde{I}_x(x,y) =& I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
 \end{align*}
 After NMS an extra thresholding is applied to distinguish true edges and unwanted ones. However, edge streaking may occur when gradient magintude varies along object contours. To address this issue, Canny proposed \emph{hysteresis thresholding}: 2 thresholds are used, a higher ($T_h$) and a lower ($T_l$) one. Pixels are taken as an edge if they are above $T_h$ or if they are higher than $T_l$ and are neighbours to an already detected edge. The overall flow-chart of the Canny edge detector is as follows:
 % [TODO] insert chart slide 21
@@ -911,15 +911,15 @@ The Harris corner detector is a continuous formulation of the Moravec corner det
 \begin{align*}
   E(\Delta x, \Delta y ) = \displaystyle\sum_{x,y}^{}w(x,y)(I(x+\Delta x, y + \Delta y)-I(x,y))^2
 \end{align*}
-Where $w(t)$ is $1$ inside the chosen neighbourhood and $0$ elsewhere
+Where $w(t)$ is $1$ inside the chosen neighbourhood and $0$ elsewhere.
 Due to the shift being infinitesimal, we may take advantage of Taylor series expansion of the intensity function at $(x,y)$:
 \[
   I(x+\Delta x, y+ \Delta y)-I(x,y) \simeq \displaystyle\frac{\partial I(x,y)}{\partial x}\Delta x + \displaystyle\frac{\partial I(x,y)}{\partial y}\Delta y = I_x(x,y)\Delta x + I_y (x,y) \Delta y
 \]
-\begin{flalign*}
-  E(\Delta x, \Delta y ) = \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)\Delta x + I_y(x,y)\Delta y )^2=\\
-  \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)^2\Delta x^2 + I_y(x,y)^2\Delta y^2 + 2I_x(x,y)I_y(x,y)\Delta x \Delta y )=\\
-  =\displaystyle\sum_{x,y}^{}w(x,y)\left( \begin{bmatrix}
+\begin{align*}
+    E(\Delta x, \Delta y ) &= \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)\Delta x + I_y(x,y)\Delta y )^2\\
+    &=  \displaystyle\sum_{x,y}^{}w(x,y)(I_x(x,y)^2\Delta x^2 + I_y(x,y)^2\Delta y^2 + 2I_x(x,y)I_y(x,y)\Delta x \Delta y )\\
+    &=\displaystyle\sum_{x,y}^{}w(x,y)\left( \begin{bmatrix}
       \Delta x \Delta y
       \end{bmatrix} \begin{pmatrix}
       I_x^2 & I_xI_y \\
@@ -927,12 +927,12 @@ Due to the shift being infinitesimal, we may take advantage of Taylor series exp
       \end{pmatrix} \begin{bmatrix}
       \Delta x \\ \Delta y
   \end{bmatrix}\right) \\
-  E(\Delta x, \Delta y) = \begin{bmatrix}
+    E(\Delta x, \Delta y) &= \begin{bmatrix}
     \Delta x & \Delta y
     \end{bmatrix} M \begin{bmatrix}
     \Delta x \\ \Delta y
   \end{bmatrix}
-\end{flalign*}
+\end{align*}
 wlog we can assume $M$ to be diagonal, as it is real and symmetric, thus always diagonalizable:
 \[
   M=\begin{pmatrix}
@@ -951,7 +951,7 @@ The previous considerations also hold with $M$ not diagonal by diagonalization:
     \lambda_1 & 0 \\ 0 & \lambda_2
   \end{pmatrix} R^T
 \]
-where the columns of $R$ are the orthonormal eigenvectors of $M$, and  $R^T$ is the rotation matrix that alignes the image axes to the eigenvectors of M
+where the columns of $R$ are the orthonormal eigenvectors of $M$, and  $R^T$ is the rotation matrix that aligns the image axes to the eigenvectors of M.
 Computing the eigenvalues of $M$ may be slow, thus a more efficient cornereness function is proposed: 
 \[
   C= det(M)-k \cdot tr(M)^2 = \lambda_1\lambda_2 -k (\lambda_1+\lambda_2)^2
@@ -962,7 +962,7 @@ With this new function we have
   \item $C > 0$: Corner
   \item $C < 0$: Edge
 \end{itemize}
-It is worth noting that the weighing function used is actually not a box function but rather Guassian shaped to assing more wight to closer pixels. Corner detection follows the usual steps of 
+It is worth noting that the weighing function used is actually not a box function but rather Guassian shaped to assign more weight to closer pixels. Corner detection follows the usual steps of 
 \begin{itemize}
   \item computing the cornerness $C$ 
   \item Thresholding the values of $C$ 
@@ -980,7 +980,7 @@ Yes, as the eignevalues of matrix $M$ are invariant to rotation of the image axe
 \subsubsection{Intensity changes}
 \begin{itemize}
   \item yes, to additive bias $(I'=I+b)$ due to the use of derivatives
-    \item no to a linear chang $(I' = aI)$ as derivatives undergo the same change
+    \item no to a linear change $(I' = aI)$ as derivatives undergo the same change
 \end{itemize}
 so overall, no invariance to affine intensity changes. 
 \subsubsection{Scale}
@@ -996,10 +996,35 @@ Thus, a scale-space is created by repeatedly smoothing with larger and larger Ga
   \frac{\partial I(x,y,t) }{\partial t} = k\nabla^2I(x,y,t) \implies \sigma=\sqrt{2kt}
 \]
 In order to detect features and select their characteristic scale, we can find the extrema of certain combinations of scale-normalized derivatives of the Guassian Scale-Space. 
+\subsection{Scale-normalized LOG}
+\[
+    F(x,y,\sigma) = \sigma^2\nabla^2L(x,y,\sigma) = \sigma^2(\nabla^2 G(x,y,\sigma)\ast I(x,y))
+\]
+blob-like features and scales are detected as extrema of the scale-normalized LOG.
+\subsection{DoG Detector}
+\[
+    DoG(x,y,\sigma) = (G(x,y,k\sigma)-G(x,y,\sigma))\ast I(x,y) = L(x,y,k\sigma)-L(x,y,\sigma)
+\]
+This approach provides a computationally efficient approximation of the scale-normalized LOG:
+\[
+    G(x,y,k\sigma)-G(x,y,\sigma)\approx (k-1)\sigma^2\Delta^2 G(x,y,\sigma)
+\]
+as $(k-1)$ is constant, it does not influence the location of extrema. As such, the choice of $k$ is not critical. The DoG detector is rotation invariant.
+\subsubsection{Computation of DoG}
+In general, in an octave, $s$ DoG images are computed (octave: interval from $n\sigma$ to $(n+1)\sigma$). Rather than doubling $\sigma$ for the filters of the next octave, we downsample $L(x,y,2\sigma)$ by taking half of the columns and rows and then use the same filters.
 
+A point is detected as a maximum if the DoG is higher than the $n_8$ neighbourhood in the same image and in the images above and below ($8+9+9=26$ neighbours) (3D NMS)
 
+\subsection{Scale and rotation invariant description}
+\begin{itemize}
+    \item Most keypoint detection algorithms rely on finding extrema across a stack of images computed while increasing a scale parameter 
+    \item Then, once each keypoint has been extracted, the surrounding patch is considered to compute its descriptor. A desirable property concerns such descriptor being scale and rotation invariant.
+    \item To attain scale invariance, the patch is taken from the stack image ($L(x,y,\sigma$) that corresponds to its carachteristic scale. As such, the descriptor is computed on a smooth patch that does not contain fine details that are not preserved across the range of scales
+    \item To attain rotation invariance, a canonical patch orientation is computed, so that the descriptor can then be computed on a canonically-oriented patch
+\end{itemize}
 
-
+\subsection{Canonical orientation}
+A reasonable choice is the direction along which most of the gradient is found. It is used to define a local reference frame for image patches. Gradient magnitude and orientation are computed at each pixel of the patch, then an orientation histogram with bin size $10^\circ$ is created by accumulating the contributions of the pixels belonging to a neighbourhood of the keypoint location. The contribution of each pixel to its designated orientatio bin is given by the gradient magnitude weighted by a Gaussian with $\sigma = 1.5\sigma_s$ where $\sigma_s$ is the scale of the keypoint. The canonical orientation is taken as the peak of the histogram
 
 
 
