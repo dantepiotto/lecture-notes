@@ -35,6 +35,8 @@
 \newtheorem*{remark}{Remark}
 \theoremstyle{remark}
 \newtheorem*{notation}{Notation}
+\theoremstyle{definition}
+\newtheorem*{lemma}{Lemma}
 
 \title{Distributed Autonomous Systems M}
 \author{Dante Piotto}
@@ -154,6 +156,158 @@ Team of $N$ (mobile) robots aiming to execute complex tasks
     \item What assumptions do we need on the communication network?
     \item Can we answer the above questions for general networks and communication protocols?
 \end{itemize}
+\subsection{Distributed optimal control}
+\begin{align*}
+    \min_{\substack{x_1,\dots,x_N \\ u_1,\dots,u_N}} & \displaystyle\sum_{i=1}^{N}(\displaystyle\sum_{\tau=0}^{T-1}\ell_i(z_{i,\tau},u_{i,\tau})+m_i(z_{i,T}))\\
+    \text{subj to} & \displaystyle\sum_{i=1}^{N}H_iz_{i,\tau}\leq h, && \tau\in[0,T]\\ 
+    & z_{i,\tau+1}=A_iz_{i,\tau}+B_iu_{i,\tau} && \forall i, \tau \in [0,T]\\ 
+    & z_{i,\tau}\in Z_i, \quad u_{i,\tau}\in U_i, && \forall i, \tau \in [0,T]\\ 
+\end{align*}
+
+
+
+
+
+
+
+
+
+\chapter{Preliminaries on Algebraic Graph Theory}
+\begin{definition}[Digraph]
+    A digraph is a pair $G=(I,E)$ where $I={1,\dots,N}$ is a set of elements called \emph{nodes} and $E\subset I \times I$ is a set of ordered node pairs called \emph{edges}\\
+    \emph{Edge}: the pair $(i,j)$ denotes an edge from $i$ to $j$\\ 
+    \emph{Self-loop}: edge from a node to itself, i.e. $(i,i)$
+\end{definition}
+\begin{definition}[Undirected (di)graph]
+    if for any $(i,j)\in E$ then $(j,i)\in E$  
+\end{definition}
+\begin{definition}[Subgraph]
+    $(I',E')$ subgraph of $(I,E)$ if $I'\subset I$ and $E' \subset E$. Spanning subgraph if $I'=I$
+\end{definition}
+\begin{definition}[In-neighbours of $i$]$j\in I$ is an in-neighbour of $i\in I$ if $(j,i)\in E$
+\end{definition}
+\begin{definition}[Set of in-neighbours of $i$]
+    $\mathcal{N}_i^{\text{IN}}=\{j\in\{1,\dots,N\}|(j,i)\in E\}$
+\end{definition}
+\begin{definition}[Out-neighbours of $i$]$j\in I$ is an out-neighbour of $i\in I$ if $(i,j)\in E$
+\end{definition}
+\begin{definition}[Set of out-neighbours of $i$]
+    $\mathcal{N}_i^{\text{IN}}=\{j\in\{1,\dots,N\}|(i,j)\in E\}$
+\end{definition}
+\begin{definition}[In-degree $\deg_i^{\text{IN}}$]
+    number of in-neighbours, i.e. carinality of $\mathcal{N}_i^{\text{IN}}(\deg_i^{\text{IN}}=|\mathcal{N}_i^{\text{IN}}|)$
+
+    Out-degree analogous
+\end{definition}
+\begin{definition}[Balanced digraph]
+    A digraph $G$ is balanced if $\deg_i^{\text{IN}}=\deg_i^{\text{OUT}}$ for all $i\in\{1,\dots,N\}$
+\end{definition}
+% TODO definitions slides 4-5-7-8-9-10
+
+\begin{definition}[Complete graph]
+    Unweighted graph such that $\forall i,j\ \exists \ (i,j),\ (j,i) \in E$
+\end{definition}
+
+\chapter{Averaging Systems}
+\section{Distributed algorithm}
+Given a network of $N$ agents communicating according to a fixed digraph $G$, i.e. each agent $i$ can receive messages only from in-neighbours in the graph, i.e. from $j\in\mathcal{N}_i^{\text{IN}}$. 
+We start by considering a fixed graph, thus, each agent communicates with the same neighbours at each iteration $k\in\N$
+\[
+    x_i^{k+1}=\text{stf}_i(x_i^k,\{x_j^k\}_{j\in\mathcal{N}_i^{\text{IN}}}), \qquad i\in\{1,\dots,N\}
+\]
+where $\text{stf}_i$ is a function depending only on state $x_i$ and states $x_j,j\in\mathcal{N}_i^{\text{IN}}$.
+
+Alternative version with out-neighbours:
+\[
+    x_i^{k+1}=\text{stf}_i(\{x_j\}_{j\in\mathcal{N}_i^{\text{OUT}}})
+\]
+\section{Discrete-time averaging systems}
+Let $G^{\text{comm}}=(I,E)$ be a fixed (communication) digraph (self loops included). A linear averaging distributed algorithm can be written as:
+\[
+    x_i^{k+1}=\displaystyle\sum_{J\in\mathcal{N}_i^{\text{IN}}}a_{ij}x_j^k \qquad i\in\{1\dots,N\}
+\]
+where $x_i^k\in\R$ is the state of agent $i$ at $k$ and $a_{ij}>0$ are positive weights. 
+\begin{remark}
+    The weights $a_{ij}$ are defined only for $(i,j)\in E$
+\end{remark}
+Wach $i$ uses only the states of neighbours $j\in\mathcal{N}_i^{\text{IN}}$, thus distributed algorithm.
+
+For analysis purposes, let us define weights $a_{ij}=0$ for $(j,i)\notin E$. Thus we can rewrite the distributed algorithm as 
+\[
+    x_i^{k+1}=\displaystyle\sum_{j=1}^{N}a_{ij}x_j^k \qquad i\in\{1,\dots,N\}
+\]
+This is a LTI autonomous system 
+\[
+    \begin{bmatrix}
+        x_1^{k+1}\\ \vdots \\ x_N^{k+1}
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & \cdots & a_{1N} \\ 
+        \vdots & \ddots & \vdots \\
+        a_{N1} & \cdots & a_{NN}
+    \end{bmatrix} \begin{bmatrix}
+        x_1^k \\ \vdots \\ x_N^k
+    \end{bmatrix}
+\]
+Which can be compactly written as  
+\[
+    x^{k+1} 0 Ax^k
+\]
+\begin{remark}
+    The matrix A can be seen as the weighted adjacency matrix of the reverse digraph $G^{\text{comm,rev}}$ of the digraph $G^{\text{comm}}$
+\end{remark}
+If instead of in-neighbours we use out-neighbours, we call the digraph a sensing digraph $G^{\text{sens}}$. In this case the notation becomes consistent with graph theory, so we get 
+\[
+    x^{k+1} = A x^k
+\]
+where $A$ can be seen as the weighted adjacency matrix of the sensing digraph $G^{\text{sens}}$
+
+\section{Stochastic matrices}
+The non-negative square matrix $A\in\R^{N\times N}$ is 
+\begin{itemize}
+    \item row stochastic if $A\mathbf{1}=\mathbf{1}$ (each row sums to 1)
+    \item column stochastic if $A^\top \mathbf{1}=\mathbf{1}$ (each column sums to 1)
+    \item doubly stochastic if both row and column stochastic.
+\end{itemize}
+\begin{lemma}
+    Let $A$ be a row-stochastic matrix and $G$ the associate digraph. If $G$ is strongly connected and aperiodic, then 
+    \begin{enumerate}
+        \item the eigenvalue $\lambda=1$ is simple; 
+        \item all the other eigenvalues $\mu$ satisfy $|\mu|<1$
+    \end{enumerate}
+\end{lemma}
+\begin{remark}
+    The condition "$G$ contains a globally reachable node and the subgraph of globally reachable noes is aperiodic" is necessary and sufficient
+\end{remark}
+\begin{theorem}[Consensus]
+    Consider a (discrete-time) averaging system with associated digraph $G$ and wieghted adjacency matrix $A$. Assume $G$ is strongly connected and aperiodic, and $A$ is row stochastic. Then 
+    \begin{enumerate}
+        \item there exists a left eigenvector $w\in\R^N,w>0$ (i.e. with positive components $w_i>0$ for all $i=1,\dots,N$) such that 
+            \[
+                \lim_{k\to\infty}x^k = \mathbf{1}\displaystyle\frac{w^\top x^0}{w^\top \mathbf{1}} = \begin{bmatrix}
+                    1 \\ \vdots \\ 1
+                \end{bmatrix} \displaystyle\frac{\sum_{i=1}^{N}w_ix_i^0}{\sum_{i=1}^{N}w_i}
+            \]
+            i.e., consensus is reached to $ \displaystyle\frac{\sum_{i=1}^{N}w_ix_i^0}{\sum_{i=1}^{N}w_i}$
+        \item if additionally $A$ is doubly stochastic, then 
+            \[
+                \lim_{k\to\infty}x^k = \begin{bmatrix}
+                    1 \\ \vdots \\ 1
+                \end{bmatrix} \displaystyle\frac{\sum_{i=1}^{N}x_i^0}{N}
+            \]
+            i.e., average consensus is reached
+    \end{enumerate}
+\end{theorem}
+
+\section{Example: Metropolis-Hastings weights}
+Given an undirected unweighted graph $G$ with edge set $E$ and degrees $d_1,\dots,d_n$
+\[
+    a_{ij} = \begin{cases}
+        \displaystyle\frac{1}{1+\max\{d_i,d_j\}} & \text{if } (i,j)\in E \text{ and } i\neq j\\
+        1- \displaystyle\sum_{h\in\mathcal{N}_i \backslash \{i\}}^{} a_{ih} & \text{if } i=j\\ 
+        0 & \text{otherwise}
+    \end{cases}
+\]
+Result: the matrix $A$ is symmetric and doubly-stochastic.
 
 
 
@@ -164,7 +318,6 @@ Team of $N$ (mobile) robots aiming to execute complex tasks
 
 
 
-\chapter{Graph theory}
 
 
 
