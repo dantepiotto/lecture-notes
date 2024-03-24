@@ -37,6 +37,8 @@
 \newtheorem*{notation}{Notation}
 \theoremstyle{definition}
 \newtheorem*{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem*{corollary}{Corollary}
 
 \title{Distributed Autonomous Systems M}
 \author{Dante Piotto}
@@ -309,16 +311,157 @@ Given an undirected unweighted graph $G$ with edge set $E$ and degrees $d_1,\dot
 \]
 Result: the matrix $A$ is symmetric and doubly-stochastic.
 
+\section{Time-varying digraphs}
+A time-varying digraph is a sequence of digraphs $\{G(k)\}_{k\geq 0}$.
+\begin{remark}
+    The main definitions of in/out neighbours, in/out degree, adjacency matrix can be generalized by considering time-varying versions, i.e. $\mathcal{N}_i^{\text{IN}}(k)$, $\mathcal{N}_i^{\text{OUT}}(k)$, $\deg_i^{\text{IN}}(k)$ ,$\deg_i^{\text{OUT}}(k)$, $A(k)$ associated to each graph $G(k)$. Connectivity requires new definitions as assuming each $G(k)$ to be connected is too conservative.
+\end{remark}
+\begin{definition}[Jointly strongly connected digraph]
+    if $\bigcup_{\tau=k}^{+\infty}G(\tau)$ is strongly connecetd $\forall k \geq 0$
+\end{definition}
 
+\begin{definition}[Uniformly jointly strongly connected (or \emph{B}-strongly connected) digraph]
+    if there exists $B\in\N$ such that $\bigcup_{\tau=k}^{k+B}G(\tau)$ is strongly connecetd $\forall k \geq 0$
+\end{definition}
 
+\begin{remark}
+    The graph can be disconnected at some time $k$.
+\end{remark}
 
+\subsection{Averaging distributed algorithms over time-varying graphs}
+Let $\{G(k)\}_{k\geq 0}$ be a time-varying digraph (with self loops for each $G(k)$). Consider the distributed algorithm 
+\[
+    x_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i^\text{IN}(k)}a_{ij}(k)x_j^k \qquad \forall i \in\{1,\dots,N\} 
+\]
+or the out-neighbours version 
+\[
+    x_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i^\text{OUT}(k)}a_{ij}(k)x_j^k \qquad \forall i \in\{1,\dots,N\} 
+\]
+where $x_i^k\in\R$ is the state of agent $i$ at $k$ and $a_{ij}(k)>0$. 
 
+For analysis purposes, let us define weights $a_{ij}(k)=0$ for $(i,j)\notin E(k)$. Thus we can rewrite the distributed algorithm as 
+\[
+    x_i^{k+1} = \displaystyle\sum_{j=1}^{N} a_{ij}(k) x_j^k \qquad i\in\{1,\dots,N\}
+\]
+This is a Linear Time-Varying system 
+\[
+    x^{k+1} = A(k)x^k
+\]
+with state $x:=[x_1,\dots,x_N]^\top$ and state matrix
+\[
+    A(k) := \begin{bmatrix}
+        a_11{k}& \cdots & a_{1N}(k) \\
+        \vdots & \ddots & \vdots \\
+        a_N1{k}& \cdots & a_{NN}(k) \\
+    \end{bmatrix}
+\]
+being a weighted adjacency matrix associated to the digraph $G(k)$.
+\subsection{Discrete-time consensus over time-varying graphs}
+\begin{theorem}[]
+    Let $\{A(k)\}_{k\geq 0}$ be a sequence of row-stochastic matrices with associated digraphs $\{G(k)\}_{k\geq 0}$. Assume 
+    \begin{enumerate}
+        \item each digraph $G(k)$ has a self-loop at each node; 
+        \item each non-zero edge weight $a_{ij}(k)$, including the self-loop wights $a_{ii}(k)$, is larger than a constant $\epsilon>0$; 
+        \item there exists $B\in\N$ such that, for all times $k\geq 0$, the union digraph $G(k)\cup \dots \cup G(k+B)$ is strongly connected. 
+    \end{enumerate}
+    Then 
+    \begin{enumerate}
+        \item there exists a non-negative vector $w\in\R^N$ such that the solution to $x^{k+1}=A(k)x^k$ converges (exponentially) to $\mathbf{1}\displaystyle\frac{w^\top x^0}{w^\top \mathbf{1}}$, i.e.
+            \[
+                \lim_{k\to\infty}x^k = \mathbf{1}\left(\displaystyle\frac{w^\top x^0}{w^\top \mathbf{1}}\right)
+            \]
+        \item if additionally each matrix in the sequence is doubly-stochastic, then 
+            \[
+                \lim_{k\to\infty} x^k = \mathbf{1} \displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}x_i^0
+            \]
+            i.e., average consensus is achieved
+    \end{enumerate}
+\end{theorem}
 
+\section{Laplacian dynamics}
+Consider a network of dynamical systems with dynamics 
+\[
+    \dot{x}(t) = u_i(t) \qquad i \in \{1,\dots,N\}
+\]
+with states $x_i\in\R$ and inputs $u_i\in\R$, communicating (or interacting) according to a digraph $G=(\{1,\dots,N\},E)$. Consider a (distributed) "proportional" feedback control 
+\[
+    u_i(t) = - \displaystyle\sum_{j\in\mathcal{N}_i^{\text{IN}}}a_{ij}(x_i(t)-x_j(t))
+\]
+or the out-neighbour version
+\[
+    u_i(t) = - \displaystyle\sum_{j\in\mathcal{N}_i^{\text{OUT}}}a_{ij}(x_i(t)-x_j(t))
+\]
+For analysis purposes, let us define weights $a_{ij}(k)=0$ for $(i,j)\notin E(k)$. Thus we can rewrite the distributed control systems as 
+\[
+    \dot{x}_i(t) = - \displaystyle\sum_{j=1}^{N} a_{ij} (x_i(t)-x_j(t)) \qquad \forall i\in\{1,\dots,N\}
+\]
+Defining $x:=[x_1 \cdots x_N]^\top$, it can be shown that it can be rewritten as the following Linear Time Invariant continuous-time system 
+\[
+    \dot{x}(t) = -Lx(t)
+\]
+where $L$ is the (weighted) Laplacian associated to the digraph $G$ with (weighted) adjacency matrix $A$ 
 
+Let 
+\[
+    \dot{x}_i(t) = - \displaystyle\sum_{j=1}^{N} a_{ij} (x_i(t)-x_j(t)) \qquad \forall i\in\{1,\dots,N\}
+\]
+rearranging terms 
+\[
+    \dot{x}_i(t) = -\left(\displaystyle\sum_{j=1}^{N} a_{ij}\right) x_i(t) + \displaystyle\sum_{j=1}^{N} a_{ij}x_j(t) = -\deg_i^{\text{OUT}}x_i(t)+ (Ax(t))_i
+\]
+where $(Ax(t))_i$ is the $i$-th element of $Ax(t)$. Writing the previous dynamics in a compact form 
+\[
+    \dot{x}(t) = -(D^{\text{OUT}}-A)x(t)
+\]
+where we recall that $D^{\text{OUT}}$ is the (weighted) out-degree matrix. Recalling that $L=D^{\text{OUT}}-A$, it holds that 
+\[
+    \dot{x}(t) = -Lx(t)
+\]
+\begin{remark}
+    if the in-neighbours version is considered, then $\dot{x}(t) = -L^{\text{IN}}x(t)$, where $L^{\text{IN}}=D^{\text{IN}}-A^T$ is the in-degree Laplacian (i.e. the Laplacian of the reverse graph of $G$)
+\end{remark}
+\subsection{Properties of the Laplacian matrix}
+It can be easily verified that 
+\[
+    L\mathbf{1} = D^{\text{OUT}}\mathbf{1}-A\mathbf{1} = \begin{bmatrix}
+        \deg_1^{\text{OUT}} \\ \vdots \\ \deg_i^{\text{OUT}}
+    \end{bmatrix} - \begin{bmatrix}
+        \deg_1^{\text{OUT}} \\ \vdots \\ \deg_i^{\text{OUT}}
+    \end{bmatrix} = 0
+\]
+i.e., $\lambda=0$ is an eigenvalue of $L$ and $\mathbf{1}$ is an associated eigenvector.
+\begin{lemma}
+    Given a weighted digraph with Laplacian $L$, then all eigenvalues of $L$ different from zero have strictly positive real part
+\end{lemma}
 
+\begin{lemma}
+    Given a weighted digraph with Laplacian $L$, the following statements are equivalent: 
+    \begin{enumerate}
+        \item $G$ is weight-balanced, i.e. $D^{\text{IN}} = D^{\text{OUT}}$
+        \item $\mathbf{1}L = 0$
+    \end{enumerate}
+\end{lemma}
+\begin{theorem}[]
+    A weighted digraph with Laplacian $L$ contains a globally reachable node if and only if $\lambda=0$ is simple.
+\end{theorem}
+\begin{corollary}
+    If a weighted digraph is strongly connected, then $\lambda=0$ is simple
+\end{corollary}
 
-
-
+\subsection{Consensus for Laplacian dynamics}
+\begin{theorem}[]
+    let $L$ be a (weighted) Laplacian matrix with associated strongly connected (weighted) digraph $G$. Consider the Laplacian dynamics $\dot{x}(t) = -Lx(t),\  t\geq0$, then
+    \begin{enumerate}
+        \item \[
+                \lim_{t\to\infty} x(t) = \mathbf{1}\left(\displaystyle\frac{w^\top x(0)}{w^\top\mathbf{1}}\right)
+        \]
+            with $w^\top L = 0$, i.e. $w$ is a left eigenvector for the eigenvalue $\lambda=0$;
+        \item if additionally $G$ is weight-balanced then 
+            \[
+                \lim_{t\to\infty}x(t) = \mathbf{1} \displaystyle\frac{\sum_{i=1}^{N}x_i(0)}{N}
+            \]
+    \end{enumerate}
+\end{theorem}
 
 
 
