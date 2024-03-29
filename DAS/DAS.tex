@@ -27,10 +27,13 @@
 \newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
 
 
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}{Proposition}[section]
+\newtheoremstyle{theoremv2}{}{}{}{}{\bfseries}{}{\newline}{}
+\theoremstyle{theoremv2}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheoremstyle{defv2}{}{}{}{}{\bfseries}{}{\newline}{}
+\theoremstyle{defv2}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 \theoremstyle{remark}
