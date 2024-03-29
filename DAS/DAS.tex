@@ -463,6 +463,263 @@ i.e., $\lambda=0$ is an eigenvalue of $L$ and $\mathbf{1}$ is an associated eige
     \end{enumerate}
 \end{theorem}
 
+\chapter{Optimization basics}
+\subsubsection{Convexity and gradient monotonicity}
+If a convex function $\ell$ is also differentiable, then its gradient $\nabla\ell: \R^d\to\R^d$ satisfies 
+\[
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top(z_A-a_B)\geq 0
+\]
+for all $z_A,z_B$. That is, the gradient $\nabla\ell$ is a monotone operator
+
+\subsubsection{Strict convexity and gradient monotonicity}
+A function $\ell$ is strictly convex if for $z_A\neq z_B$ and $\theta\in (0,1)$ 
+\[
+    \ell(\theta z_A + (1-\theta)z_B)<\theta\ell(z_A)+(1-\theta)\ell(z_B)
+\]
+If the strictly convex function $\ell$ is also differentiable, then its gradient satisfies 
+\[
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top (z_A-z_B)>0
+\]
+for all $z_A,z_B$. That is, the gradient $\nabla\ell$ is a strictly monotone operator
+\subsubsection{Strong convexity and gradient monotinicity}
+A function $\ell$ is strongly convex with parameter $\mu>0$ if for $z_A\neq z_B$ and $\theta\in(0,1)$
+\[
+    \ell(\theta z_A + (1-\theta)z_B)<\theta\ell(z_A)+(1-\theta)\ell(z_B) - \mu\theta(1-\theta)\|z_A-z_B\|^2
+\]
+The gradient of a differentiable strongly convex function satisfies 
+\[
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top (z_A-z_B)\geq \mu\|z_A-z_B\|^2
+\]
+for all $z_A,z_B$. That is, the gradient $\nabla\ell$ is a strongly monotone operator
+
+\subsubsection{Convexity and Lipschitz continuity of the gradient}
+Consider a differentiable convex function $\ell$ with a Lipschitz continuous gradient with parameter $L>0$, i.e.
+\[
+    \|\nabla \ell(z_A)- \nabla\ell (z_B)\| \leq L\|z_A-z_B\|
+\]
+for all $z_A,z_B$.
+Then, the following characterization holds
+\[
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top (z_A-z_B)\geq \displaystyle\frac{1}{L}\|\nabla\ell(z_A)-\nabla\ell(z_B)\|^2
+\]
+for all $z_A,z_B$. That is, the gradient $\nabla\ell$ is a co-coercive operator
+
+\subsubsection{Strong convexity and Lipschitz continuity of the gradient}
+Consider a strongly convex (with parameter $\mu>0$) function $\ell$ with Lipschitz continuous gradient (with parameter $L>0$). The the followin characterization holds 
+\[
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top (z_A-z_B)\geq \displaystyle\frac{\mu L }{\mu + L} \|z_A - z_B\|^2 + \displaystyle\frac{1}{\mu + L}\|\nabla\ell(z_A)-\nabla\ell(z_B)\|^2
+\]
+for all $z_A,z_B$.
+
+\section{Optimization algorithms}
+We consider optimization algorithms based on iterative descent.
+\begin{notation}
+    notatioWe denote by $z^k\in\R^d$ the estimate at iteration $k\in\N$ of a local minimum. 
+\end{notation}
+The algorithm starts at a given initial guess ecc ecc we know iterative descent
+\subsection{A system theoretical perspective to the gradient method}
+Let $\ell$ be $\mu$-strongly convex and with $L$-Lipschitz continuous gradient. The gradient method is a discrete-time integrator in feedback interconnection with a static map
+
+\begin{align*}
+    z^{k+1} &= z^k-\alpha u^k, \qquad  z^0 \text{ given}\\ 
+    u^k &= \nabla \ell(z^k)
+\end{align*}
+where $u^k$ is a "control input" obtained through a static (nonlinear) state feedback. The block diagram is 
+% TODO insert image slide 20
+
+This is known as the \emph{Lur'e problem}
+
+\section{steady-state analysis of the gradient method}
+Assume that the state $z^k$ converges to some value $z_{eq}$. Then, such an equilibrium must satisfy: 
+\begin{align*}
+    z_{eq} = z_{eq}-\alpha\nabla\ell(z_{eq}) & \implies && z_{eq}:\nabla\ell(z_eq)\\ 
+     & \implies && z_{eq} = z^*
+\end{align*}
+Consider the change of coordinates $z^k\to \tilde{z}^k-z_{eq}=z^k-z^*$. Then, the error dynamics is  
+\begin{align*}
+    \tilde{z}^{k+1} &= \tilde{z}^k-\alpha u^k \\
+     u^k &= \nabla\ell(\tilde{z}^k+z^*)-\nabla\ell(z^*)
+\end{align*}
+where $u^k$ and $\tilde{z}^k$ satisfy, in light of the assumption on $\ell$, the following inequality\footnote{For all $z_A,z_B$ it holds that $$
+    \left(\nabla\ell(z_A)-\nabla\ell(z_B)\right)^\top (z_A-z_B)\geq \displaystyle\frac{\mu L }{\mu + L} \|z_A - z_B\|^2 + \displaystyle\frac{1}{\mu + L}\|\nabla\ell(z_A)-\nabla\ell(z_B)\|^2
+$$ } 
+\[
+    -(u^k)^T\tilde{z}^k \leq -\gamma_1\|\tilde{z}^k\|^2-\gamma_2\|u^k\|^2
+\]
+Consider a Lyapunov function $V:\R^d\to \R_{\geq0}$ given by $V(\tilde{z})=\|\tilde{z}\|^2$. Then 
+\begin{align*}
+    V(\tilde{z}^{k+1})-V(\tilde{z}^k) &= \|\tilde{z}^{k+1}\|^2-\|\tilde{z}^k\|^2\\
+    &= \|\tilde{z}^k\|^2 - 2\alpha(u^k)^\top\tilde{z}^k+\alpha^2\|u^k\|^2-\|\tilde{z}^k\|^2\\ 
+    &\leq -2\alpha\gamma_1 \|\tilde{z}^k\|^2 + \alpha(\alpha-2\gamma_2)\|u^k\|^2
+\end{align*}
+For a small enough stepsize $\alpha$ (i.e., $\alpha\leq 2\gamma_2$), we can write 
+\begin{align*}
+    V(\tilde{z}^{k+1})-V(\tilde{z}^k)<-2\alpha\gamma_1\|\tilde{z}^k\|^2 \quad \implies \quad \|\tilde{z}^{k+1}\|^2 & \leq (1-2\alpha\gamma_1) \|\tilde{z}^k\|^2\\ 
+    & \leq (1-2\alpha\gamma_1)^k\|\tilde{z}^0\|^2
+\end{align*}
+Therefore $\{\tilde{z}^k\}_{k\in\\N}$ goes exponentially/geometrically fast to zero
+\subsection{Gradient method for quadratic programs}
+Consider a quadratic program 
+\[
+    \min_z \displaystyle\frac{1}{2} z^\top Q z + r^\top z
+\]
+With $Q=Q^\top>0$
+The gradient method is an affine linear system 
+\begin{align*}
+    z^{k+1} &= z^k -\alpha(Qz^k+r) \qquad z^k \text{ given}\\ 
+    &= (I-\alpha Q) z^k - \alpha r
+\end{align*}
+For a sufficiently small $\alpha$, the state matrix $(I-\alpha Q)$ is Schur. Hence, the state trajectory is \footnote{The geometric series $\sum_{i=0}^{\infty}\rho^i$ is equal to $(1-\rho)^{-1}$ for all $\rho<1$} 
+\[
+    z^k = (I-\alpha Q)^kz^0 - \alpha \displaystyle\sum_{i=0}^{k-1}(I-\alpha Q)^ir \to^{k\to\infty} -\alpha\left(\displaystyle\sum_{i=0}^{\infty}(I-^\alpha Q)^i\right)r = -Q^{-1}r
+\]
+\subsection{Gradient flow}
+Let us swap the roles of the plant (the static nonlinearity) and the controller (the integrator)
+% TODO insert images slide 24
+We obtain the so-called gradient flow (continuous-time dynamics)
+\[
+    \dot{z}(t) = -\nabla \ell(z(t)) \qquad z(0) = z_0
+\]
+\begin{remark}
+    A solution to the ODE exists if the vector field is Lipschitz continuous
+\end{remark}
+\subsection{Nesterov accelerated gradient method}
+Consider the following two-step algorithm: for all $k\in\N$
+\[
+    \zeta^{k+1} = \zeta^k + \alpha_1(\zeta^k-\zeta^{k+1}) - \alpha_2\nabla\ell \left(\zeta^k + \alpha_1(\zeta^k-\zeta^{k+1})\right), \quad \zeta^0, \zeta^{-1} \text{ given}
+\]
+for some $\alpha_1,\alpha_2>0$. It admits the state-space representation
+% TODO image slide 25
+More general updates can also be considered: for all $k\in\N$
+\[
+    \zeta^{k+1} = \zeta^k + \alpha_1(\zeta^k-\zeta^{k+1})-\alpha_2\nabla\ell\left(\zeta^k+\alpha_3(\zeta^k-\zeta^{k-1})\right), \quad \zeta^0,\zeta^{-1} \text{ given}
+\]
+for some $\alpha_1, \alpha_2, \alpha_3>0$
+
+\chapter{Parallel Optimization and Federated Learning}
+% TODO slides 1-5
+\subsubsection{Cost-coupled optimization for learning}
+In learning applications, we usually consider optimization problems in the form 
+\[
+    \min_{z\in\R^d}\displaystyle\sum_{i=1}^{N}\ell_i(z)
+\]
+where, for all $i=1,\dots,N$, the cost function $\ell_i:\R^d\to \R$ is local and private 
+\subsubsection{(Batch) gradient method for learning}
+Consider the optimization problem 
+\[
+    \min_z \displaystyle\sum_{i=1}^{N}\ell_i(z)
+\]
+The (batch) gradient method is: for each iteration $k\in\N$ 
+\[
+    z^{k+1} = z^k -\alpha \displaystyle\sum_{i=1}^{N}\nabla\ell_i(z^k)
+\]
+\begin{remark}
+    computation can be expensive
+\end{remark}
+\section{Incremental gradient method}
+Consider the optimizatio problem
+\[
+    \min_z \displaystyle\sum_{i=1}^{N}\ell_i(z)
+\]
+Idea: rather than using the whole batch gradient at each $k\in\N$, just select one single "sample" per iteration. 
+
+The \emph{incremental gradient method} is: for each iteration $k\in\N$
+\[
+    z^{k+1} = z^k - \alpha\nabla\ell_{i^k}(z^k)
+\]
+where $i^k\in\{1,\dots,N\}$
+Two rules for choosing index $i^k$ at iteration $k$: 
+\begin{itemize}
+    \item Cyclic rule 
+        \item Randomized rule
+\end{itemize}
+% TODO finish slide 4
+\section{Stochastic Gradient Descent}
+consider the stochastic optimization problem 
+\[
+    \min_z \mathbb{E}_{\mathcal{W}}[\ell(z,\mathcal{W})]
+\]
+where $\mathbb{E}_{\mathcal{W}}[\cdot]$ denotes the expected value with respect to the random variable $\mathcal{W}$ (possibly having an uknown probability distribution $p_{\mathcal{W}}(w))$
+\begin{remark}
+    for all $z$, also $\ell(z,\mathcal{W})$ is a random variable, whose probability distribution depends on $p_{\mathcal{W}}$ and $\ell$. Moreover, the gradient $\nabla\ell(z,\mathcal{W})$ at each $z$ is a random quantity
+\end{remark}
+Assumption: There exsists an oracle that, given a realization $\bar{w}$ of $\mathcal{W}$, returns the corresponding realization of the gradient $\nabla\ell(\bar{z},\bar{w})$ at any query point $\bar{z}$
+
+The stochastic gradient descent is: for each iteration $k\in\N$ draw a realization $w^k$ of $\mathcal{W}$ and update 
+\[
+    z^{k+1} = z^k -\alpha\nabla\ell(z^k,w^k)
+\]
+\subsection{Convergence}
+\begin{proposition}
+    Assume: 
+    \begin{itemize}
+        \item $\ell$ is a $\mu$-strongly convex function with $L$-Lipschitz continuous gradient (uniformly in its second argument)
+        \item $\nabla\ell(z,\mathcal{W})$ is an unbiased estimatee of $\nabla_z\mathbb{E}_{\mathcal{W}}[\ell(z,\mathcal{W})]$
+        \item $\|\nabla\ell(z,\mathcal{W})\|\leq M$ almost surely\footnote{A sequence of random variables $\{\mathcal{X}_k\}_{k\in\N}$ converges almost surely to the rv $\mathcal{X}$ if $\mathbb{P}(\lim_{k\to\infty}\mathcal{X}_k=\mathcal{X})=1$} for some $M>0$
+    \end{itemize}
+\end{proposition} %TODO finish slide 6-7
+\section{Beyond SGD: Adaptive Momentum Estimation (Adam)}
+The ADAM algorithm reads as follows
+\begin{itemize}
+    \item Mean and Variance (first momentum and second momentum)
+        \begin{align*}
+            m^{k+1} & = \beta_1m^k+(1-\beta_1)\nabla\ell(z^k,w^k), &\text{for some } \beta\in(0,1)\\
+            v^{k+1} & = \beta_2v^k+(1-\beta_2)[\nabla\ell(z^k,w^k)]^2, &\text{for some } \beta_2\in(0,1)
+        \end{align*}
+        where the square operation $[\cdot]^2$ is meant component-wise
+    \item Construnct the descent direction
+        \begin{align*}
+            \hat{m} &= \displaystyle\frac{1}{1-\beta_1^{k+1}}m^{k+1}\\
+            \hat{v} &= \displaystyle\frac{1}{1-\beta_2^{k+1}}v^{k+1}\\
+            d^k &= -\displaystyle\frac{\hat{m}}{\sqrt{\hat{v}}+\epsilon}, \qquad \text{for some } \epsilon> 0
+        \end{align*}
+        where the division in the last equation is meant element-wise
+    \item Update of the solution estimate 
+        \[
+            z^{k+1} = z^k + \alpha d^k
+        \]
+\end{itemize}
+
+\section{Federated learning}
+Consider the optimization problem 
+\[
+    \min_z \displaystyle\sum_{i=1}^{N}\ell(z;\mathcal{D}^i,p^i)
+\]
+Paradigm:
+\begin{itemize}
+    \item local private data $\mathcal{D}^i = ([\mathcal{D^i}]_1,[\mathcal{D^i}]_2,\dots,[\mathcal{D^i}]_d)$ and $p^i$
+    \item learn common parameters $z^*\in\R^d$ (common neural network)
+    \item communication with a parameter server
+\end{itemize}
+
+\section{Distributed learning}
+Consider the optimization problem 
+\[
+    \min_z \displaystyle\sum_{i=1}^{N}\ell(z;\mathcal{D}^i,p^i)
+\]
+Paradigm:
+\begin{itemize}
+    \item local private data $\mathcal{D}^i = ([\mathcal{D^i}]_1,[\mathcal{D^i}]_2,\dots,[\mathcal{D^i}]_d)$ and $p^i$
+    \item learn common parameters $z^*\in\R^d$ (common neural network)
+    \item communication with neighbours only
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
