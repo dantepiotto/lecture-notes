@@ -1,5 +1,5 @@
 \documentclass{book}
-\usepackage{amsmath, amsthm, graphicx, amsfonts, float, bm}
+\usepackage{amsmath, amsthm, amssymb, graphicx, amsfonts, float, bm, enumitem}
 \usepackage[english]{babel}
 \graphicspath{ {./images/} }
 
@@ -29,6 +29,7 @@
 \theoremstyle{theoremv2}
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
 \newtheoremstyle{defv2}{}{}{}{}{\bfseries}{}{\newline}{}
 \theoremstyle{defv2}
 \newtheorem{definition}{Definition}[chapter]
@@ -322,6 +323,7 @@ and we assume $f,g_i,h_j\in C^1$
     Let $\bar{x}\in F$ be a local minimum. By contradiction, assume that there exists a vector $d\in\R^n$ such that $d\in D(\bar{x})\cap F_s(\bar{x})$. As $F_s(\bar{x})\subseteq F(\bar{x})$ it muyst be $d\in D(\bar{x})\cap F(\bar{x})$, thus contradicting Theorem \ref{intersec}
 \end{proof}
 \begin{theorem}[Fritz-John conditions]
+    \label{FJ}
     Let $f\in C^1$ and $g_i\in C^1 \forall i\in I$. If $\bar{x}\in F$ is a local minimum for $f$ over $F$, then there exist scalar numbers $\lambda_0$ and $\lambda_i(i\in I)$ such that 
     \begin{enumerate}
         \item $\lambda_0\nabla f(\bar{x}) + \sum_{i\in I} \lambda_i \nabla g_i(\bar{x})=0$
@@ -351,16 +353,514 @@ and we assume $f,g_i,h_j\in C^1$
     A point $x\in F$ is a Fritz-John point if it satisfies the Fritz-John conditions.
 \end{definition}
 
+\subsection{Karush-Kuhn-Tucker Conditions}
+Consider Fritz-John points for which $\lambda_0>0$, Wlog, we can assume $\lambda_0=1$ 
+\begin{definition}[Karush-Kuhn-Tucker point]
+    A point $x\in\R^n$ is a KKT point it there exist scalars $\lambda_i\geq 0 (i\in I)$ such that:
+    \begin{align}
+        \nabla f(x) + \displaystyle\sum_{i\in I} \lambda_i \nabla g_i(x)=0&\\
+        \lambda_i g_i(x)=0& \qquad i\in I\\
+        g_i(x)\leq 0 & \qquad i \in I\\
+        \lambda_i \geq 0 & \qquad i\in I
+    \end{align}
+\end{definition}
+Under some assumptions, it can be proven that each local minimum is a KKT point. 
+\begin{definition}[Constraint qualification conditions]
+    The feasible set $F=\{ x\in \R^n:g_i(x)\leq 0 (i\in I) \}$ satisfies the constraint qualification if one of the following conditions is satisfied:
+    \begin{enumerate}
+        \item linear constraints: \\
+            all funcions $g_i$ are linear, i.e., $g_i(x)=a^T_ix+b_i \quad \forall i\in I$
+        \item Slaterìs condition: \\
+            all functions $g_i$ are convex and differentiable, and $F$ contains (at least) one point $\bar{x}$ in its strict interior (i.e., $g_i(\bar{x})<0 \quad \forall i \in I$)
+        \item Mangasarian-Fromovitz constraint qualification (MFCQ):\\
+            the gradients of the active constraints in $x$ are linearly independent, i.e., it is impossible to find scalars $\alpha_i\geq 0, i\in I_a(x)$, not all zero, such that $\sum_{i\in I_a(x)}\alpha_i\nabla g_i(x)=0$
+    \end{enumerate}
+    A solution $\bar{x}$ for which constraint qualification conditions are satisfied is called a \emph{regular point}
+\end{definition}
+\begin{theorem}[]
+    Let $f\in C^1$ and $g_i\in C^1 \quad \forall i \in I$. IF $\bar{x}\in F$ is a local minimum for $f$ over $F$ and some constraint qualification conditions are satisfied, then $\bar{x}$ is a KKT point.
+\end{theorem}
+\begin{proof}
+    For the sake of simplicity we only prove the result in the case where MFCQ are satisfied. Let $\bar{x}$ be a local minimum, and assume that the gradients of the acrive constraint sin $\bar{x}$ are linearly independent. As $\bar{x}$ is a local minimum, Theorem \ref{FJ} ensures that there are scalars $\lambda_0,\lambda_i(i\in I)$ that are not equal to zero and such that 
+    \[
+        \lambda_0\nabla f(\bar{x}) + \displaystyle\sum_{i\in I}\lambda_i\nabla g_i(\bar{x})= 0, \qquad \lambda_i g_i(\bar{x}) = 0 \quad \forall i\in I, \qquad \lambda_0 \geq 0, \qquad \lambda_i \geq 0 \forall i \in I
+    \]
+    We want to show that these multipliers exist also in the case $\lambda_0\neq0$. 
+
+    Note that $\lambda_i=0$ for all constraints $i \notin I_a(\bar{x})$, thus $\lambda_0\nabla f(\bar{x})+\sum_{i\in I_a(\bar{x})}\xi_i\nabla g_i(\bar{x})=0$. If it were $\lambda_0=0$ is should be $\sum_{i\in I_a(\bar{x})} \lambda_i\nabla g_i(\bar{x})=0$, i.e. there would be a linear combination of the gradients of the active constraints that is equal to zero. By hypothesis, not all these multipliers are zero, meaning that the gradients of the active constraints should be linearly dependent, hence contradicting the hypothesis.
+\end{proof}
+\subsection{General constrained optimization}
+The results of the previous section can be extended to the most general case in which the feasible set is defined by both equations and inequalities.
+\begin{align*}
+    \min f(x)&\\
+    x\in \R^n &\\
+    g_i(x)\leq 0 & \qquad i\in I\\
+    h_j(x)=0 & \qquad j\in E
+\end{align*}
+The following is a generalization of Fritz-John points
+\begin{theorem}[]
+    Let $f\in C^1$, $g_i\in C^1 \forall i\in I$ and $h_j\in C^1\forall j\in E$. If $\bar{x}\in F$ is a local minimum for $f$ over $F$, then there exist scalars $\lambda_0,\lambda_i(i\in I)$ and $\mu_j(j\in E)$ that are not all zero and such that 
+    \begin{enumerate}
+        \item $\lambda_0\nabla f(\bar{x}) + \sum_{i\in I}\lambda_i\nabla g_i(\bar{x}) + \sum_{j\in E}\mu_j \nabla h_j(\bar{x}) = 0$
+        \item $\lambda_i g_i(\bar{x})=0 \quad \forall i \in i$
+        \item $\lambda_0\geq 0, \quad \lambda_i \geq 0 \quad \forall i \in I$
+    \end{enumerate}
+\end{theorem}
+Simliarly, we can define KKT points
+\begin{theorem}[KKT points]
+    Let $f\in C^1$, $g_i\in C^1 \forall i\in I$ and $h_j\in C^1\forall j\in E$. If $\bar{x}\in F$ is a local minimum for $f$ over $F$, and some constraint qualification conditions are satisfied, then $\bar{x}$ is a KKT point.
+\end{theorem}
+
+\section{Lagrangian approaches to constrained optimization}
+\begin{definition}[Relaxation]
+    Consider an optimization problem $\mathcal{P}$ defined as follows
+    \[
+        (\mathcal{P}) \qquad z=\min f(x), \quad x\in F(\mathcal{P})
+    \]
+    and define the following auxiliary problem $\mathcal{R}$:
+    \[
+        (\mathcal{R}) \qquad z_r=\min \Phi(x), \quad x\in F(\mathcal{R})
+    \]
+    We will say that $\mathcal{R}$ is a \emph{relaxed problem} of $\mathcal{P}$ if the following conditions are satisfied:
+    \begin{enumerate}[label=(\alph*)]
+        \item $F(\mathcal{P})\subseteq F(\mathcal{R})$
+        \item $\Phi(x) \leq f(x) \quad \forall x\in F(\mathcal{P})$
+    \end{enumerate}
+    Thus a relaxation is a technique that: (a) enlarges the feasible set and/or (b) defines a new objective function that is "better" than the original one in all points of the original feasible set
+\end{definition}
+\begin{theorem}[]
+    \label{relax}
+    Let $(\mathcal{P})$ be an optimization probelm (in min form) with optimal value $z$. Let $(\mathcal{R})$ be a relaxation of $\mathcal{P}$ with optimal value $z_r$. Then, $z_r\leq z$.
+\end{theorem}
+\begin{proof}
+    Let $\bar{x}$ be the optimal solution of problem $(\mathcal{P})$. By condition (b) we have $F(\mathcal{P})\subseteq F(\mathcal{R})$, hence $\bar{x}\in F(\mathcal{R})$. By condition (a) we have $\Phi(\bar{x})\leq f(\bar{x})=z$. As the optimal solution of problem $(\mathcal{R})$ cannot be worse than the solution value in $\bar{x}$ (which is a feasible point for this problem), we have $z_r\leq \Phi(\bar{x})$, which concludes the proof.
+\end{proof}
+\subsection{Lagrangian Relaxation}
+Let problem $(\mathcal{P})$ be defined as follows
+\begin{align*}
+    (\mathcal{P}) \qquad z=\min f(x) &\\
+    x\in X &\\
+    g_i(x)\leq 0 & \qquad i\in I \\
+    h_j(x)= 0 & \qquad j\in E
+\end{align*}
+where $x\subseteq \R^n$ is a subset of $\R^n$ defined by implicit constraints. In the following, we will denote $m=|I|$ and $p=|E|$.
+
+Let us introduce some parameters called \emph{Lagrangian multipliers}
+\[
+    u_i\geq 0 \quad \forall i\in I \quad \text{and} \quad v_j \lessgtr 0 \quad \forall j \in E
+\]
+and define an auxiliary problem 
+\[
+    (\mathcal{R}) \qquad \ell (u,v)=\min_{x\in X}\mathcal{L}(x;u,v)
+\]
+where the \emph{Lagrangian function} $\mathcal{L}:X\to\R$ is a function that depends on parameters $u$ and $v$, defined as 
+\[
+    \mathcal{L}(x;u,v) = f(x) + \displaystyle\sum_{i\in I} u_i g_i(x) + \displaystyle\sum_{j\in E}v_jh_j(x)
+\]
+Observe that multipliers $u_i$ are associated with inequalities $g_i(x)\leq =0$ and must be non-negative, while multipliers $v_j$ are associated with equalities $h_j(x)=0$ and have no such requirement.
+\begin{theorem}[Weak duality]
+    \label{Wdual}
+    For any choice of the multipliers $u\in\R^m,u\geq 0$ and $v\in\R^p$ we have $\ell(u,v)\leq z$.
+\end{theorem}
+\begin{proof}
+    We now prove that $(\mathcal{R})$ is a relaxation of $(\mathcal{P})$. First observe that $F(\mathcal{P})\subseteq F(\mathcal{R})$ as the latter is obtained by the former by removing some constraints. As per the second condition, let $x$ be a feasible solution for problem $(\mathcal{P})$. We have 
+    \[
+        \forall i \in I : g_i(x) \leq 0 \quad \text{and} \quad u_i \geq 0 \quad \to \displaystyle\sum_{i\in I} u_i g_i(x) \leq 0
+    \]
+    and 
+    \[
+        \forall j \in E : h_j(x) = 0 \qquad \qquad \qquad \quad \to \displaystyle\sum_{j\in E} v_j h_j(x) = 0
+    \]
+    which gives $\mathcal{L}(x;u,v)\leq f(x)$.
+
+    Thus, the direct application of Theorem \ref{relax} gives the result.
+\end{proof}
+\subsection{Dual Lagrangian problem}
+The value of the lower bound $\ell(u,v)$ given by the Lagrangian relaxation depends on the choice of the $u,v$ multipliers, and is a lower bound on $z$ for all valid choices of the multipliers. We are interested in having the tightest bound possible in order to have a better approximation of the optimal solution value, so we define the \emph{dual Lagrangian problem}.
+\[
+    (D) \qquad \bar{\ell} = \max_{u\geq 0, v}\ell(u,v)
+\]
+\begin{theorem}[]
+    An optimal solution of the dual problem is a lower bound on the optimal solution of $(\mathcal{P})$, i.e. 
+    \[
+        \bar{\ell}\leq z
+    \]
+\end{theorem}
+\begin{proof}
+    It descends from Theorem \ref{Wdual}
+\end{proof}
+The weak duality theorem \ref{Wdual} defines the possible relations between the optimal solution value $z$ for the primal and the optimal dual solution $\bar{\ell}$:
+\begin{enumerate}[label=(\alph*)]
+    \item in general: $\bar{\ell}\leq z$
+    \item if there exists $\bar{x}\in F(\mathcal{P})$ and $(\bar{u},\bar{v})\in \R_+^m\times \R^p$ such that $f(\bar{x}) = \ell(\bar{u},\bar{v})$, then $\bar{x}$ and $(\bar{u},\bar{v})$ are optimal solutions for the primal and dual problems
+    \item if $z=\infty$ (unbounded primal), then $\ell(u,v)=-\infty \quad \forall (u,v)\in\R^m_+\times \R^p$
+    \item if $\bar{\ell}=\infty$ (unbounded dual), t4hen the primal is infeasible
+\end{enumerate}
+In case (a), the quantity $z-\bar{\ell}$ is called \emph{optimality gap}. 
+
+In case (b), the optimal solution values for the two problems coincide, and then 
+\[
+    f(\bar{x}) = z = \bar{\ell} = \ell (\bar{u},\bar{v}) = \inf_x \mathcal{L}(x;\bar{u},\bar{v})\leq f(\bar{x}) + \displaystyle\sum_{i\in I}\bar{u}_ig_i(\bar{x}) + \displaystyle\sum_{j\in E}\bar{v}_jh_j(\bar{x})\leq f(\bar{x})
+\]
+This chain of equations imposes that 
+\[
+    \displaystyle\sum_{i\in I}\bar{u}_ig_i(\bar{x}) + \displaystyle\sum_{j\in E}\bar{v}_jh_j(\bar{x}) = 0
+\]
+meaning that 
+\begin{enumerate}[label=(\roman*)]
+    \item $\bar{u}_ig_i(\bar{x}) =0 \quad \forall i \in I$
+    \item $\bar{v}_jh_j(\bar{x}) =0 \quad \forall j \in E$
+\end{enumerate}
+These constraints are called \emph{orthogonality conditions}. The first class of conditions imposes that each pair of solutions $\bar{x}$ and $(\bar{u},\bar{v})$ that are optimal for $(\mathcal{P})$ and $(D)$:
+\begin{itemize}
+    \item must have $\bar{u}_i=0$ for all inequalities that are not tight
+    \item must be tight, i.e. such that $g_i(\bar{x})=0$ for all inequalities associated to multipliers that are strictly positive.
+\end{itemize}
+Observe that $\bar{x}$ satisfies constraints $h_j(\bar{x})=0 \quad \forall j \in E$, as it is a feasible solution for $(\mathcal{P})$. Thus, conditions (ii) pose no constraints for what concerns multipliers $v_j$.
+\subsection{Lagrangian problem and KKT conditions}
+For the sake of simplicity, we will consider the casae in which $X=\R^n$, meaning that there are no implicit constraints but those that have been relaxed.
+\begin{definition}[saddle point]
+    A triplet $(\bar{x},\bar{u},\bar{v})$ with $\bar{x}\in\R^n,\bar{u}\in\R_+^m,\bar{v}\in\R^p$ is a \emph{saddle point} if, $\forall x \in \R^n, u\in\R^m,v\in\R^p$ we have
+    \[
+        \mathcal{L}(\bar{x};u,v) \leq \mathcal{L}(\bar{x};\bar{u},\bar{v})\leq\mathcal{L}(x;\bar{u},\bar{v})
+    \]
+\end{definition}
+\begin{theorem}[]
+    Let $f,g_i(i=1,\dots,m)$ and $h_j(j=1,\dots,p)$ be continuous functions. Let $\bar{x}\in\R^n,\bar{u}\in\R^m,\bar{v}\in\R^p$. If $(\bar{x};\bar{u},\bar{v})$ is a saddle point, then
+    \begin{enumerate}
+        \item $g(\bar{x})\leq 0$ and $h(\bar{x})=0$
+        \item $\bar{u}\geq 0$
+        \item $\mathcal{L}(\bar{x};\bar{u},\bar{v}) = \min_{x\in\R^n}\mathcal{L}(x;\bar{u},\bar{v})$
+        \item $\bar{u}_ig_i(\bar{x})=0\quad i=1,\dots,m$
+        \item $\bar{x}$ is a global minimum for $(\mathcal{P})$
+    \end{enumerate}
+\end{theorem}
+\begin{proof}[Proof]
+    \begin{enumerate}
+        \item By definition, for any choice of multipliers $u\in\R^m_+$ and $\forall v \in\R^p$, we have $\mathcal{L}(\bar{x};u,v)\leq\mathcal{L}(\bar{x};\bar{u},\bar{v})$, i.e.,
+            \[
+                (u-\bar{u})^Tg(\bar{x})+(v-\bar{v})^Th(\bar{x}) = \displaystyle\sum_{i=1}^{m}(u_i-\bar{u}_i)g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}(v_j-\bar{v}_j)h_j(\bar{x})\leq 0
+            \]
+            Consider a family of $m$ pairs of multipliers $(u,v)$ defined changing one $u$ multiplier $k$ $(k=1,\dots,m)$ at a time with respect to $\bar{u}$ as follows: $u_k=\bar{u}_k+1,u_i=\bar{u}_i$ for $i=1,\dots,m,i\neq k$ and $v_j=\bar{v}_j$ for $j=1,\dots,p$. For the $k$-th pair, the relation above yields $g_k(\bar{x})\leq 0$, and thus we have $g(\bar{x})\leq0$
+    \end{enumerate}
+\end{proof}
 
 
+\section{Penalty Algorithms}
+The basic idea is to define an auxiliary problem $P_c$ obtained removing some constraints from the definition of the feasible set $F$, and optimizing a new objective function that involves these constraints:
+\[
+    \min_{x\in\R^n}P(x;c)=f(x)+c\phi(x)
+\]
+where $c>0$ is a parameter and $\phi:\R^n\to\R$ is a \emph{penalty function} that depends on the violation of the constraints. Ideally, we would like to have a function $\phi(x)$ such that 
+\[
+    \phi(x) = \begin{cases}
+        0 & \text{if } x\in F\\
+        +\infty & \text{otherwise}
+    \end{cases}
+\]
+This requirement produces an unconstrained optimization problem that cannot be solved with classical algorithms, se we relax it as:
+\begin{itemize}
+    \item $\phi$ is continuous;
+        \item $\phi(x)=0\quad\forall x\in F$
+        \item $\phi(x)>0\quad\forall x\notin F$
+\end{itemize}
+The most common choices for the penalty functions are:
+\begin{itemize}
+    \item $\phi(x)=\max(0,\max_{i=1,\dots,m}\{g_i(x)\},\max_{j=1,\dots,p\{|h_j(x)|\}})$
+    \item $\phi(x)=\sum_{i=1}^{m}\max(g_i(x))+\sum_{j=1}^{p}|h_j(x)|$
+    \item $\phi(x)=\sum_{i=1}^{m}[\max(g_i(x),0)]^2+\sum_{j=1}^{p}|h_j(x)|^2$
+\end{itemize}
+\begin{theorem}[]
+    Let $\bar{x}$ be a local minimum for function $P(x;c)$ for some parameter $c$. If $\phi(\bar{x})=0$, then $\bar{x}$ is a local minimum for $(P)$.
+\end{theorem}
+\begin{proof}
+    Since $\phi(\bar{x})$, then $\bar{x}$ is a feasible solution and $P(\bar{x};c)=f(\bar{x})$ . As $\bar{x}$ is a local minimum for $P(x;c)$, there exists a positive $\rho$ and a neighbourhood $N(\bar{x},\rho)$ for which 
+    \[
+        P(x';c)\geq P(\bar{x};c) \quad \forall x'\in N(\bar{x},\rho)
+    \]
+    Considering only feasible points, for every solution $x'\in N(\bar{x},\rho)\cap F$, we have
+    \[
+        f(x')=P(x';c)\geq P(\bar{x};c)=f(\bar{x})
+    \]
+    hence $\bar{x}$ is a local minimum
+\end{proof}
 
+\begin{theorem}[]
+    Let $c_k$ be a sequence of scalars such that $c_{k+1}>c_k \quad \forall k$. Denote by $x^k$ an optimal solution of each auxiliary problem $(P_{c_k})$. If $\exists \bar{x}\in F$ such that $f(\bar{x})=\min_{x\in F}f(x)$ then:
+    \begin{enumerate}[label=(\alph*)]
+        \item $ P(x^k;c_k)\leq f(\bar{x}) $
+        \item $ \phi(x^{k+1})\leq \phi(x^k) $
+        \item $ f(x^{k+1}) \geq f(x^k) $
+        \item $ P(x^k,c_k)\leq P(x^{k+1};c_{k+1}) $
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    \begin{enumerate}[label=(\alph*)]
+        \item By definition, for a given value $c_k$, we have 
+            \[
+                P(x^k;c_k)=\min_{x\in\R^n}P(x;c_k)\leq\min_{x\in F}P(x;c_k)= \min_{x\in F}[f(x)+c_k\phi(x)] =\min_{x\in F}f(x)=f(\bar{x})
+            \]
+            Thus, at each iteration $k$, the optimal solution value of the auxiliary problem provides a lower bound on the optimal solution value of $(\mathcal{P})$
+        \item By definition of $x^k$ and $x^{k+1}$ we have 
+            \[
+                f(x^k)+c_k\phi(x^k)=P(x^k;c_k)=\min_{x\in\R^n}[f(x)+c_k\phi(x)]\leq[f(x^{k+1})+c_k\phi(x^{k+1})]
+            \]
+            \[
+                f(x^{k+1})+c_{k+1}\phi(x^{k+1}) = P(x^{k+1};c_{k+1})=\min_{x\in\R^n}[f(x)+c_{k+1}\phi(x)]\leq[f(x^k)+c_{k+1}\phi(x^k)]
+            \]
+            summing both sides of these inequalities we get 
+            \[
+                (c_{k+1}-c_k)\phi(x^{k+1})\leq (c_{k+1}-c_k)\phi(x^k)
+            \]
+            hence the penalty function is non-increasing with the number of iterations.
+        \item Again, by definition of $x^k$ we have 
+            \[
+                f(x^k)+c_k\phi(x^k)\leq f(x^{k+1})+c_k\phi(x^{k+1})\leq f(x^{k+1})+c_k\phi(x^k)
+            \]
+            where the last inequality derives from (b). This gives $f(x^k)\leq f(x^{k+1})$, i.e. the solution value $f$ is non-improving with the number of iterations.
+        \item Finally, we have 
+            \[
+                P(x^k;c_k)\leq P(x^{k+1};c_k)=f(x^{k+1})+c_k\phi(x^{k+1})\leq f(x^{k+1})+c_{k+1}\phi(x^{k+1})=P(x^{k+1};c_{k+1})
+            \]
+            Thus, the value of the lower bound computed at each iteration is monotonically non-decreasing with the number of iterations.
+    \end{enumerate}
+\end{proof}
 
+\begin{theorem}[]
+    Let $c_k$ be a sequence of scalars that satisfy 
+    \[
+        c_{k+1}>c_k \quad \text{and}\quad \lim_{k\to\infty}c_k = \infty
+    \]
+    and let $\{x^k\}$ be the sequence of points obtained by the solution of the associated auxiliary problems $(P_{c_k})$. If all points $\{x^k\}$ belong to a compact set $D\subset\R^n$, then
+    \begin{itemize}
+        \item $\lim_{k\to\infty} \phi(x^k)=0$
+        \item $\lim_{k\to\infty} f(x^k)=f(\bar{x})$
+        \item $\lim_{k\to\infty} P(x^k;c_k)=f(\bar{x})$
+        \item any limit point of sequence $\{x^k\}$ is an optimal solution for $(\mathcal{P})$
+        \item $\lim_{k\to\infty} c_k\phi(x^k)=0$
+    \end{itemize}
+\end{theorem}
 
+\chapter{Convex Optimization}
+\begin{definition}[convex combination]
+    Let $x\in\R^n$ and $y\in\R^n$. The \emph{convex combination} of $x$ and $y$ is the set of points $z=\lambda x + (1-\lambda)y$ for any $\lambda\in[0,1]$.\\
+    When $\lambda\in(0,1)$ we will refer to a \emph{strict} convex combination
+\end{definition}
+\begin{definition}[convex set]
+    Let $F\subseteq \R^n$. Set $F$ us convex if it contains the convex combination of every pair of points $x$ and $y$ that belong to $F$, i.e. if 
+    \[
+        \lambda x+(1-\lambda)y\in F \quad \forall x,y \in F \text{ and } \forall \lambda\in[0,1]
+    \]
+\end{definition}
+\begin{definition}[cone]
+    A set $F\subseteq \R^n$ is a cone if $x\in F \implies \alpha x\in F\forall \alpha \geq 0$\\
+    A cone is a convex set
+\end{definition}
+\begin{definition}[hyperplane]
+    A hyperplane is the set $\{ x\in\R^n:\alpha^T x = \alpha_0 \}$ for some $\alpha\in\R^n$ and $\alpha_0\in\R$\\
+    A hyperplane is a convex set
+\end{definition}
+\begin{definition}[halfspace]
+    A halfspace is the set $\{ x\in\R^n:\alpha^Tx\leq\alpha_0 \}$ for some $\alpha\in\R^n$ and $\alpha_0\in\R$\\
+    A halfspace is a convex set
+\end{definition}
 
+\begin{definition}[convex function]
+    Let $F\subseteq \R^n$ be a convex set, A funtion $f:F\to\R$ is \emph{convex} if 
+    \[
+        f\left(\lambda x+(1-\lambda)y\right)\leq \lambda f(x) + (\-\lambda)f(y) \quad \forall x,y\in F \text{ and }\forall \lambda\in[0,1]
+    \]
+    A function $f$ is \emph{concave} if function $-f$ is convex.\\
+    A function $f$ is \emph{strictly convex/concave} if a strict inequality holds in the previous definition for all $\lambda\in(0,1)$
+\end{definition}
+\begin{lemma}
+    Let $f:\R^n\to\R$ be a convex function. Then, the level set $F=\{ x\in\R^n:f(x)\leq t \}$ is a convex set for any scalar $t$.
+\end{lemma}
+\begin{proof}
+    Let $x,y\in F$, i.e. such that $f(x)\leq t$ and $f(y)\leq t$. We now show that $f(z)\leq t$ for point $z=\lambda x + (1-\lambda)y$ associated with any $\lambda\in[0,1]$. By convexity of function $f$ we have $f(z)= f\left(\lambda x + (1-\lambda)y\right)\leq \lambda f(x) + (1-\lambda)f(y)\leq\lambda t + (1-\lambda)t = t$, i.e. $z\in F$
+\end{proof}
+\begin{theorem}[alternate definition for convexity]
+    \label{convdef}
+    Let $F\subseteq \R^N$ be a convex set and let $f:F\to\R$ be a continuously differentiable function. if $f$ is convex, then 
+    \[
+        f(y)\geq f(x)+\nabla f(x)^T(y-x) \quad \forall x,y\in X
+    \]
+\end{theorem}
+\begin{proof}
+    Let $x$ and $y$ be any two points in $F$. Consider their convex combination $\lambda x + (1-\lambda)y$ using coefficient $\lambda=1-\epsilon$ for some $\epsilon>0$. We have $\lambda x+ (1-\lambda)y = (1-\epsilon)x + \epsilon y = x + \epsilon(y-x)$ and, similarly, $\lambda f(x)+ (1-\lambda)f(y) = f(x) + \epsilon[f(y)-f(x)]$
+    
+    By convexity of $f$ we have 
+    \begin{equation}
+        \label{eq1}
+        f\left(x+\epsilon(y-x)\right) = f\left(\lambda x + (1-\lambda)y \right)\leq \lambda f(x) + (1-\lambda)f(y) = f(x) + \epsilon[f(y)-f(x)]
+    \end{equation}
+    consider now the first order expansion of the function in point $x$ with displacement $h=\epsilon(y-x)$:
+    \begin{equation}
+        \label{eq2}
+        f\left(x+\epsilon(y-x)\right)  = f(x)+\epsilon\nabla f(x)^T(y-x) + R_1(x,\epsilon\|y-x\|)
+    \end{equation}
+    Comparing \eqref{eq1} and \eqref{eq2} we have
+    \[
+        f(x) + \epsilon[f(y)-f(x)]\geq f(x) + \epsilon\nabla f(x)^T(y-x)+ R_1(x,\epsilon\|y-x\|)
+    \]
+    for sufficiently small values of $\epsilon$, we have 
+    \[
+        \lim_{\epsilon\to 0} \displaystyle\frac{R_1(x,\epsilon\|y-x\|)}{\epsilon\|y-x\|}=0
+    \]
+    This yields 
+    \[
+        f(y)-f(x) \geq \nabla f(x)^T(y-x)
+    \]
+\end{proof}
+\begin{theorem}[]
+    Let $F\subseteq \R^n$ be a convex set and let $f:F\to\R$ be a continuously differentiable function. Assume that the Hessian matrix $\nabla^2f(x)$ exists and is positive semidifinite for a point $x\in F$. Then, there exists a neighbourhood of $x$ where $f$ is convex.
+\end{theorem}
+\begin{proof}
+    Let $x\in F$ be such that $\nabla^2f(x)$ exists and is positive semidifinite. Let $y\in F$ be another point that is sufficiently close to $x$. The second order approximation of the function is:
+    \[
+        f(y) = f(x) + \nabla f(x)^T (y-x) + \displaystyle\frac{1}{2}(y-x)^T\nabla^2 f(x) (y-x) + R_2(x,\|y-x\|)
+    \]
+    Thus, for sufficiently small $\|y-x\|$, condition $\nabla^2f(x)\succeq 0$ implies 
+    \[
+        f(y)\geq f(x)\nabla f(x)^T(y-x)
+    \]
+    and the application of Theorem \ref{convdef} proves that $f$ is convex.
+\end{proof}
 
+\subsubsection{Relevant convex functions}
+\begin{itemize}
+    \item $f:\R^n\to\R,x\to\|x\|$ is convex for any norm $\|\cdot\|$
+        \item a quadratic function $f:\R^n\to\R,x\to\frac{1}{2}x^TQx + c^Tx +r$ is convex iff $Q\geq0$. Indeed, for this function we have $\nabla^2 f(x)=Q$
+        \item Let $f_1,\dots,f_m$ be $m$ convex functions. Then, their linear combination $f(x) = \sum_{i=1}^{m}\lambda_if_i(x)$ is convex if $\lambda_i\geq0\forall i$
+        \item Let $f_1(x),\dots,f_m(x)$ be $m$ convex functions from $\R^n$ to $\R$. Then, the function $f(x):\R^n\to\R,x\to\max\{f_1(x),\dots,f_m(x)\}$ is a convex function.
+            \begin{proof}
+                Let $x,y\in\R^n$ and $\lambda\in[0,1]$. We have 
+                \begin{gather*}
+                    f\left(\lambda x + (1-\lambda)y\right) = \max_{i=1,\dots,m}f_i\left(\lambda x + (1-\lambda)y\right)\leq \max_{i=1,\dots,m}[\lambda f_i(x) + (1-\lambda)f_i(y)] \leq \\
+                    \lambda \max_{i=1,\dots,m}f_i(x) + (1-\lambda)\max_{i=1,\dots,m}f_i(y)\leq \lambda f (x) + (1-\lambda)f(y)
+                \end{gather*}
+            \end{proof}
+        \item Let $f:\R^{n+m}\to\R,(x,y)\to f(x,y)$ be a function that, $\forall y \in \R^m$, is convex wrt $x$. Then, the function $g:\R^n\to\R,x\to\max_{y\in\R^m}f(x,y)$ is convex.
+            \begin{proof}
+                Let $x^1\in\R^n$ and $x^2\in\R^n$, and consider their combination with multiplier $\lambda\in[0,1]$. We have 
+                \begin{align*}
+                    g\left(\lambda x^1 + (1-\lambda)x^2\right) = \max_{y\in\R^m}f\left(\lambda x^1 + (1-\lambda)x^2,y\right)\leq \max_{y\in\R^m}[\lambda f(x^1,y)+(1-\lambda)f(x^2,y)] \leq \\
+                    \max_{y\in\R^m}[\lambda f(x^1,y)]+\max_{y\in\R^m}[(1-\lambda)f(x^2,y)] = \lambda g(x^1) + (1-\lambda)g(x^2)
+                \end{align*}
+            \end{proof}
+\end{itemize}
+A consequence of this result is that the dual lagrangian problem is a convex optimization problem, regardless of the nature of the original objective function $f$ and of the constraint functions $g_i$ and $h_j$. It is sufficient to observe that, for some multipliers $u,v$ the lagrangian relaxation is defined as 
+\[
+    \ell(u,v) = \min_{x\in\R^n}\mathcal{L}(x;u,v)
+\]
+and the lagrangian function is 
+\[
+    \mathcal{L}(x;u,v) = f(x) + u^T g(x) + v^Th(x)
+\]
+i.e., it is linear wrt multipliers $u$ and $v$.
 
+It follows that function 
+\[
+    \ell:\R^{m+p}\to\R, (u,v)\to\min_{x\in\R^n}\mathcal{L}(x;i,v)
+\]
+is concave in the space $\R^{m+p}$ for any $f,g$ and $h$.
 
+The dual lagrangian problem asks to maximize function $\ell(u,v)$, i.e. to minimize the convex function $-\ell(u,v)$. The feasible set for this problem is defined only by non-negativity constraints for $u$ multipliers, hence the feasible set is a convex set.
+\section{Main properties of convex programming}
+A convex optimization problem is defined as 
+\begin{align*}
+    (P^c) \qquad \min f(x)&\\
+    x\in F&
+\end{align*}
+where the feasible set $F\subseteq\R^n$ is a convex set, and the objective function $f:F\to\R$ is convex.
+\begin{theorem}[]
+    Let $F\subseteq\R^n$ be a convex set and $f:F\to\R$ be a convex function. If $\bar{x}\in F$ is a local minimum for $f$ over $F$, then $\bar{x}$ is also a global minimum for $f$ over $F$.
+\end{theorem}
+\begin{proof}
+    The proof is by contradiction: let $\bar{x}$ be a local minimum for $f$ over $F$, and assume there exists another point $y\in F$ such that $f(y)<f(\bar{x})$.
 
+    By definition of local minimum, there exists a scalar $\rho>0$ such that $f(x)\geq f(\bar{x})\quad \forall x\in B(\bar{x}.\rho)$. 
+
+    Now, consider a convex combination of $\bar{x}$ and $y$ defined as $z=\lambda\bar{x}+(1-\lambda)y$ for a sufficiently small value of $\lambda\in(0,1)$ such that $z\in B(\bar{x},\rho)$. By convexity of function $f$, we have $f(z)\leq \lambda f(\bar{x}) + (1-\lambda)f(y)$. As $f(y)<f(\bar{x})$, we get $f(z)<f(\bar{x})$, which contradicts the initial assumption that $\bar{x}$ is a minimum over $B(\bar{x},\rho)$.
+\end{proof}
+\begin{theorem}[]
+    Let $F\subseteq\R^n$ be a convex set and let $f:F\to\R$ be a convex function. Let $S=\{ x\in F:f(x)\leq f(y) \forall y\in F \}$ be the set of points in $F$ for which $f$ attains a minimum. Then, $S$ is a convex set.
+\end{theorem}
+\begin{proof}
+    As local and global minimum coincide, we denote by $f^*$ the value taken by the objective function $f$ on any point in $S$. Let $x\in S$ and $y\in S$ be two optimal solutions, and let $z=\lambda x + (1-\lambda)y$ eb their convex combination with coefficient $\lambda\in[0,1]$. Then we have 
+    \[
+        f(z)\leq\lambda f(x)+(1-\lambda)f(y) = \lambda f^* + (1-\lambda)f^* = f^* 
+    \]
+    As $f^*$ is the minimum of $f$ over $F$, we cannot have $f(z)<f^*$, hence $f(z)=f^*$, i.e. $z\in S$.
+\end{proof}
+\begin{theorem}[]
+    Let $F\subseteq \R^n$ be a convex set and let $f:F\to\R$ be a strictly convex function. Then, if $\bar{x}$ is a global minimum, it is the only global minumum.
+\end{theorem}
+\begin{proof}
+    By contradiction assume there exists a point $y\in F,y\neq x$ such that $f(y)=f(\bar{x})$. For any $\lambda\in(0,1)$ it should be $f\left(\lambda\bar{x}+(1-\lambda)y\right)<\lambda f(\bar{x})+(1-\lambda)f(y) = f(\bar{x})$, hence $\bar{x}$ would not be a global minimum.
+\end{proof}
+\begin{remark}
+    In the proofs of the results above we only required the objective function be convex. If $f\in C^1$, one can use the first order conditions to distinguish global minima.
+\end{remark}
+\begin{theorem}[]
+    Let $f:\R^n\to\R$ be a convex function, $f\in C^1$. A solution $\bar{x}$ is a global minimum for $f$ iff $\nabla f(\bar{x})=0$
+\end{theorem}
+\begin{proof}
+    If $\bar{x}$ is a global minimum, it is also a local minimum; hence, first order necessary conditions for unconstrained optimization impose that $\nabla f(\bar{x})=0$
+
+    Conversely, if $f$ is convex and $\nabla f(\bar{x})=0$, theorem \ref{convdef} impllies $f(y)\geq f(\bar{x})\quad \forall y\in F$
+\end{proof}
+\begin{theorem}[]
+    Let $F\subseteq \R^n$ be a convex set and let $f:F\to\R$ be a convex function, $f\in C^1$. A solution $\bar{x}\in F$ is a global minimum for $f$ over $F$ iff $\nabla f(\bar{x})^T(y-\bar{x})\geq 0$ for all $y\in F$.
+\end{theorem}
+\begin{proof}
+    If the condition holds, Theorem \ref{convdef} implies that $\bar{x}$ is a minimum. 
+    
+    Conversely, assume by contradiction that $\bar{x}$ is a minimum and the condition is not satisfied, i.e. there exists $y\in F$ such that $\nabla f(\bar{x})^T(y-\bar{x})<0$. 
+
+    Consider a convex combination of $\bar{x}$ and $y$ defined as $z=\bar{x} + \lambda(y-\bar{x})$ for a sufficiently small value of $\lambda\in(0,1)$, and observe that $z\in F$ by convexity of the feasible set. Using the first order approximation of the objective function we have:
+    \[
+        f(z)=f(\bar{x}) + \nabla f(\bar{x})^T (z-\bar{x})+R_1(\bar{x},\lambda\|z-\bar{x}\|) = f(\bar{x})+\lambda\nabla f(\bar{x})^T(y-\bar{x})+R_1(\bar{x},\lambda\|z-\bar{x}\|)
+    \]
+    For $\lambda\to 0$ the residual $R_1$ can be ignored. This yields $f(z)<f(\bar{x})$ and contradicts the hypotheis.
+\end{proof}
+
+\subsection{Lagrangian relaxation}
+\begin{theorem}[]
+    Let $(P^c)$ be a convex optimization problem. Then $(\bar{x},\bar{u},\bar{v})$ is a saddle point iff $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$
+\end{theorem}
+\begin{proof}
+    Let $(\bar{x},\bar{u},\bar{v})$ be a saddle point. Then, $\bar{x}$ is a minimum for the lagrangian function $\mahtcal{L}(x;\bar{u},\bar{v})$, and hence $\nabla_x [\mathcal{L}(x;\bar{u},\bar{v})]|_{x=\bar{x}}=0$, i.e.
+    \[
+        \nabla f(\bar{x})  + \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabalaa h_j(\bar{x})=0
+    \]
+    As $(\bar{x},\bar{u},\bar{v})$ is a saddle point, we also have $g(\bar{x})\leq0, h(\bar{x})=0,\bar{u}\geq 0$ and $\bar{u}^T g(\bar{x})=0$, which shows that $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$. 
+
+    Conersely, let $\bar{x}$ be a KKT point with multipliers $\bar{u}\in\R^m_+$ and $\bar{v}\in\R^p$, i.e. such that 
+    \[
+        \nabla f(\bar{x})+ \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabalaa h_j(\bar{x})=0 \qquad \bar{u}^Tg(\bar{x})=0 \qquad \bar{u}\geq0
+    \]
+    By convexity of $f$ and $g_i$, for each $x\in \R^n$, we have 
+    \begin{align*}
+        f(x)\geq f(\bar{x})+\nabla f(\bar{x})(x-\bar{x})\\
+        g_i(x)\geq g_i(\bar{x})+\nabla g_i(\bar{x})(x-\bar{x})
+    \end{align*}
+    As for the linear function $h_j$ we have
+    \[
+        h_j(x)=h_j(\bar{x})+\nabla h_j(\bar{x}) (x-\bar{x})
+    \]
+    summing the three equations above (weighted with the respective multipliers), we get
+    \begin{gather*}
+        \mathcal{L}(x;\bar{u},\bar{v}) = f(x) + \displaystyle\sum_{i=1}^{m}\bar{u}_ig_i(x) + \displaystyle\sum_{j=1}^{p}\bar{v}_jh_j(x)\geq \\
+        f(\bar{x}) + \nabla f(\bar{x})^T(x-\bar{x}) + \displaystyle\sum_{i=1}^{m}\bar{u}_i[g_i(\bar{x})+\nabla g_i(\bar{x})^T(x-\bar{x})]+\displaystyle\sum_{j=1}^{p}\bar{v}_j[h_j(\bar{x})+\nabla h_j(\bar{x})^T(x-\bar{x})] = \\
+        \mathcal{L}(\bar{x};\bar{u},\bar{v}) + [\nabla f(\bar{x})+\displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x})+ \displaystyle\sum_{j=1}^{p}\bar{v}_j\nabla h_j(\bar{x})](x-\bar{x})
+    \end{gather*}
+    i.e., $\mathcal{L}(x;\bar{u},\bar{v})\geq\mathcal{L}(\bar{x};\bar{u},\bar{v})+\nabla_x [\mathcal{L}(\bar{x};\bar{u},\bar{v})]^T(x-\bar{x})$. For a KKT point it must be $\nabla_x\mathcal{L}(\bar{x};\bar{u},\bar{v})=0$, then 
+    \[
+        \mathcal{L}(x;\bar{u},\bar{v})\geq \mathcal{L}(\bar{x};\bar{u},\bar{v}) \quad \forall x\in\R^n
+    \]
+    In addition, as $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$, we have $g(\bar{x})\leq0,h(\bar{x})=0,\bar{u}\geq0$ and $\bar{u}^Tg(\bar{x})=0$. Thus, $\forall u\in\R^m_+$ and $v\in\R^p$ we have $\mathcal{L}(\bar{x};u,v)= f(\bar{x}) + u^Tg(\bar{x}) + v^Th(\bar{x})\leq f(\bar{x}) + \bar{u}^Tg(\bar{x}) + \bar{v}^Th(\bar{x})=\mathcal{L}(\bar{x};\bar{u},\bar{v})$ and hence $(\bar{x},\bar{u},\bar{v})$ is a saddle point.
+\end{proof}
 
 
 
