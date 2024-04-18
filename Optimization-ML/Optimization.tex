@@ -272,11 +272,11 @@ It can be proved that, if the $x^k$ points generated belong to a bounded set, th
     \]
     As $S_1 \cap S_2= \emptyset$ there should exist an hyperplane, associated with a vector $y\in\R^m$, that separates $S_1$ and $S_2$, i.e. such that 
     \[
-        y^Tz <0 \quad \forall z\in\S_1 \quad \text{and} \quad y^Tz\geq 0 \quad \forall z\in S_2
+        y^Tz <0 \quad \forall z\in S_1 \quad \text{and} \quad y^Tz\geq 0 \quad \forall z\in S_2
     \]
-    Vector $y$ must satisfy $A^Ty=0$; indeed, if $A^Ty\neq0$, one could define $\bar{x}=-(y^TA)^T=-A^Ty$, such that $\bar{x}=0$. Imposing $y^TAx\geq0$ for $x=\bar{x}$ we should have $0\leq(y^TA)\bar{x}=(-\bar{x}^T)\bar{x}$, while this is impossible as $\|\bar{x}\|>0$
+    Vector $y$ must satisfy $A^Ty=0$; indeed, if $A^Ty\neq0$, one could define $\bar{x}=-(y^TA)^T=-A^Ty$, such that $\bar{x}\neq0$. Imposing $y^TAx\geq0$ for $x=\bar{x}$ we should have $0\leq(y^TA)\bar{x}=(-\bar{x}^T)\bar{x}$, while this is impossible as $\|\bar{x}\|>0$
 
-    Furthermore, by definition $y$ satisfies $y^Tz<0 \quad \forall z\in S_1$. In order to check possible $y$ vectors that satisfy these conditions, let's impose this condition for different $z$ vectors. In particular, we consider $m$ distinct vectors $\tilde{z}_j\in\R^m$, one for each $j=1,\dots,M$, the $j$-th being defined as follows: $\tilde{z}_j = -\varepsilon1^T-e_j$. For every $\varepsilon\in(0,1)$, each vector $z_j$ has all components that are negative, hence it belogns to $S_1$. Thus, for $j=1,\dots,m$ and $\forall \varepsilon>0$ it should be $y^T\tilde{z}_j = -\varepsilon1^Ty-y_j<0$, which implies that $y$ cannot be the null vector and $y\geq 0$. Thus, $y$ is a solution of problem $P_2$ that has anser "yes". 
+    Furthermore, by definition $y$ satisfies $y^Tz<0 \quad \forall z\in S_1$. In order to check possible $y$ vectors that satisfy these conditions, let's impose this condition for different $z$ vectors. In particular, we consider $m$ distinct vectors $\tilde{z}_j\in\R^m$, one for each $j=1,\dots,m$, the $j$-th being defined as follows: $\tilde{z}_j = -\varepsilon1^T-e_j$. For every $\varepsilon\in(0,1)$, each vector $z_j$ has all components that are negative, hence it belongs to $S_1$. Thus, for $j=1,\dots,m$ and $\forall \varepsilon>0$ it should be $y^T\tilde{z}_j = -\varepsilon1^Ty-y_j<0$, which implies that $y$ cannot be the null vector and $y\geq 0$. Thus, $y$ is a solution of problem $P_2$ that has anser "yes". 
     Summarizing: if problem $P_1$ has answer "no", then $P_2$ has answer "yes". This concludes the proof.
 \end{proof}
 \subsection{Fist-order necessary conditions}
@@ -370,7 +370,7 @@ Under some assumptions, it can be proven that each local minimum is a KKT point.
     \begin{enumerate}
         \item linear constraints: \\
             all funcions $g_i$ are linear, i.e., $g_i(x)=a^T_ix+b_i \quad \forall i\in I$
-        \item Slaterìs condition: \\
+        \item Slater's condition: \\
             all functions $g_i$ are convex and differentiable, and $F$ contains (at least) one point $\bar{x}$ in its strict interior (i.e., $g_i(\bar{x})<0 \quad \forall i \in I$)
         \item Mangasarian-Fromovitz constraint qualification (MFCQ):\\
             the gradients of the active constraints in $x$ are linearly independent, i.e., it is impossible to find scalars $\alpha_i\geq 0, i\in I_a(x)$, not all zero, such that $\sum_{i\in I_a(x)}\alpha_i\nabla g_i(x)=0$
@@ -381,7 +381,7 @@ Under some assumptions, it can be proven that each local minimum is a KKT point.
     Let $f\in C^1$ and $g_i\in C^1 \quad \forall i \in I$. IF $\bar{x}\in F$ is a local minimum for $f$ over $F$ and some constraint qualification conditions are satisfied, then $\bar{x}$ is a KKT point.
 \end{theorem}
 \begin{proof}
-    For the sake of simplicity we only prove the result in the case where MFCQ are satisfied. Let $\bar{x}$ be a local minimum, and assume that the gradients of the acrive constraint sin $\bar{x}$ are linearly independent. As $\bar{x}$ is a local minimum, Theorem \ref{FJ} ensures that there are scalars $\lambda_0,\lambda_i(i\in I)$ that are not equal to zero and such that 
+    For the sake of simplicity we only prove the result in the case where MFCQ are satisfied. Let $\bar{x}$ be a local minimum, and assume that the gradients of the active constraints in $\bar{x}$ are linearly independent. As $\bar{x}$ is a local minimum, Theorem \ref{FJ} ensures that there are scalars $\lambda_0,\lambda_i(i\in I)$ that are not equal to zero and such that 
     \[
         \lambda_0\nabla f(\bar{x}) + \displaystyle\sum_{i\in I}\lambda_i\nabla g_i(\bar{x})= 0, \qquad \lambda_i g_i(\bar{x}) = 0 \quad \forall i\in I, \qquad \lambda_0 \geq 0, \qquad \lambda_i \geq 0 \forall i \in I
     \]
@@ -827,6 +827,7 @@ where the feasible set $F\subseteq\R^n$ is a convex set, and the objective funct
 
 \subsection{Lagrangian relaxation}
 \begin{theorem}[]
+    \label{lagrelax}
     Let $(P^c)$ be a convex optimization problem. Then $(\bar{x},\bar{u},\bar{v})$ is a saddle point iff $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$
 \end{theorem}
 \begin{proof}
@@ -869,6 +870,144 @@ A relevant consequence of this theorem is that in convex optimization there cann
 which is the same value of the objective function evaluated in point $\bar{x}$
 
 \section{Interior point methods}
+We consider a convex optimization problem of the form 
+\begin{align*}
+    (P^c) \qquad \min f(x)&\\
+    Ax=b &\\
+    g_i(x)\leq 0& \quad i\in I=\{1,\dots,m\}\\ 
+    x\in\R^n
+\end{align*}
+We will denote by $S=\{ x\in\R^n : g_i(x)\leq 0 \quad (i\in I) \}$ the set of points that satisfy all inequalities.
+
+We start from a point inside $S$ and at each iteration find a new feasible solution that stays in the interior of $S$. Thus, a basic assumptio for interior points methods is that there exists a feasible solution in the interior of $S$, i.e. 
+\[
+    \exists \bar{x}\in\R^n:A\bar{x}=b \text{ and } g(\bar{x})<0
+\]
+In addition we assume that the problem is bounded, i.e. $\min_{x \in F}>-\infty$. Under these hypotheses, the Slater constraint qualification conditions are satisfied, hence a local minimum is a KKT point.
+
+The logarithmic barrier method is based on the definition of an auxiliary problem 
+\begin{align*}
+    (P_{aux}) \qquad \min p(x)&\\
+    x\in\R^n
+    Ax=b &\\
+\end{align*}
+In this problem the objective function is given by 
+\[
+    p(x) = f(x)+t\phi(x)
+\]
+Where $t>0$ is a parameter, and the penalty function $\phi(x)$ is defined as 
+\[
+    \phi(x) = \displaystyle\sum_{i\in I} -\log(-g_i(x))
+\]
+The objective function $p(x)$ is convex and differentiable. Thus, the auxiliary problem can be efficiently solved using e.g. a variant of Newton's method for optimization under linear constraints.
+
+For a given value of $t>0$, let us denote byu $x^*(t)$ an optimal solution of the auxiliary problem. By definition, this solution has 
+\[
+    Ax^*(t) = b \qquad \text{and}\qquad g_i(x^*(t))<0\quad i=1,\dots,m
+\]
+As the auxiliary problem is convex, solution $x^*(t)$ is a KKT point, i.e. there exist multipliers $\tilde{v}\in\R^p$ such that 
+\[
+    \nabla p(x^*(t)) + A^T\tilde{v}=0
+\]
+Given that $\nabla p(x) = \nabla f(x) + t\nabla \phi(x)$ and that $\nabla \phi(x)=\displaystyle\sum_{i=1}^{m} \displaystyle\frac{1}{-g_i(x)}\nabla g_i(x)$, the KKT conditions for $x^*$ are 
+\[
+    \nabla f(x^*(t)) + t \displaystyle\sum_{i=1}^{m}\displaystyle\frac{1}{-g_i(x^*(t))}\nabla g_i(x^*(t))+A^T\tilde{v}=0
+\]
+Defining
+\[
+    \lambda_i^*(t) = -t \displaystyle\frac{1}{g_i(x^*(t))}<0 \quad (i=1,\dots,m) \qquad \text{and} \qquad v^*(t)=\tilde{v}
+\]
+these conditions can be rewritten as 
+\begin{equation}\label{17}
+    \nabla f(x^*(t))  + \displaystyle\sum_{i=1}^{m}\lambda_i^*(t)\nabla g_i(x^*(t)) + A^Tv^*(t) = 0
+\end{equation}
+
+Let us define the lagrangian relaxation of the original problem using multipliers $\lambda_i^*(t)$ and $v^*(t)$. Observe that $\lambda_i^*(t)>0$ as $g_i(x^*(t))<0$
+\[
+    \mathcal{L}(x;\lambda^*(t),v^*(t)) = f(x) + \displaystyle\sum_{i=1}^{m}\lambda_i)^*(t)g_i(x) + {v^*}^T(t)(Ax-b)
+\]
+Imposing the gradient of the lagrangian function to be equal to zero, we get \eqref{17}; hence $x^*(t)$ is a minimum for the lagrangian problem. The quality of the associated lower bound is determined by the following theorem
+\begin{theorem}[]
+    The duality gap associated with $x^*(t)$ is at most $mt$
+\end{theorem}
+\begin{proof}
+    because the problem is convex, and $(x^*(t),\lambda^*(t),v^*(t))$ is a KKT point, due to theorem \ref{lagrelax} it is also a saddle point. The associated lagrangian lower bound is 
+    \[
+        \ell(\lambda^*(t),v^*(t)) = \inf_{x\in\R^n}\mathcal{L}(x;\lambda^*(t),v^*(t)) = \mathcal{L}(x^*(t);\lambda^*(t),v^*(t)) = f(x^*(t))-mt
+    \]
+\end{proof}
+Given a required accuracy $\epsilon$, it is sufficient to solve the auxiliary problem $(P_{aux})$ with $t=\epsilon/m$. However, small values of $\epsilon$ produce small values of $t$, which makes optimization of function $p(x)$ hard. Thus, it is preferrable to use an iterative scheme that starts with a "large" value of $t$, and reduces it at each iteration as 
+\[
+    t^{k+1} = \mu t^k
+\]
+with $\mu<1$. At each iteration $k$, the algorithm has $t^k = \mu^k t^0$, and the associated gap is $m \mu^kt^0$, thus to get accuracy $\epsilon$ in $k$ iterations, we require 
+\[
+    m \mu^kt^0\leq \epsilon
+\]
+i.e. 
+\[
+    k \log \mu \leq \log \left(\displaystyle\frac{\epsilon}{t^0m}\right)
+\]
+because $\mu<1\implies \log\mu<0$ the duality gap is below the threshold after at most \[
+    \left\lceil \displaystyle\frac{\log\left(\displaystyle\frac{\epsilon}{t^0m}\right)}{|\log\mu|} \right\rceil
+\]
+\subsection{Computing an initial solution}
+One can consider an additional problem of the form 
+\[
+    \min\{ s: AX=b \quad g_i(x)\leq s \quad (i=1,\dots,m) \}
+\]
+and check whether the corresponding optimal value is negative. If this is not the case, there exists no solution $x$ such that $Ax=b$ and $g(x)<0$, hence the initial assumption is violated and the method must be halted. Otherwise, a feasible solution which is in the interior of $S$ is available, and the method must determine an initial value of parameter $t^0$. A value of $t^0$ that is too large will produce an auxiliary problem that is hard to solve. Typically, the first phase produces a dual solution, which allows to estimate the optimality gap. In this case, the value of $t^0$ is fixed so that the optimality gap at the first iteration is comparable with that of the initial solution.
+\subsection{Central path}
+The set of points $\{x^*(t^k)\}_k$ that are produced by the algorithm is called \emph{central path}. The central path conditions can be interpreted as relaxed KKT conditions, as it obeys conditions 
+\begin{itemize}
+    \item $Ax=b,\quad g(x)\leq 0$
+    \item $\lambda\geq 0$
+    \item $\nabla f(x) + \displaystyle\sum_{i=1}^{m}\lambda_i\nabla g_i(x) + A^Tv = 0$
+    \item $-\lambda_i g_i(x) = t\quad i=1,\dots,m$
+\end{itemize}
+The following result holds for convex optimization:
+\begin{theorem}[]
+    Let $f,g_i\ (i=1,\dots,m)$ and $\phi$ be continuous and convex functions in the interior of $S$. Then, any point induced by sequence $\{x^*(t^k)\}_k$ produced by a barrier method is a global minimum for the problem.
+\end{theorem}
+\begin{proof}
+    Let $\bar{x}$ denote the point to which sequence $\{x^*(t^k)\}_k$ converges. At each $k$ we have $x^*(t^k)\in S$, thus $\bar{x}\in S$. In addition, we have 
+    \[
+        \lim_{k\to\infty}\left[f(x^*(t^k))+t^k\phi(x^*(t^k))\right] = f(\bar{x}) + \lim_{k\to\infty}\left[t^k\phi(x^*(t^k))\right] = f(\bar{x})
+    \]
+    By contradiction, let $x^*\in S$ be a global minimum such that $f(x^*)<f(\bar{x})$. By continuity of function $f$, $\exists \tilde{x}\in \text{int } S$ such that $f(x^*)<f(\tilde{x})<f(\bar{x})$. At each iteration we have 
+    \[
+        f(x^*(t^k)) + t^k\phi(x^*(t^k))\leq f(\tilde{x})+t^k\phi(\tilde{x})
+    \]
+    hence for $k\to\infty$ 
+    \[
+        \lim_{k\to\infty}[f(x^*(t^k))+t^k\phi(x^*(t^k))]\leq \lim_{k\to\infty}[f(\tilde{x}) +t^k \phi(\tilde{x})] = f(\tilde{x}) + \lim_{k\to\infty}[t^k\phi(\tilde{x})] = f(\tilde{x})
+    \]
+    combining the last two equations we get 
+    \[
+        f(\tilde{x}) \geq \lim_{k\to\infty}[f(x^*(t^k))+t^k\phi(x^*(t^k))] = f(\bar{x})
+    \]
+    which contradicts the definition of $\tilde{x}$, and the existence of $x^*$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

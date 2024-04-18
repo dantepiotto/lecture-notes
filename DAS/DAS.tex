@@ -207,7 +207,31 @@ Team of $N$ (mobile) robots aiming to execute complex tasks
     A digraph $G$ is balanced if $\deg_i^{\text{IN}}=\deg_i^{\text{OUT}}$ for all $i\in\{1,\dots,N\}$
 \end{definition}
 % TODO definitions slides 4-5-7-8-9-10
-
+\begin{definition}[Directed path]
+    ordered sequence of nodes s.t. any pair of consecutive nodes is a directed edge. A path is \emph{simple} if no node appears more than once
+\end{definition}
+\begin{definition}[Directed cycle]
+    simple directed path that starts and ends at the same node. Cycles of length one are called self-loops. Acyclic digraph if there are no cycles.
+\end{definition}
+\begin{definition}[Directed tree]
+    Acyclic digraph s.t. there exists a node, root, s.t. any node can be reached by only one directed path starting at the root.
+\end{definition}
+\begin{definition}[Spanning tree]
+    a spanning subgraph that is a (directed) tree
+\end{definition}
+\begin{definition}[Periodic graph]
+    if there exists a $k>1$ period, that divides the length of every cycle.
+\end{definition}
+Note: a graph with self-loops is aperiodic.
+\begin{definition}[Strongly connected digraph]
+    if there exists a directed path from any node to any other node
+\end{definition}
+\begin{definition}[Connected undirected graph]
+    if there exists a path from any node to any other node
+\end{definition}
+\begin{definition}[Globally reachable node]
+    if one of its nodes can be reached from any other node by traversing a directed path
+\end{definition}
 \begin{definition}[Complete graph]
     Unweighted graph such that $\forall i,j\ \exists \ (i,j),\ (j,i) \in E$
 \end{definition}
@@ -629,13 +653,13 @@ The \emph{incremental gradient method} is: for each iteration $k\in\N$
 \[
     z^{k+1} = z^k - \alpha\nabla\ell_{i^k}(z^k)
 \]
-where $i^k\in\{1,\dots,N\}$
+where $i^k\in\{1,\dots,N\}$. 
+
 Two rules for choosing index $i^k$ at iteration $k$: 
 \begin{itemize}
-    \item Cyclic rule 
-        \item Randomized rule
+    \item Cyclic rule: choose $i^k = 1,2,\dots,N,1,2,\dots,N,\dots$
+    \item Randomized rule: draw $i^k\in\{ 1,\dots,N \}$ at random\footnote{Each $i^k$ is a realization of a discrete random variable $\mathcal{X}~\mathcal{U}\{1,N\}$ in which every one of the $N$ possible outcome values has an equal probability}, e.g according to a discrete uniform distribution
 \end{itemize}
-% TODO finish slide 4
 \section{Stochastic Gradient Descent}
 consider the stochastic optimization problem 
 \[
@@ -652,14 +676,37 @@ The stochastic gradient descent is: for each iteration $k\in\N$ draw a realizati
     z^{k+1} = z^k -\alpha\nabla\ell(z^k,w^k)
 \]
 \subsection{Convergence}
-\begin{proposition}
+\begin{proposition}[convergence with constant step-size]
     Assume: 
     \begin{itemize}
         \item $\ell$ is a $\mu$-strongly convex function with $L$-Lipschitz continuous gradient (uniformly in its second argument)
         \item $\nabla\ell(z,\mathcal{W})$ is an unbiased estimatee of $\nabla_z\mathbb{E}_{\mathcal{W}}[\ell(z,\mathcal{W})]$
         \item $\|\nabla\ell(z,\mathcal{W})\|\leq M$ almost surely\footnote{A sequence of random variables $\{\mathcal{X}_k\}_{k\in\N}$ converges almost surely to the rv $\mathcal{X}$ if $\mathbb{P}(\lim_{k\to\infty}\mathcal{X}_k=\mathcal{X})=1$} for some $M>0$
     \end{itemize}
-\end{proposition} %TODO finish slide 6-7
+    Let $\{z^k\}_{k\in\N}$ be a realized sequence of the SGD with stepsize $\alpha\leq 1/2 \mu$. Then 
+    \[
+        \|z^k-z^\star\|^2\leq (1-2\mu\alpha)^k\left(\|z^0-z^\star\|^2 - \displaystyle\frac{\alpha M^2}{2\mu}\right) + \displaystyle\frac{\alpha M^2}{2\mu}
+    \]
+\end{proposition} 
+\emph{Analysis idea}: Use the sequence of realizations $w^0,w^1,\dots,w^k$ of $\mathcal{W}$ to approximate the original stochastic problem as 
+\[
+    \mathbb{E}_{\mathcal{W}}[\ell(z,\mathcal{W})] \approx \displaystyle\frac{1}{K}\displaystyle\sum_{k=1}^{L}\ell(z,w^k)
+\]
+\subsection{Stochastic mini-batch gradient method}
+At each iteration $k\in\N$, one can use a set of realizations of $\mathcal{W}$ to statistically approximate the (random) gradient of $\ell$ at a given point $z^k$
+\begin{remark}
+    The set of realizations is denoted by $\mathcal{I}^k$ and is usually called minibatch
+\end{remark}
+For each $k\in\N$, choose $\mathcal{I}^k\subset \{\,\dots,N\}$ with $|\mathcal{I}^k| \ll N$. The stochastic minibatch gradient method is 
+\[
+    z^{k+1} = z^k - \alpha \displaystyle\sum_{i\in\mathcal{I}^k}\nabla \ell (z^k,w^i)
+\]
+\begin{remark}
+    The minibatch can be chosen randomly or deterministically
+\end{remark}
+\begin{remark}
+    This approach can also be applied to a "determinsitic" optimization problem
+\end{remark}
 \section{Beyond SGD: Adaptive Momentum Estimation (Adam)}
 The ADAM algorithm reads as follows
 \begin{itemize}
