@@ -63,7 +63,7 @@ The problem to be solved is defined as:
     Let $f\in C^1$. If $\bar{x}\in\R^n$ is a local minimum for problem \eqref{unc_prob}, then $\nabla f(\bar{x})=0$
 \end{theorem}
 \begin{proof}
-    Let $\bar{x}\in\R^n$ be a local minimum for problem \eqref{unc_prob}. The proof is by contradiction, thus assume that $\nabla f(\bar{x})\neq 0$. Define a direction $d^*=-\displaystyle\frac{\nabla f(\bar{x})}{\|(\bar{x})\|_2}$ and a point $y=\bar{x}+\alpha d^*$, for some $\alpha>0$. It follows that $y\neq \bar{x}$ for any value of $\alpha>0$.
+    Let $\bar{x}\in\R^n$ be a local minimum for problem \eqref{unc_prob}. The proof is by contradiction, thus assume that $\nabla f(\bar{x})\neq 0$. Define a direction $d^*=-\displaystyle\frac{\nabla f(\bar{x})}{\|\nabla f(\bar{x})\|_2}$ and a point $y=\bar{x}+\alpha d^*$, for some $\alpha>0$. It follows that $y\neq \bar{x}$ for any value of $\alpha>0$.
 
     For a sufficiently small value of $\alpha$, one can approximate function $f$ in $y$ according to the Taylor series up to the first order as follows: 
     \[
@@ -78,7 +78,7 @@ The problem to be solved is defined as:
     Let $f\in C^2$ if $\bar{x}\in\R^n$ is a local minimum for problem \eqref{unc_prob}, then 
     \begin{enumerate}
         \item $\nabla f(\bar{x})=0$ 
-        \item $d^T \nabla^2 d \geq 0 $
+        \item $d^T \nabla^2f(\bar{x}) d \geq 0 $
     \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -118,7 +118,7 @@ The problem to be solved is defined as:
     \[
         N(\bar{x}, \rho) = \{y\in\R^n : \|y-\bar{x}\| \leq \rho\}
     \]
-    Let $y\in\N(\bar{x})$ be a point in this neighbourhood that is distinct from $\bar{x}$, i.e., defined by some $d\in\R^n$ with $\|d\|=1$ and some $\alpha>0$. The Taylor series for function $f$ in $y$ up to the second order is:
+    Let $y\in N(\bar{x})$ be a point in this neighbourhood that is distinct from $\bar{x}$, i.e., defined by some $d\in\R^n$ with $\|d\|=1$ and some $\alpha>0$. The Taylor series for function $f$ in $y$ up to the second order is:
     \[
         f(y) = f(\bar{x}+\alpha d) = f(\bar{x})+\nabla f(\bar{x})^T\alpha d + \frac{1}{2}(\alpha d)^T \nabla^2 f(\bar{x})(\alpha d) + R_2(\bar{x},\alpha) = f(\bar{x}) + \frac{1}{2}\alpha^2 d^T \nabla^2 f(\bar{x})d+R_2(\bar{x},\alpha)
     \]
@@ -830,15 +830,15 @@ where the feasible set $F\subseteq\R^n$ is a convex set, and the objective funct
     Let $(P^c)$ be a convex optimization problem. Then $(\bar{x},\bar{u},\bar{v})$ is a saddle point iff $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$
 \end{theorem}
 \begin{proof}
-    Let $(\bar{x},\bar{u},\bar{v})$ be a saddle point. Then, $\bar{x}$ is a minimum for the lagrangian function $\mahtcal{L}(x;\bar{u},\bar{v})$, and hence $\nabla_x [\mathcal{L}(x;\bar{u},\bar{v})]|_{x=\bar{x}}=0$, i.e.
+    Let $(\bar{x},\bar{u},\bar{v})$ be a saddle point. Then, $\bar{x}$ is a minimum for the lagrangian function $\mathcal{L}(x;\bar{u},\bar{v})$, and hence $\nabla_x [\mathcal{L}(x;\bar{u},\bar{v})]|_{x=\bar{x}}=0$, i.e.
     \[
-        \nabla f(\bar{x})  + \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabalaa h_j(\bar{x})=0
+        \nabla f(\bar{x})  + \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabla h_j(\bar{x})=0
     \]
     As $(\bar{x},\bar{u},\bar{v})$ is a saddle point, we also have $g(\bar{x})\leq0, h(\bar{x})=0,\bar{u}\geq 0$ and $\bar{u}^T g(\bar{x})=0$, which shows that $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$. 
 
     Conersely, let $\bar{x}$ be a KKT point with multipliers $\bar{u}\in\R^m_+$ and $\bar{v}\in\R^p$, i.e. such that 
     \[
-        \nabla f(\bar{x})+ \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabalaa h_j(\bar{x})=0 \qquad \bar{u}^Tg(\bar{x})=0 \qquad \bar{u}\geq0
+        \nabla f(\bar{x})+ \displaystyle\sum_{i=1}^{m}\bar{u}_i\nabla g_i(\bar{x}) + \displaystyle\sum_{j=1}^{p}\bar{v}\nabla h_j(\bar{x})=0 \qquad \bar{u}^Tg(\bar{x})=0 \qquad \bar{u}\geq0
     \]
     By convexity of $f$ and $g_i$, for each $x\in \R^n$, we have 
     \begin{align*}
@@ -862,6 +862,13 @@ where the feasible set $F\subseteq\R^n$ is a convex set, and the objective funct
     In addition, as $\bar{x}$ is a KKT point with multipliers $\bar{u}$ and $\bar{v}$, we have $g(\bar{x})\leq0,h(\bar{x})=0,\bar{u}\geq0$ and $\bar{u}^Tg(\bar{x})=0$. Thus, $\forall u\in\R^m_+$ and $v\in\R^p$ we have $\mathcal{L}(\bar{x};u,v)= f(\bar{x}) + u^Tg(\bar{x}) + v^Th(\bar{x})\leq f(\bar{x}) + \bar{u}^Tg(\bar{x}) + \bar{v}^Th(\bar{x})=\mathcal{L}(\bar{x};\bar{u},\bar{v})$ and hence $(\bar{x},\bar{u},\bar{v})$ is a saddle point.
 \end{proof}
 
+A relevant consequence of this theorem is that in convex optimization there cannot be an optimality gap. Indeed, let $(\bar{x},\bar{u},\bar{v})$ be a saddle point. The lagrangian relaxation with multipliers $\bar{u}, \bar{v}$ produces a lower bound with value 
+\[
+    \min_x\mathcal{L}(x;\bar{u},\bar{v}) = \mathcal{L}(\bar{x};\bar{u},\bar{v})=f(\bar{x})
+\]
+which is the same value of the objective function evaluated in point $\bar{x}$
+
+\section{Interior point methods}
 
 
 
