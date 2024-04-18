@@ -1,4 +1,3 @@
-
 \documentclass{book}
 \usepackage{amsmath, amsthm, graphicx, amsfonts, float, bm}
 \usepackage[english]{babel}
@@ -709,9 +708,214 @@ Paradigm:
 
 
 
+\chapter{Leader Follower networks: Formation control}
+\section{analogy with mass-spring systems}
+Consider a platoon of $N$ masses such that each mass $i$ is connected with mass $i-1$ and $i+1$ through a spring with elastic constants respectively $a_{i-1,i} = a_{i,i-1}>0$ and $a_{i+1,i} = a_{i,i+1}>0$. Let $x_i\in \R$ be the position of mass $i$
+
+The elastic force at mass $i$, $F_{e,i}(x)$ is given by 
+\[
+    F_{e,i}(x) = -a_{i,i-1}(x_i-x_{i-1})-a_{i,i+1}(x_i-x_{i+1})
+\]
+For each spring, we can write the associated elastic force as the negative gradient of the elastic (potential) energy, so that 
+\[
+    F_{e,i}(x) = -\displaystyle\frac{\partial}{\partial x_i}(\displaystyle\frac{1}{2}a_{i,i-1}\|x_i-x_{i-1}\|^2 + \displaystyle\frac{1}{2}a_{i,i+1}\|x_i-x_{i+1}\|^2)
+\]
+Let us suppose that each spring can be written as the parallel of two springs with elastic constants respectively $\frac{1}{2}a_{i,i-1}>0$ and $\frac{1}{2}a_{i,i+1}>0$.
+
+Let $x_i\in\R$ be the positino of mass $i$. The elastic force at mass $i$, $F_{e,i}(x)$ is given by
+\[
+    F_{e,i} = -(\displaystyle\frac{1}{2}a_{i,i-1}+\displaystyle\frac{1}{2}a_{i,i-1})(x_i-x_{i-1}) -(\displaystyle\frac{1}{2}a_{i,i+1}+\displaystyle\frac{1}{2}a_{i,i+1})(x_i-x_{i+1}) 
+\]
+As before, we can write the elastic force as the negative gradient of the elastic (potential) energy, i.e.
+\[
+    F_{e,i}(x) = -\displaystyle\frac{\partial}{\partial x_i}(\displaystyle\frac{1}{2}\displaystyle\frac{a_{i,i-1}}{2}\|x_i-x_{i-1}\|^2 + \displaystyle\frac{1}{2}\displaystyle\frac{a_{i,i-1}}{2}\|x_i-x_{i-1}\|^2 + \displaystyle\frac{1}{2}\displaystyle\frac{a_{i,i+1}}{2}\|x_i-x_{i+1}\|^2 + \displaystyle\frac{1}{2}\displaystyle\frac{a_{i,i+1}}{2}\|x_i-x_{i+1}\|^2)
+\]
+The total elastic (potential) energy of the mass-spring system can be written as
+\begin{align*}
+    V(x) &= \displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in \mathcal{N}_i} \displaystyle\frac{1}{2}\displaystyle\frac{a_{i,j}}{2}\|x_i-x_j\|^2\\ 
+         &= \displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in \mathcal{N}_i} V_{ij}(x_i,x_j)
+\end{align*}
+where we have defined $\mathcal{N}_i := \{ i-1, i+1 \}$ and $V_{ij}(x_i,x_j):=\displaystyle\frac{1}{2}\displaystyle\frac{a_{i,j}}{2}\|x_i-x_j\|^2$.
+
+Thus, the elastic force at mass $i$ can be seen as the negative gradient of the energy, i.e. 
+\begin{align*}
+    F_{e,i}(x) &= -\displaystyle\frac{\partial}{\partial x_i}\displaystyle\sum_{j\in\mathcal{N}_i}\left(V_{ij}(x_i,x_j)+V_{ji}(x_j,x_i)\right)\\
+               &=-\displaystyle\frac{\partial}{\partial x_i} V(x) 
+\end{align*}
+This formulation can be extended to more general systems in which masses are interconnected according to a topology described by an undirected graph $G=(\{1,\dots,N\},E)$
+
+By adding a damping term on each mass, the system dynamics can be written as 
+\begin{align*}
+    \dot{x}_i &= v_i\\
+    m_i\dot{v}_i &= -v_i - \displaystyle\frac{\partial}{\partial x_i}V(x) \quad \forall i \in \{ 1,\dots,N \}
+\end{align*}
+where we have considered the damping coeffiecient equal to one. 
+
+If we assume that masses are small, we may written
+\[
+    v_i \approx - \displaystyle\frac{\partial}{\partial x_i} V(x)
+\]
+so that the dynamics may be approximated by the following firt order dynamics
+\[
+    \dot{x}_i = - \displaystyle\frac{\partial}{\partial x_i}V(x) \quad \forall i\in\{ 1,\dots,N \}
+\]
+
+Consider a network of $N$ agents communicating/interacting according to a fixed, undirected graph $G$. Let $x_i(t)\in\R^d$ be the state of agent $i$. Let agents run a Laplacian dynamics
+\[
+    \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}(x_i-x_j) \quad \forall i\in\{ 1,\dots,N \}
+\]
+We can rewrite it as 
+\[
+    \dot{x}_i(t) = - \displaystyle\sum_{j\in \mathcal{N}_i} \displaystyle\frac{\partial}{\partial x_i}\left(V_{ij}(x_i,x_j)+V_{ji}(x_j,x_i)\right) \quad \forall i \in \{ 1,\dots,N \}
+\]
+with $V_{ij}(x) = \displaystyle\frac{1}{2}\displaystyle\frac{a_{i,j}}{2}\|x_i-x_j\|^2$.
+
+By recalling the definition of the total energy
+\[
+    V(x)=\displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in\mathcal{N}_i}V_{ij}(x_i,x_j)
+\]
+the Laplacian dynamics 
+\[
+    \dot{x} = -Lx
+\]
+can be seen as a "gradient flow", i.e. 
+\[
+    \dot{x} = -\nabla V(x)
+\]
+Thus, the consensus configuration can be seen as a stationary point of $V$. This idea can be extended to general potential functions and applied to distributed control systems.
+
+Consider a network of $N$ autonomous agents communicating/interacting according to a fixed, undirected graph. Let $x_i(t)\in\R^d$ be the state of agent $i$. Consider a global potential function defined as 
+\[
+    V(x)=\displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in\mathcal{N}_i}V_{ij}(x_i,x_j)
+\]
+such that (local) minima of the potential correspond to desired configurations of the team. The gradient flow dynamics $\dot{x} = -\nabla V(x)$ turns out to be distributed. That is,
+ \[
+     \dot{x}_i(t) = \displaystyle\sum_{j\in\mathcal{N}_i}\displaystyle\frac{\partial}{\partial x_i}\left(V_{ij}(x_i,x_j)+V_{ji}(x_j,x_i)\right) \qquad \forall i \in \{ 1,\dots,N \}
+ \]
+
+ We can define a desired formation by assigning a set of distances, $d_{ij}$, between neighbouring agents $i$ and $J$ in a suitable graph 
+ 
+ The main idea for formation control is to define a potential function matching the sparsity of $G$, $V^{\text{form}}(x) = \sum_{i=1}^{N}\sum_{j\in\mathcal{N}_i}V_{ij}^{\text{form}}(i,j)$, such that a configuration $x^{text{form}}$ satisfying 
+ \[
+     \|x_i^{\text{form}}-x_j^{\text{form}}\| = d_ij \qquad \forall (i,j)\in E
+ \]
+ is a minimum of $V$.
+
+ In order to reach a formation with assigned distances $d_{ij}$, let us define 
+ \[
+     V_{ij}^{\text{form}}(x) = \displaystyle\frac{1}{8} \left(\|x_i-x_j\|^2-d_{ij}^2\right)^2
+ \]
+ with corresponding (global) potential function $V^{\text{form}}(x) = \displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in\mathcal{N}_i}V_{ij}^\text{form}(x_i,x_j)$.
+
+ The gradient flow dynamics of each agent $i$ is given by 
+ \[
+     \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i}\displaystyle\frac{\partial}{\partial x_i} \left(V_{ij}^\text{form}(x_i,x_j)+V_{ji}(x_j,x_i)\right) \qquad \forall i \in \{1,\dots,N\}
+ \]
+ which reads as 
+ \[
+     \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i} \left(\|x_i-x_j\|^2-d_{ij}^2\right)(x_i-x_j) \qquad \forall i \in \{1,\dots,N\}
+ \]
+This dynamics has multiple equilibrium points, including the desired formation in which the agents are at the assigned distances. In particular, the consensual solution $x_1=x_2=\dots=x_N$ is an (undesired) equilibrium.
+
+Such a "degenerate" equilibrium can be avoided by means of additional "collision avoidance" potential functions $V_{ij}^\text{ca}(x_i,x_j)$ such that 
+\[
+    \lim_{\|x_i-x_j\|\to 0} V_{ij}^\text{ca}(x_i,x_j)=+\infty
+\]
+A possible solution is a barrier function given 
+\[
+    V_{ij}^\text{ca} = -\log(x_i-x_j)
+\]
+Similarly, barrier potential functions $V^\text{obs}(x_i)$, depending only on the state of agent $x_i$, can be used to avoid obstacles. 
+
+The formation control dynamics becomes 
+\[
+    \dot{x}_i = - \displaystyle\frac{\partial V^\text{form}}{\partial x_i} - \displaystyle\frac{\partial V^\text{ca}(x)}{\delta x_i} - \nabla V^\text{obs}(x) \qquad \forall i\in\{1,\dots,N\}
+\]
 
 
+\chapter{Distributed Aggregative Optimization}
+Consider $N$ robots in the plane that want to optimize their positions $z_i\in\R^2$, for all $i=1,\dots,N$ to perform multi-robot surveillance. Let:
+\begin{itemize}
+    \item $r_0\in\R^2$ be a target to protect 
+    \item $r_i\in\R^2$ be the intruder associated to robot $i$ 
+    \item $\sigma(z) = \displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}z_i$ is the barycenter of the robots 
+    \item Local cost function of robot $i$ 
+        \[
+            \ell_i(z_i,\sigma(z)) = \gamma_i\|z_i-r_i\|^2 + \|\sigma(z)-r_0\|^2
+        \]
+\end{itemize}
+with $z\in\R^{2N}$ the stack of $z_1,\dots,z_N$ and $\gamma_i>0$ being a tradeoff parameter.
+\section{Aggregative optimization}
+Let us consider aggregative optimization problems in the form 
+\[
+    \min_{z_1,\dots,z_N} \displaystyle\sum_{i=1}^{N} \ell_i(z_i,\sigma(z))
+\]
+where the aggregative variable $\sigma(z)$ is defined as 
+\[
+    \sigma(z) = \displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N} \phi_i(z_i)
+\]
+where 
+\begin{itemize}
+    \item $z=(z_1,\dots,z_N)$, with each $z_i\in\R^{n_i}$, for all $i=1,\dots,N$
+    \item $\ell_i:\R^{n_i}\times\R^d\to\R$ and $\phi_i\R^{n_i}\to\R^d$, for all $i=1,\dots,N$
+\end{itemize}
+For scalar states, $z_i\in\R$, the \emph{centralized gradient} method at iteration $k$ reads as 
+\[
+    z_i^{k+1} = z_i^k -\alpha \displaystyle\frac{\partial}{\partial z_i}\left. \left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right|_{z_1 = z_1^k,\dots,z_N = z_N^k}
+\]
+for all $i=1,\dots,N$ where $\alpha>0$ is the stepsize
+\subsubsection{Gradient computation (scalar case)}
+Since the cost function is a composite function, we need the chain rule to compute its derivative with respect to $z_i$ 
+\begin{align*}
+    &\displaystyle\frac{\partial}{\partial z_i}\left.\left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right|_{z_1 = z_1^k,\dots,z_N = z_N^k} \\
+    =& \left.\displaystyle\frac{\partial}{\partial z_i} \ell_i(z_i,\sigma)\right|_{z_i=z_i^k, \sigma=\frac{1}{N}\sum_{j=1}^{N}\phi_j(z_j^k)}  \\
+    &+\left. \sum_{j=1}^{N}\displaystyle\frac{\partial}{\partial\sigma}l_j(z_j,\sigma)\right|_{z_j=z_j^k, \sigma=\frac{1}{N}\sum_{j=1}^{N}\phi_j(z_j^k)}\cdot \left.\displaystyle\frac{\partial\sigma(z_1,\dots,z_N)}{\partial z_i}\right|_{z_1=z_1^k,\dots,z_N = z_N^k}
+\end{align*}
+Notice that $\displaystyle\frac{\partial\sigma(z_1,\dots,z_N)}{\partial z_i}=\displaystyle\frac{1}{N}\displaystyle\frac{d}{d z_i}\phi_i(z_i)$ can be computed locally
 
+As in the scalar case, we use the chain rule to compute the gradient of the composite function. The $i$-th block of the gradient, denoted as $\left[\nabla\left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right]_i\in\R^{n_i}$, is given by
+\begin{align*}
+    &\left[\nabla\left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right]_i \\ 
+    =& \left.\nabla_1\ell_i(z_i,\sigma)\right|_{z_j=z_j^k, \sigma=\frac{1}{N}\sum_{j=1}^{N}\phi_j(z_j^k)} \\ 
+    &+ \left.\displaystyle\frac{1}{N}\nabla \phi_i(z_i)\right|_{z_i=z_i^k}\cdot \left.\displaystyle\sum_{j=1}^{N}\nabla_2 \ell_j(z_j,\sigma)\right|_{z_j=z_j^k, \sigma=\frac{1}{N}\sum_{j=1}^{N}\phi_j(z_j^k)}
+\end{align*}
+\section{Distributed aggregative optimization}
+In a distributed contex, each agent $i$ 
+\begin{itemize}
+    \item knows only $\ell_i$ and $\phi_i$
+        \item maintains an estimate $z_i^k$ of $z_i^\star$
+        \item maintains an estimate $s_i^k$ of $\phi(z^k) = \displaystyle\frac{1}{N}\displaystyle\sum_{j=1}^{N}\phi_j(z_j^k)$
+        \item maintains an estimate $v_i^k$ of $\displaystyle\sum_{j=1}^{N}\nabla_2 \ell_j(z_j^k,\sigma(z^k))$
+\end{itemize}
+The "tracking" idea of gradient tracking algorithm is applied to aggregative optimization
+\begin{align*}
+    & z_i^{k+1} = z_i^k - \alpha\left( \nabla_1\ell_i(z_i^k,s_i^k) + \nabla \phi_i(z_i^k)v_i^k \right) && z_i^0 \in\R^{n_i}\\
+    & s_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}s_j^k + \phi_i(z_i^{k+1})-\phi_i(z_i^k) && s_i^0 = \phi_i(z_i^0)\\
+    & v_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}v_j^k + \nabla_2\ell_i(z_i^{k+1},s_i^{k+1})-\nabla_2\ell_i (z_i^k,s_i^k) && v_i^0 = \nabla_2\ell_i(z_i^0,s_i^0)
+\end{align*}
+\begin{theorem}[aggregative tracking distributed optimization algorithm: convergence]
+    Assume $G$ is a strongly connected and aperiodic digraph, and $A$ is doubly stochastic. Assume that each function $\ell_i$ is strongly convex, the gradients $\nabla_1\ell_i$ and $\nabla_2\ell_i$ are Lipschitz continuous, and $\phi_i$ is differentiable and Lipschitz continuous. 
+
+    Then, there exists $\alpha^\star$ such that for all $\alpha\in(0,\alpha^\star)$ the sequences of local solution estimates $\{ z_1^k,\dots,z_N^k \}_{k\in\N}$ generated by the aggregative tracking distributed opitmization algorithm satisfy 
+    \[
+        \lim_{k\to\infty}\|z_i^k-z_i^\star\| = 0
+    \]
+    at a linear rate, for all $i=1,\dots,N$
+\end{theorem}
+\subsection{Extension to online aggregative optimization}
+Consider a time-varying instance of the problem 
+\begin{align*}
+    \min_{z} & \displaystyle\sum_{i=1}^{N}\ell_i^k(z_i,\sigma^k(z))\\
+    \text{subj. to }& z_i\in Z_i^k, \qquad \forall i=1,\dots,N
+\end{align*}
+where $Z_i^k\subset \R^{n_i}$ are local constraint sets.
+
+The goal is to design an algorithm generating a sequence $\{z_i^k\}_{k\in\N}$ that "tracks" the solution $z^{k,\star}=(z_1^{k,\star},\dots,z_N^{k,\star})$ of the $k-th$ problem instance.
+
+% Algorithm on slide 10 not required for exam
+\begin{remark}
+    A regret $R_K$ can be introduced for the analysis. Under suitable assumptions, it can be proven that % TODO
+\end{remark}
 
 
 
