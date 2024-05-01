@@ -1101,15 +1101,105 @@ Let $u^\text{ref}\in\R^m$ be a (possibly unsafe) reference input, e.g., obtained
 \end{align*}
 
 
+\section{Single-Robot Obstacle Avoidance: Single Integrator Model}
+Consider a robot modeled as a single integrator, i.e. 
+\[
+    \dot{x} = u
+\]
+with $x\in\R^d$ being the state of the robot and $u\in\R^d$ the control input. The goal is to keep the robot at a safety distance $d$ from an obstacle.
+
+Consider a CBF defined as 
+\[
+    V^s(x) = \| x - x_{text{obs}}\|^2 - d^2
+\]
+where $d$ denotes the safety distance to keep from the obstacle. The gradient wrt $x$ is given by 
+\[
+    \nabla V^s(x)  = 2(x-x_\text{obs})
+\]
+The safety, CBF-based policy can be computed as 
+\begin{align*}
+    \kappa_s (x) = &\arg \min_{u\in\R^d} \|u-u^\text{ref}(x)\|^2\\
+    & \text{subj. to } -2(x-x_\text{obs})^\top u - \gamma(\|x-x_\text{obs}-d^2) \leq 0
+\end{align*}
+\begin{remark}
+For a ginve, fixed $x\in\R^d$, the optimization problem above is a quadratic program    
+\end{remark}
+\begin{remark}
+    The safety controller is meant to prevent collisions while being "minimally invasive" in the sense that it aims at altering the reference controller (coming from a higher level) as littel as possible
+\end{remark}
+\begin{remark}
+    From a practical viewpoint the above problem requires a computation time, while the safety policy should be available in continuous time
+\end{remark}
 
 
+\section{Multi-Robot Collision Avoidance: Single Integrators}
+Consider a team of $N$ robots modeled as single integrators, i.e.
+\[
+    \dot{x}_i = u_i
+\]
+with $x_i\in\R^d$ being the state of robot $i$ and $u_i\in\R^d$ being the control input. The goal is to keep the robots at a safety distance greater than $d$.
+
+To keep the notation simpler, we consider a scalar robot state, and input, i.e. $x_i,u_i\in\R$.
 
 
+\subsection{Control Barrier Function for Multi-Robot Collision Avoidance}
+Consider a "pair-wise", local CBF defined as 
+\[
+    V_{i,j}^s (x_i,x_j) = \|x_i-x_j\|^2 - d^2
+\]
+where $d$ denotes the safety distance between robots $i$ and $j$. 
+
+The gradient wrt $x_i$ and $x_j$ is given by 
+\begin{align*}
+    & \nabla_1 V_{i,j}^s(x_i,x_j) = 2(x_i-x_j)\\
+    & \nabla_2 V_{i,j}^s(x_i,x_j) = 2(x_j-x_i)
+\end{align*}
+while the gradient wrt all the other states is zero.
+
+Let $u\in\R^N$ denote the stack of inputs of the $N$ robots. The admissible control space for collision avoidance is obtained by considering the intersection of all the constraint sets related to a pair-wise control barrier certificates. Thus, 
+\begin{gather*}
+    U^s(x) \left\{ u\in\R^N | -\nabla_1V_{i,j}^s(x_i,x_j)^\top u_i - \nabla_2 V_{i,j}^s(x_i,x_j) u_j - \gamma V_{i,j}^s(x_i,x_j) \leq 0, \forall j \in \mathcal{N}_i, \forall i \in \{1,\dots,N\}\right\}
+\end{gather*}
+where $\mathcal{N}_i$ includes all the robots $j$ that may collide with robot $i$.
+\begin{remark}
+    If there are no apriori restrictions on the motion of the robots and they share the same area, we have $\mathcal{N}_i = \{1,\dots,N\}$. However, for some state configurations $\mathcal{N}_i$ may involve only a restricted number of neighbouring robots.
+\end{remark}
 
 
+\subsection{Centralized Safety Controller for Multi-Robot Collision Avoidance}
+The safety, CBF-based policy is obtained by the following optimization problem
+\begin{align*}
+    \kappa(x) = \arg \min_{u\in\R^N} &\displaystyle\sum_{i=1}^{N} \|u_i-u_i^\text{ref}\|^2\\
+    \text{subj. to } & -\nabla_1V_{i,j}^s(x_i,x_j)^\top u_i - \nabla_2 V_{i,j}^s(x_i,x_j) u_j - \gamma V_{i,j}^s(x_i,x_j) \leq 0\\ 
+    & \|u_i\|\leq u_i^\text{max}\\
+    & \forall j \in \mathcal{N}_i, \forall i \in\{1,\dots,N\}
+\end{align*}
+where $u_1^\text{ref},\dots,u_N^\text{ref}$ are reference inputs for each robot coming from a higher control layer, while $u_1^\text{max},\dots,u_N^\text{max}$ are input bounds for each robot.
 
 
+\subsection{Decentralized Safety Controller for Multi-Robot Collision Avoidance}
+In cooperative (distributed) multi-robot scenarios it is desirable not to have a central coordinator. A more constrained version of the problem can be formulated to obtain a decentralized solver. 
 
+Safety controller for robot $i$: 
+\begin{align*}
+    \kappa(x) = \arg \min_{u\in\R^N} &\displaystyle\sum_{i=1}^{N} \|u_i-u_i^\text{ref}\|^2\\
+    \text{subj. to } & -2\nabla_1V_{i,j}^s(x_i,x_j)^\top u_i - \frac{1}{2} \gamma V_{i,j}^s(x_i,x_j) \leq 0\\ 
+    & \|u_i\|\leq u_i^\text{max}\\
+    & \forall j \in \mathcal{N}_i
+\end{align*}
+
+\begin{remark}
+    The decentralized safety controller requires robot i to receive information by all other robots that may incur in a collision. 
+\end{remark}
+\begin{remark}
+    More complex models may be considered to take into account dynamics constraints
+\end{remark}
+\begin{remark}
+    When more complex dynamics are considered together with input bounds, the (centralized or decentralized) optimization problem may become infeasible (safety cannot be guaranteed). More sophisticated approaches are required to synthetize safety barrier certificates with guaranteed feasibility. 
+\end{remark}
+\begin{remark}
+    When the objectives of multiple robots conflict with the safety barrier certificates, robots might incur into a deadlock, i.e., a configuration that is safe but does not allow for task completion. 
+\end{remark}
 
 
 
