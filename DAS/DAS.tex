@@ -754,6 +754,72 @@ Paradigm:
 \end{itemize}
 
 
+\chapter{Leader-Follower networks: Containment}
+Consider a network of $N$ agents communicating/interacting according to a fixed, undirected graph $G=(\{1,\dots,N\},E)$. Let $x_i(t)\in\R^d$ be the state of agent $i$ and for simplicity suppose $d=1$, i.e. $x_i(t)\in\R$.
+
+\section{Definition}
+Suppose that agents are divided into two groups: 
+\begin{itemize}
+    \item $N_f$ followers
+    \item $N-N_f$ leaders
+\end{itemize}
+Define $x = \begin{bmatrix}
+    x_f \\ x_l
+\end{bmatrix}$ with $x_f\in\R^{N_f}$ the followers' state and $x_l\in\R^{N-N_f}$ the leaders' state.
+Consistently, partition the Laplacian matrix as $L = \begin{bmatrix}
+    L_f & L_{fl} \\ L_{FL}^\top & L_l
+\end{bmatrix}$.
+If leaders and followers run the same Laplacian-based distributed control law, then the Laplacian dynamics ca be written as 
+\[
+    \begin{bmatrix}
+        \dot{x}_f(t) \\ \dot{x}_l(t) 
+    \end{bmatrix} = -\begin{bmatrix}
+        L_f & L_{fl} \\ L_{FL}^\top & L_l
+    \end{bmatrix} \begin{bmatrix}
+        x_f(t) \\ x_l(t)
+    \end{bmatrix}
+\]
+\section{Control law}
+Now, suppose that leaders and followers have different roles: 
+\begin{itemize}
+    \item $N_f$ followers running Laplacian dynamics
+    \item $N-N_f$ leaders being stationary
+\end{itemize}
+The distributed control system is given by 
+\begin{align*}
+    & \dot{x}_i(t) = - \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij} (x_i(t)-x_j(t)) && \forall i \in\{1,\dots,N_f\}\\
+    & \dot{x}_i(t) = 0 && \forall i \in\{N_f+1,\dots,N\}
+\end{align*}
+and in compact form 
+\[
+    \begin{bmatrix}
+        \dot{x}_f(t) \\ \dot{x}_l(t) 
+    \end{bmatrix} = -\begin{bmatrix}
+        L_f & L_{fl} \\ 0 & 0
+    \end{bmatrix} \begin{bmatrix}
+        x_f(t) \\ x_l(t)
+    \end{bmatrix}
+\]
+The dynamics of the followers is given by 
+\[
+    \dot{x}_f(t) = -L_fx_f(t) - L_{fl}x_l
+\]
+where $x_l(t) = x_l(0)=x_l$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \chapter{Leader Follower networks: Formation control}
 \section{analogy with mass-spring systems}
