@@ -385,7 +385,7 @@ Consider a network of dynamical systems with dynamics
 \[
     \dot{x}(t) = u_i(t) \qquad i \in \{1,\dots,N\}
 \]
-with states $x_i\in\R$ and inputs $u_i\in\R$, communicating (or interacting) according to a digraph $G=(\{1,\dots,N\},E)$. Consider a (distributed) "proportional" feedback control 
+with states $x_i\in\R$ and inputs $u_i\in\R$, communicating (or interacting) according to a digraph $G$. Consider a (distributed) "proportional" feedback control 
 \[
     u_i(t) = - \displaystyle\sum_{j\in\mathcal{N}_i^{\text{IN}}}a_{ij}(x_i(t)-x_j(t))
 \]
@@ -918,12 +918,74 @@ The goal is to design an algorithm generating a sequence $\{z_i^k\}_{k\in\N}$ th
 \end{remark}
 
 
+\chapter{Learning with Neural Networks}
+In supervised learning we have labeled data whose generic element(sample) is composed by 
+\begin{itemize}
+    \item an input point $\mathcal{D}\in\R^d$, i.e. a vector $\mathcal{D} = ([\mathcal{D}]_1,\dots,[\mathcal{D}]_d)$ 
+        \item a lebel $p\in\R$ associated to the input point
+\end{itemize}
+A dataset is usually made by $\mathcal{M}$ samples, i.e. $((\mathcal{D}^1,p^1),\dots,(\mathcal{D}^\mathcal{M},p^\mathcal{M}))$
+
+Goal: reconstruct the uknown input-output map between inputs and labels\\
+Strategy: approximate the map as a nonlinear function $\phi(\mathbb{u};\cdot):\R^d\to\R$ parametrized byh $\mathbb{u}$\\
+Problem: find the best parameters $\mathbb{u}^\star$ based on data
+
+\section{Basic element: the neuron model}
+A generic neuron $h$ is a computational unit that 
+\begin{itemize}
+    \item has a set of weights $u_h\in\R^d$ 
+    \item elaborates a vector $x\in\R^d$
+    \item computes a scalar quantity 
+        \[
+            x_h^+ = \phi(x^\top u_h)
+        \]
+        with $\sigma:\R\to\R$ being the \emph{activation function}
+\end{itemize}
 
 
+\chapter{Multi-Robot Safety Controllers}
+Consider a nonlinear system 
+\[
+    \dot{x}(t) = f(x(t),u(t)), \qquad x\in\R^n \quad u\in U\subset \R^m
+\]
+Let us define a safe (state) set 
+\[
+    X^s := \{ x\in\R^n | V^s(x)\geq0 \}
+\]
+for some sufficiently regular function $V^s:\R^n\to\R$
 
+Goal: design a feedback control law $\kappa(x),\kappa:\R^n\to\R^m$ such that the set $X^s$ is forward invariant
 
+\section{Control Barrier Functions}
+Consider the time derivative of $V^s(x(t))$ along the system trajectories
+\begin{align*}
+    \displaystyle\frac{d}{dt}V^s(x(t)) &= \nabla V^s(x(t))^\top f(x(t)) + \displaystyle\sum_{h=1}^{m}\nabla V^s(x(t))^\top g_h(x(t))u_h(x(t))\\
+                                       &= L_fV^s(x(t)) + L_gV^s(x(t))u(t)
+\end{align*}
+where $L_f$ and $L_g$ represent Lie derivatives.
+We say that $V^s$ is a Control Barrier Function (CBF) if there exists a continuous, strictly increasing function $\gamma:\R\to\R$, with $\gamma(0)=0$, such that 
+\[
+    \sup_{u\in U}\{ L_fV^s(x) + L_gV^s(x)u + \gamma(V^s(x))\geq 0 \}
+\]
+for all $x\in\R^n$.
 
+The above inequality induced by a CBF is called a \emph{control barrier certificate}.
+\subsection{Admissible Control Space}
+We can define the set of admissible (safe) controllers for a given state $x$ as 
+\[
+    U^s(x) = \left\{ u\in\R^m | L_fV^s(x) + L_gV^s(x)u + \gamma(V^s(x))\geq 0 \right\}
+\]
+i.e., the set of inputs satisfying the control barrier certificates. 
+\begin{remark}
+    It can be shown that (sufficiently regular) feedback controllers satisfying the above condition render $X^s$ forward invariant and asymptotically stable.
+\end{remark}
 
+\subsection{Safety Filters via Control Barrier Certificates}
+Let $u^\text{ref}\in\R^m$ be a (possibly unsafe) reference input, e.g., obtained by a higher-level controller. The safety controller is designed to be "minimally invasive", i.e. it aims at altering the reference controller as little as possible. A safe policy $u = \kappa(x)$ can be designed as 
+\begin{align*}
+    \kappa(x) = \arg &\min_{u\in\R^m} \|u-u^\text{ref}(x)\|^2\\
+                     &\text{subj. to } -L_fV^s(x) - L_gV^s(x)u - \gamma(V^s(x))\leq 0
+\end{align*}
 
 
 
