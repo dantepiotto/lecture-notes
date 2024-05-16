@@ -1202,6 +1202,229 @@ Safety controller for robot $i$:
 \end{remark}
 
 
+\chapter{Stability Analysis for Linear Averaging}
+Consider $N$ agents in a network modeled as a graph $G$ with associated weighted adjacency matrix $A$
+
+Linear averaging distributed algorithm 
+\[
+    x^{k+1}_i = \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}x_j^k, \quad x^0 \text{ is given } \quad i=1,\dots,N
+\]
+where $x_i^k\in\R$ is the state of agent $i$ at time $k$ and $a_{ij}\geq 0$ 
+
+Each agent $i$ uses only the states of neighbours $j\in\mathcal{N}_i$, thus it is a distributed algorithm. The goal is to reach consensus. 
+
+The linear averaging is 
+% TODO slide 23 
+
+We want to study the stability properties of the equilibrium point(s) of such an autonomous system
+
+The compact version of the linear averaging is an LTI dynamical system
+\[
+    x^{k+1} = A x^k \qquad x^0 \text{ given}
+\]
+The equilibrium points can be computed as 
+\[
+    x_{\text{eq}} = A x_{\text{eq}} \implies (I-A)x_{\text{eq}} = 0
+\]
+% TODO slide 3-4
+\section{Irreducible and primitive matrices}
+A square matrix $A\in\R^{N\times N}$ is 
+\begin{itemize}
+    \item non-negative if all its entries are greater than or equal to zero and we write $A\geq 0$
+        \item irreducible if $\sum_{k=0}^{N-1}A^k>0$
+
+            Equivalently, there exists no permutation matrix $T$ such tha $TAT^\top$ is block triangular
+        \item primitive if there exists an integer $k\in\{1,\dots,N\}$ such that $A^k$ is positive
+        \item positive\footnote{Not to be confused with a \emph{positive definite} matrix, denoted as $A \succ 0$} if all its entries are greater than zero and we write $A>0$
+\end{itemize}
+
+\section{Spectral properties of square matrices}
+The spectrum of a square matrix $A$, $spec(A)$, is the set of eigenvalues of $A$. The spectral radius, $\rho(A)$, is the minimum norm of the eigenvalues of $A$.
+\begin{theorem}[Gershgoring Theorem]
+    For any (real or complex) square matrix $A$, it holds 
+    \[
+        spec(A)\subset \bigcup_{i=1}^N \left\{ s\in\mathbb{C} |\ |s-a_{ii}| \leq \displaystyle\sum_{j=1, j\neq i}^{N}|a_{ij}| \right\}
+    \]
+    That is, the union of disks in $\mathbb{C}$ centered at each diagonal entry $a_{ii}$ with radius $\sum_{j=1,j\neq i}^{N}|a_{ij}$
+\end{theorem}
+\begin{theorem}[]
+    Let $G$ be a weighted digraph with $N\geq2$ nodes and with weighted adjacency matrix $A$. Then $A$ is irreducible iff $G$ is strongly connected
+\end{theorem}
+\begin{theorem}[]
+    Let $G$ be a weighted digraph with $N\geq2$ nodes and with weighted adjacency matrix $A$. Then $A$ is primitive iff $G$ is strongly connected and aperiodic
+\end{theorem}
+\begin{theorem}[Perron-Frobenius theorem]
+    Let $A\in\R^{N\times N}$ with $N\geq2$ be a non-negative matrix, then 
+    \begin{enumerate}
+        \item there exists a real eigenvalue $\lambda\geq |\mu|\geq0$ for all other eigenvalues $\mu\in\mathbb{C}$ of $A$
+        \item the right eigenvector $v\in\R^N$ and left eigenvector $w\in\R^N$ associated to $\lambda$ can be selected non-negative 
+
+            If, additionally $A\in\R^{N\times N}$ is irreducible, then 
+        \item the eigenvalue $\lambda\in\R$ is striclty positive and simple
+        \item the right eigenvector $v\in\R^N$ and left eigenvector $w\in\R^N$ associated to $\lambda$ are unique and positive, possibly up to rescaling
+
+            If, additionally $A\in\R^{N\times N}$ is primitive, then
+        \item The eigenvalue $\lambda>|\mu|$ for all other eigenvalues $\mu\in\mathbb{C}$ of $A$
+    \end{enumerate}
+        \end{theorem}
+
+
+
+\chapter{Constraint-coupled Distributed Optimization}
+Constraint-coupled optimization problem 
+\begin{align*}
+    \min_{z_1,\dots,z_N} & \displaystyle\sum_{i=1}^{N}\ell_i(z_i)\\
+    \text{subj. to } & z_i\in Z_i \subset \R^{n_i}  \qquad  i=1,\dots,N \\
+                     & \displaystyle\sum_{i=1}^{N}g_{ij}(z_i)\leq 0 \qquad j=1,\dots,r
+\end{align*}
+with $\ell_i:\R^{n_i}\to \R$ convex, $g_{ij}:\R^{n_i}\to\R$ convex and $Z_i\subset \R^{n_i}$ convex and compact.
+\bigskip
+\\Constraint-coupled optimization problem (vector form)
+\begin{align*}
+    \min_{z_1,\dots,z_N} & \displaystyle\sum_{i=1}^{N}\ell_i(z_i)\\
+    \text{subj. to } & z_i\in Z_i \subset \R^{n_i}  \qquad  i=1,\dots,N \\
+                     & \displaystyle\sum_{i=1}^{N}g_{i}(z_i)\leq 0 
+\end{align*}
+with $\ell_i:\R^{n_i}\to \R$ convex, $g_{i}:\R^{n_i}\to\R^r$ convex and $Z_i\subset \R^{n_i}$ convex and compact
+
+\section{Constraint-coupled Setup}
+\begin{itemize}
+    \item $N$ agents communicate over graph $G$
+    \item $(z_1,\dots,z_N)$ decision variables - size grows with $N$
+    \item agent $i$ knows $\ell_i,g_i$ and $Z_i$
+\end{itemize}
+
+\section{Multi-robot scenario}
+Let us assume a framework withn $N$ robots that must collectively serve $N$ tasks. We model the state of the $i$-th robot as $z_i\in\R^{n_i}$ where $n_i$ is the number of tasks robot $i$ can serve, and we denote \[
+    \begin{cases}
+        {z_i}_k=1 & \text{if robot $i$ serves task $k$}\\
+        {z_i}_k=0 & \text{otherwise}\\
+    \end{cases}
+\]
+And we say that robot $i$ serves task $j$ with some cost $c_{ij}$. 
+The constraint set is thus
+\[
+    Z_i = \{z_i\in\R^{n_i}|z_i\in\{0,1\}, \displaystyle\sum_{k=1}^{N}{z_i}_k=1\} % TODO check recording
+\]
+Suppose each robot can serve all tasks. then
+\[
+    \displaystyle\sum_{i=1}^{N}{z_{i}}_k = 1 \qquad k=1,\dots,N
+\]
+in a more compact way 
+\[
+    \displaystyle\sum_{i=1}^{N}z_i=1
+\]
+if robots can serve only a subset of of tasks we can define some "selection" matrices $H_i$, $i\in\{1,\dots,N\}$. We can thus write the constraint as 
+\[
+    \displaystyle\sum_{i=1}^{N} H_iz_i = 1
+\]
+To summarize, we can rewrite the problem as 
+\begin{align*}
+    \min_{z_1,\dots,z_N} &  \displaystyle\sum_{i=1}^{N} c_i^Tz_i \\
+    \text{subj. to } & z_i\in Z_i \qquad i=1,\dots,N\\ 
+                     &\displaystyle\sum_{i=1}^{N} H_i z_i = 1
+\end{align*}
+
+\begin{remark}
+    Task allocation problems satisfy the "unimodularity" property. We can relax to a linear program (in place of an integer program):
+    \[
+        Z_i = \{z_i\in\R^{n_i} | 0\leq z_i\leq1, \displaystyle\sum_{k=1}^{N}{z_{i}}_k=1\}
+    \]
+    The solution $z_i^\star\in\{0,1\}$
+\end{remark}
+
+
+
+
+
+\section{Distributed optimal control}
+\begin{align*}
+    \min_{\substack{x_1,\dots,x_N\\u_1,\dots,u_N}} & \displaystyle\sum_{i=1}^{N} \left( \displaystyle\sum_{\tau=0}^{T-1}\ell_i^{SC}(x_i(\tau),u_i(\tau)) + \ell_i^{TC}(x_i(T)) \right)\\
+    \text{subj. to } & x_i(\tau+1) = A_ix_i(\tau)+B_iu_i(\tau), \quad \forall i, \quad \tau\in [0,T-1]\\
+                     & x_i(\tau) \in X_i \quad u_i(\tau-1)\in U_i, \qquad \forall i, \quad \tau\in [1,T]\\ 
+                     & \displaystyle\sum_{i=1}^{N}H_ix_i(\tau)\leq \bar{h} \qquad \tau\in[1,T]
+\end{align*}
+
+
+
+\section{Duality for constraint-coupled optimization}
+Let the Lagrangian function $\mathcal{L}:\R^{\sum_{i=1}^{N}n_i}\times \R^r \to \R$ be 
+\[
+    \mathcal{L} (x,\mu) = \displaystyle\sum_{i=1}^{N} (\ell_i(z_i)+\mu^T g_i(z_i))
+\]
+Then, the dual function can be computed as 
+\begin{align*}
+    q(\mu) & = \inf_{\substack{z_i\in Z_i \\ i\in\{1,\dots,N\}}}\displaystyle\sum_{i=1}^{N} \left(\ell_i(z_i) + \mu^Tg_i(z_i)\right) \\
+           & = \displaystyle\sum_{i=1}^{N} \inf_{z_i\in Z_i} \left( \ell_i(z_i) + \mu^Tg_i(z_i)\right) \\
+           & = \displaystyle\sum_{i=1}^{N} q_i(\mu)
+\end{align*}
+with $q_i(\mu) := \inf_{z_i\in Z_i} \left( \ell_i (z_i) + \mu^Tg_i(z_i)\right)$. Because each local cost function depends only on its own variable and the constraint sets are independent we can minimize each cost function separately.
+
+The dual problem is thus 
+\[
+    \max_{\mu\geq 0} \displaystyle\sum_{i=1}^{N}q_i(\mu)
+\]
+\begin{remark}
+    The dual problem is a cost-coupled optimization problem.
+\end{remark}
+
+\section{Centralized dual subgradient}
+The subgradient algorithm non the dual problem reads 
+\begin{align*}
+    \mu^{k+1} &= \mathcal{P}_{\mu\geq 0}\left(\mu^k + \alpha^k\tilde{\nabla} q(\mu^k)\right)\\ 
+              &= \mathcal{P}_{\mu\geq 0}\left(\mu^k + \alpha^k \displaystyle\sum_{i=1}^{N} \tilde{\nabla} q_i(\mu^k)\right)\\ 
+\end{align*}
+where $\alpha^k$ is the stepsize.
+
+A subgradient of $q_i$ at $\mu^k$ can be computed as 
+\begin{align*}
+    z_i^{k+1} &= \arg \min_{z_i\in Z_i} \ell_i(z_i) + (\mu^k)^Tg_i(z_i)\\
+    \tilde{\nabla} q_i(\mu^k) &= g_i(z_i^{k+1})
+\end{align*}
+
+\subsubsection{Centralized dual subgradient algorithm}
+\begin{align*}
+    z_i^{k+1} &= \arg \min_{z_i\in Z_i} \ell_i(z_i) + (\mu^k)^Tg_i(z_i)\\
+    \mu^{k+1} &= \mathcal{P}_{\mu\geq 0}\left(\mu^k + \alpha^k \displaystyle\sum_{i=1}^{N}g_i(z_i^{k+1})\right)
+\end{align*}
+\begin{remark}
+    The centralized part is the update of $\mu$, which is to be computed by a "master" node, whereas the update of $z_i$ can be done locally to each agent.
+\end{remark}
+\begin{remark}
+    This procedure is known as dual decomposition, as the problem is decomposed and computation can be parallelized
+\end{remark}
+
+\subsubsection{Distributed dual subgradient algorithm}
+\begin{align*}
+    v_i^{k+1} &= \displaystyle\sum_{i=1}^{N}a_{ij}\mu_j^k \\ 
+    z_i^{k+1} &= \arg\min_{z_i\in Z_i} \ell_i(z_i) + (v_i^{k+1})^Tg_i(z_i)\\
+    \mu_i^{k+1} &= \mathcal{P}_{z\geq0} \left(\mu_i^k + \alpha^k g_i(z_i^{k+1})\right)
+\end{align*}
+This algorithm was obtained by applying the distributed gradient algorithm to the centralized algorithm, thus obtaining a compeltely distributed algorithm.
+
+If the minimum in the second step can be proven to be unique at every iteration, then $z_i^k$ converges to the optimal solution of the primal problem. Otherwise, it can be proven that the running average of $z_i^k$ converges to the optimal solution.
+\subsection{Distributed dual subgradient convergence}
+% TODO assumptions
+\begin{theorem}[Distributed Dual Subgradient]
+    Let Assumptions 1, 2, and 3d hold.
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
