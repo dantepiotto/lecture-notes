@@ -14,6 +14,8 @@
 
 \newcommand\at[2]{\left.#1\right|_{#2}}
 \DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\spec}{spec}
+\DeclareMathOperator{\vspan}{span}
 \DeclareMathOperator{\col}{col}
 \DeclareMathOperator{\des}{des}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -24,7 +26,8 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\deriv}[1]{\displaystyle\frac{d}{d #1}}
 \newcommand{\traj}{(\bar{\mathbf{x}},\bar{\mathbf{u}})}
-
+\newcommand{\fatone}{\boldsymbol{1}}
+\newcommand{\fatl}{\boldsymbol{\ell}}
 
 \newtheoremstyle{theoremv2}{}{}{}{}{\bfseries}{}{\newline}{}
 \theoremstyle{theoremv2}
@@ -206,7 +209,6 @@ Team of $N$ (mobile) robots aiming to execute complex tasks
 \begin{definition}[Balanced digraph]
     A digraph $G$ is balanced if $\deg_i^{\text{IN}}=\deg_i^{\text{OUT}}$ for all $i\in\{1,\dots,N\}$
 \end{definition}
-% TODO definitions slides 4-5-7-8-9-10
 \begin{definition}[Directed path]
     ordered sequence of nodes s.t. any pair of consecutive nodes is a directed edge. A path is \emph{simple} if no node appears more than once
 \end{definition}
@@ -234,6 +236,32 @@ Note: a graph with self-loops is aperiodic.
 \end{definition}
 \begin{definition}[Complete graph]
     Unweighted graph such that $\forall i,j\ \exists \ (i,j),\ (j,i) \in E$
+\end{definition}
+\begin{definition}[Weighted digraph]
+    triplet $G=(I,E,\{a_{(i,j)}\}_{(i,j)\in E})$, where $(I,E)$ is a digraph and each $a_(i,j)$ is a strictly positive weight for the edge $(i,j)$
+\end{definition}
+\begin{definition}[Weighted in-degree]
+    $\deg_i^\text{IN} = \displaystyle\sum_{j=1}^{N}a_{ji}$
+\end{definition}
+\begin{definition}[Weighted out-degree]
+    $\deg_i^\text{OUT} = \displaystyle\sum_{j=1}^{N}a_{ij}$
+\end{definition}
+A graph is said to be weight balanced if $\deg_i^\text{IN} = \deg_i^\text{OUT}$ for all nodes $i\in\{1,\dots,N\}$
+\begin{definition}[Weighted adjacency matrix]
+    non-negative matrix $A$ s.t. the entry $(i,j)$ of $A$, denoted $a_{ij}$, satisfies:
+    \begin{itemize}
+        \item $a_{ij} > 0$ if $(i,j)\in E$
+        \item $a_{ij} = 0$ otherwise
+    \end{itemize}
+\end{definition}
+\begin{definition}[Adjacency matrix]
+    matrix $A$ with entries $a_{ij}=1$ if $(i,j)\in E$ and $a_{ij}=0$ otherwise
+\end{definition}
+\begin{definition}[Weighted in/out degree]
+    $\deg_i^\text{IN} = \displaystyle\sum_{j=1}^{N} a_{ji}$ and $\deg_i^\text{OUT} = \displaystyle\sum_{j=1}^{N} a_{ij}$
+\end{definition}
+\begin{definition}[Laplacian matrix]
+    $L = D^\text{OUT} - A$
 \end{definition}
 
 \chapter{Averaging Systems}
@@ -551,7 +579,11 @@ Let $\ell$ be $\mu$-strongly convex and with $L$-Lipschitz continuous gradient. 
     u^k &= \nabla \ell(z^k)
 \end{align*}
 where $u^k$ is a "control input" obtained through a static (nonlinear) state feedback. The block diagram is 
-% TODO insert image slide 20
+\begin{figure}[h]
+    \center
+    \includegraphics[width=0.45\textwidth]{figures/gradmthd}
+\end{figure}
+
 
 This is known as the \emph{Lur'e problem}
 
@@ -601,7 +633,10 @@ For a sufficiently small $\alpha$, the state matrix $(I-\alpha Q)$ is Schur. Hen
 \]
 \subsection{Gradient flow}
 Let us swap the roles of the plant (the static nonlinearity) and the controller (the integrator)
-% TODO insert images slide 24
+\begin{figure}[h]
+    \center
+    \includegraphics[width=0.95\textwidth]{figures/gradflow3}
+\end{figure}
 We obtain the so-called gradient flow (continuous-time dynamics)
 \[
     \dot{z}(t) = -\nabla \ell(z(t)) \qquad z(0) = z_0
@@ -615,7 +650,12 @@ Consider the following two-step algorithm: for all $k\in\N$
     \zeta^{k+1} = \zeta^k + \alpha_1(\zeta^k-\zeta^{k+1}) - \alpha_2\nabla\ell \left(\zeta^k + \alpha_1(\zeta^k-\zeta^{k+1})\right), \quad \zeta^0, \zeta^{-1} \text{ given}
 \]
 for some $\alpha_1,\alpha_2>0$. It admits the state-space representation
-% TODO image slide 25
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.45\textwidth]{figures/nesterov.png}
+    \end{center}
+\end{figure}
+
 More general updates can also be considered: for all $k\in\N$
 \[
     \zeta^{k+1} = \zeta^k + \alpha_1(\zeta^k-\zeta^{k+1})-\alpha_2\nabla\ell\left(\zeta^k+\alpha_3(\zeta^k-\zeta^{k-1})\right), \quad \zeta^0,\zeta^{-1} \text{ given}
@@ -623,7 +663,6 @@ More general updates can also be considered: for all $k\in\N$
 for some $\alpha_1, \alpha_2, \alpha_3>0$
 
 \chapter{Parallel Optimization and Federated Learning}
-% TODO slides 1-5
 \subsubsection{Cost-coupled optimization for learning}
 In learning applications, we usually consider optimization problems in the form 
 \[
@@ -945,6 +984,185 @@ The formation control dynamics becomes
     \dot{x}_i = - \displaystyle\frac{\partial V^\text{form}}{\partial x_i} - \displaystyle\frac{\partial V^\text{ca}(x)}{\delta x_i} - \nabla V^\text{obs}(x) \qquad \forall i\in\{1,\dots,N\}
 \]
 
+\chapter{Distributed Cost-Coupled Optimization}
+Scenario: Network of $N$ agents communicating according to a digraph $G=(\{1,\dots,N\}E)$
+\\Goal: define a distributed algorithm able to solve an optimization problem
+\section{Cost-Coupled Optimization Set-up}
+Consider the optimization problem 
+\[
+    \min_{z_in Z} \displaystyle\sum_{i=1}^{N}\ell_i(z)
+\]
+with $z\in\R^d$ 
+\begin{itemize}
+    \item $N$ agents communicate over graph $G$
+    \item agent $i$ konws $\ell_i$ and $Z$ only 
+    \item $z_i^k$ solution estimate of $i$
+\end{itemize}
+\section{Distributed Gradient Algorithm}
+The centralized gradient algorithm reads 
+\[
+    z^{k+1} = z^k - \alpha^k \displaystyle\sum_{h=1}^{N} \nabla \ell_h(z^k)
+\]
+\begin{itemize}
+    \item One single estimate $z^k\in\R^d$ initialized at some $z^0$ 
+    \item $d^k = -\displaystyle\sum_{h=1}^{N}\nabla \ell_h(z^k)$
+    \item $\displaystyle\sum_{h=1}^{N}\nabla \ell_h(z^k)$ not available to each agent
+\end{itemize}
+The distributed gradient algorithm reads
+\begin{align*}
+    v_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N_i}}a_{ij} z_j^k \\
+    z_i^{k+1} &= v_i^{k+1} - \alpha^k \nabla\ell_i(v_i^{k+1})
+\end{align*} 
+with $z_i^0\in\R^d$
+
+\section{Assumptions}
+\begin{itemize}
+    \item Assumption 1. Let $a_{ij},\ i,j \in \{1,\dots,N\}$ be nonnegative entries of a weighted adjacency matrix $A$ associated to the undirected and connected graph $G$, with $a_{ij}>0$ and $A$ doubly stochastic.
+    \item Assumption 2. The step-size sequence $\{\alpha^k\}_{k\in\N}$ satisfies the conditions
+        \[
+            \alpha^k \geq 0, \qquad \displaystyle\sum_{k=0}^{\infty}\alpha^k = \infty, \qquad \displaystyle\sum_{k=0}^{\infty} (\alpha^k)^2 < \infty
+        \]
+    \item Assumption 3a. Let the following conditions hold 
+        \begin{itemize}
+            \item each $\ell_i:\R^d\to\R$ is convex and has bounded gradients, i.e., there exists a scalar $C_i>0$ such that $\|\nabla \ell_i(z)\|\leq C_i$ at any $z\in\R^d$
+            \item the optimization problem has at least one optimal solution, i.e. the optimal solution set $Z^\star = \{z\in\R^d|\ell(z)=\ell^\star\}$ is nonempty, where $\ell^\star$ denotes the optimal value of the problem
+        \end{itemize}
+\end{itemize}
+\begin{theorem}[]
+    Let assumptions 1,2 and 3a hold true. Then, the sequences of local solution estimates $\{z_i^k\}_{k\in\N}, i=1,\dots,N$, generated by the Distributed Gradient Algorithm, asymptotically converge to a common solution $z^\star$ of the problem, i.e. for all $i=\,\dots,N$ it holds 
+    \[
+        \lim_{k\to\infty} \|z_i^k-z^\star\| = 0
+    \]
+    for some $z^\star$ in the optimal solution set $Z^\star$
+\end{theorem}
+
+\section{Distributed Projected Subgradient Algorithm}
+The previous result can be extended to nonsmooth convex functions $\ell_i$ and $z$ constrained to a closed, convex set $Z\subseteq \R^d$ by implementing the following distributed step
+\begin{align*}
+    v_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N_i}}a_{ij} z_j^k \\
+    z_i^{k+1} &= P_Z\left(v_i^{k+1} - \alpha^k \tilde{\nabla}\ell_i(v_i^{k+1})\right)
+\end{align*}
+where $P_Z(\cdot)$ denotes the Euclidean projection onto $Z$ while $\tilde\nabla\ell_i$ denotes a subgradient of $\ell_i$
+
+Convergence to an optimal solution can be achieved by substituting Assumption 3a with 
+\\Assumption 3b. Assume $Z\subseteq \R^d$ be a closed and bounded set. Let the following conditions hold 
+\begin{itemize}
+    \item each $\ell_i:Z\to\R$ is convex and has bounded subgradients, i.e. there exists a scalar $C_i>0$ such that $\|\tilde\nabla\ell_i(z)\|\leq C_i$ for any subgradient $\tilde\nabla\ell_i(z)$ of $\ell_i$ at any $z\in\R^d$
+        \item the optimization problem has at least one optimal solution
+\end{itemize}
+
+\section{Improving the Distributed Gradient Algorithm}
+recall the Distributed Gradient Algorithm 
+\[
+    z_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}z_j^k + \alpha d_i^k
+\]
+We need to replace $d_i^k = -\nabla \ell_i(z_i^k)$ with a better descent direction. The idea is to use a local descent direction $d_i^k$ that aims at reconstructing the correct gradient
+\[
+    d_i^k \xrightarrow[\ k\to\infty\ ]-\displaystyle\frac{1}{N} \displaystyle\sum_{h=1}^{N}\nabla\ell_h(z_h^k)
+\]
+
+\subsection{Dynamic Average Consensus}
+\begin{itemize}
+    \item $N$ agents measure only a local, time-varying signal $r_i^k:\N\to\R$, for all $i=1,\dots,N$
+    \item Each agent $i$ wants to estimate/track the average signal
+        \[
+            \bar{r}^k = \displaystyle\frac{1}{N} \displaystyle\sum_{i=1}^{N}r_i^k
+        \]
+\end{itemize}
+Each agent $i$ maintains and updates a local estimate $s_i^k$ so that $\lim_{k\to\infty}\|s_i^k-\bar{r}^k\|=0$. A distributed algorithm based on a (perturbed) consensus is the following 
+\[
+    s_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i} a{ij} s_j^k + \left(r_i^{k+1}-r_i^k\right)
+\]
+with $s_i^0 = r_{i,0}$, where the first term represents a consensus term, and the second is a local innovation
+\subsubsection{Convergence}
+Let the first-order differences be relatively bounded, i.e. 
+\[
+    \|r_i^{k+1}-r_i^k\| \leq C_1
+\]
+for some $C_1>0$. Then, the local sequence generated by the dynamic average consensus satisfies 
+\[
+    \lim_{k\to\infty} \|s_i^k - \bar{r}^k\|\leq C_2
+\]
+for some $C_2>0$ and for all $i=1,\dots,N$
+\begin{remark}
+    The local states achieve a nonzero steady-state error, which is uniformly upper bounded
+\end{remark}
+\begin{remark}
+    If $\|r_i^{k+1}-r_i^k\|\to0$, then the steady-state error is zero, i.e. perfect tracking is achieved
+\end{remark}
+
+\section{The Gradient Tracking Algorithm}
+The strategy is to use the previous signal tracking mechanism to reconstruct the gradient of $\displaystyle\sum_{i=1}^{N}\ell_i$. The local signal is 
+\[
+    r_i^k = \nabla \ell_i(z_i^k)
+\]
+The local estimate $s_i^k$ is updated as
+\[
+    s_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i} a_{ij}s_j^k + \left(\nabla\ell_i(z_i^{k+1})-\nabla\ell_i(z_i^k)\right), \qquad s_i^0 = \nabla\ell_i(z_i^0)
+\]
+and use its opposite as local descent direction $d_i^k = -s_i^k$
+\[
+    d_i^k \xrightarrow[\ k\to\infty\ ]-\displaystyle\frac{1}{N} \displaystyle\sum_{h=1}^{N}\nabla\ell_h(z_h^k)
+\]
+\begin{remark}
+    If each $\nabla_ell_i(z_i^k)$ converges to a constant value then perfect tracking is achieved
+\end{remark}
+\begin{remark}
+    The convergence of $\nabla\ell_i(z_i^k)$ is intetwined with the convergence of $z_i^k$, e.g. to $z^\star$
+\end{remark}
+The Gradient Tracking Algorithm is 
+\begin{align*}
+    z_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N}_i} a_{ij}z_j^k - \alpha s_i^k && z_i^0\in\R\\
+    s_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N}_i} a_{ij}s_j^k + \nabla\ell_i(z_i^{k+1}) - \nabla\ell_i(z_i^k) &&s_i^0=\nabla\ell_i(z_i^0)
+\end{align*}
+
+\subsection{Assumptions}
+\begin{itemize}
+    \item Assumption 1. Let $a_{ij},\ i,j\in\{1,\dots,N\}$ be non-negative entries of a weighted adjacency matrix $A$ associated to the undirected graph $G$, with $a_{ii}>0$ and $A$ doubly stochastic.
+    \item Assumption 2. For all $i\in\{1,\dots,N\}$ each cost function $\ell_i:\R^d\to\R$ satisfies the following conditions
+        \begin{itemize}
+            \item it is strongly convex with coefficient $\mu>0$
+            \item it has Lipschitz continuous gradient with constant $L>0$
+        \end{itemize}
+\end{itemize}
+\begin{remark}
+    Strong convexity implies uniqueness of the optimal solution $z^\star = \arg\min_x \displaystyle\sum_{i=1}^{N} \ell_i(z)$
+\end{remark}
+\subsection{Convergence Result}
+\begin{theorem}[]
+    Let assumptions 1 and 2 hold true. Then, there exists $\alpha^\star>0$ such that for all $\alpha\in(0,\alpha^\star)$ the sequences of local solution estimates $\{z_i^k\}_{k\in\N}$, $i=1,\dots,N$ generated by the Gradient Tracking algorithm asymptotically converge to a (consensual) solution $z^\star$ of the problem, i.e. for all $i=1,\dots,N$ it holds
+    \[
+        \lim_{k\to\infty} \|z_i^k-z^\star\| = 0
+    \]
+    Moreover, the convergence rate is linear/the stability is exponential, i.e., for all $i=1,\dots,N$ there exists $\rho\in(0,1)$ such that 
+    \[
+        \|z_i^k-z^\star\| \leq \rho \|z_i^{k-1}-z^\star\| \leq \rho^k \|z_i^0-z^\star\|
+    \]
+    for all $k\in\N$
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \chapter{Distributed Aggregative Optimization}
 Consider $N$ robots in the plane that want to optimize their positions $z_i\in\R^2$, for all $i=1,\dots,N$ to perform multi-robot surveillance. Let:
@@ -1027,7 +1245,7 @@ The goal is to design an algorithm generating a sequence $\{z_i^k\}_{k\in\N}$ th
 
 % Algorithm on slide 10 not required for exam
 \begin{remark}
-    A regret $R_K$ can be introduced for the analysis. Under suitable assumptions, it can be proven that % TODO
+    A regret $R_K := \sum_{k=1}^{K}\sum_{i=1}^{N}\left(\ell_i^k(z_i^k,\sigma^k(z^k))-\ell_i^k(z_i^{k,\star},\sigma^k(z^{k,\star}))\right)$ can be introduced for the analysis. Under suitable assumptions, it can be proven that $R_K\leq C_1 + C_2K$ for some constants $C_1$ and $C_2$
 \end{remark}
 
 
@@ -1214,8 +1432,26 @@ where $x_i^k\in\R$ is the state of agent $i$ at time $k$ and $a_{ij}\geq 0$
 Each agent $i$ uses only the states of neighbours $j\in\mathcal{N}_i$, thus it is a distributed algorithm. The goal is to reach consensus. 
 
 The linear averaging is 
-% TODO slide 23 
-
+\[
+    \begin{bmatrix}
+        x_1^{k+1} \\ \vdots \\ x_N^{k+1}
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & \cdots & a_{1N} \\
+        \vdots & \ddots & \vdots \\
+        a_{N1} & \cdots & a_{NN} \\
+    \end{bmatrix} \begin{bmatrix}
+        x_1^{k} \\ \vdots \\ x_N^{k}
+    \end{bmatrix}, \qquad x^0 = \begin{bmatrix}
+        x_1^{0} \\ \vdots \\ x_N^{0}
+    \end{bmatrix}
+\]
+and can be compactly written as 
+\[
+    x^{k+1} = Ax^k, \qquad x^0 = \begin{bmatrix}
+        x_1^{0} \\ \vdots \\ x_N^{0}
+    \end{bmatrix}
+\]
+with $x^k\in\R^n$ and the matrix $A\in\R^{N\times N}$ "compatible" with the graph $G$.
 We want to study the stability properties of the equilibrium point(s) of such an autonomous system
 
 The compact version of the linear averaging is an LTI dynamical system
@@ -1226,7 +1462,32 @@ The equilibrium points can be computed as
 \[
     x_{\text{eq}} = A x_{\text{eq}} \implies (I-A)x_{\text{eq}} = 0
 \]
-% TODO slide 3-4
+\begin{itemize}
+    \item Is this linear system stable or unstable?
+    \item Spectral properties of $A$ are crucial for the analysis
+\end{itemize}
+\section{Consensus result}
+\begin{theorem}
+    Consider the discrete-time averaging system with associated digraph $G$ and weighted adjacency matrix $A$. Assume $G$ is strongly connected and aperiodic, and $A$ is row stochastic. Then 
+    \begin{enumerate}
+        \item there exists a positive, left eigenvector $w\in\R^n$ such that 
+            \[
+                \lim_{k\to\infty} x^k = \boldsymbol{1} \displaystyle\frac{w^T x^0}{w^T \boldsymbol{1}} = \begin{bmatrix}
+                    1 \\ \vdots \\ 1 
+                \end{bmatrix} \displaystyle\frac{\sum_{i=1}^{N}w_ix_i^0}{\sum_{i=1}^{N}w_i}
+            \]
+            i.e., consensus is reached to $\displaystyle\frac{\sum_{i=1}^{N}w_ix_i^0}{\sum_{i=1}^{N}w_i}$
+            \item if, additionally $A$ is doubly stochastic, then 
+                \[
+                    \lim_{k\to\infty} x^k = \begin{bmatrix}
+                    1 \\ \vdots \\ 1 
+                \end{bmatrix} \frac{\sum_{i=1}^{N}x_i^0}{N}
+                \]
+                i.e., \emph{average} consensus is reached
+    \end{enumerate}
+\end{theorem}
+
+
 \section{Irreducible and primitive matrices}
 A square matrix $A\in\R^{N\times N}$ is 
 \begin{itemize}
@@ -1240,7 +1501,7 @@ A square matrix $A\in\R^{N\times N}$ is
 
 \section{Spectral properties of square matrices}
 The spectrum of a square matrix $A$, $spec(A)$, is the set of eigenvalues of $A$. The spectral radius, $\rho(A)$, is the minimum norm of the eigenvalues of $A$.
-\begin{theorem}[Gershgoring Theorem]
+\begin{theorem}[Gershgoring Theorem]\label{gersh}
     For any (real or complex) square matrix $A$, it holds 
     \[
         spec(A)\subset \bigcup_{i=1}^N \left\{ s\in\mathbb{C} |\ |s-a_{ii}| \leq \displaystyle\sum_{j=1, j\neq i}^{N}|a_{ij}| \right\}
@@ -1266,7 +1527,487 @@ The spectrum of a square matrix $A$, $spec(A)$, is the set of eigenvalues of $A$
             If, additionally $A\in\R^{N\times N}$ is primitive, then
         \item The eigenvalue $\lambda>|\mu|$ for all other eigenvalues $\mu\in\mathbb{C}$ of $A$
     \end{enumerate}
-        \end{theorem}
+\end{theorem}
+
+\subsection{Spectral properties of row-stochastic matrices}
+\begin{lemma}
+    For a row-stochastic matrix $A\in\R^{N\times N}$
+    \begin{enumerate}
+        \item $\lambda = 1$ is an eigenvalue of $A$
+        \item $\spec(A)$ is a subset of the unit disk
+    \end{enumerate}
+\end{lemma}
+\begin{proof}[Proof]
+    For the first statement, use $A\boldsymbol{1} = \boldsymbol{1}$. For the second statement use the Gershgoring Theorem \ref{gersh}
+\end{proof}
+\section{Application of the Perron-Frobenius theorem}
+Let $A\in\R^{N\times N}$ be a row stochastic and primitive matrix. We already know that $\lambda=1$ is an eigenvalue of $A$ and $\lambda=1\geq |\mu|$ for all other eigenvalues $\mu$ (since they lie in the unit disk). Invoking the Perron-Frobenius Theorem, the eigenvalue $\lambda=1$ must be simple and strictly dominant, i.e. $1=\lambda>|\mu|$ for all other eigenvalues $\mu\in\spec(A)\backslash \{1\}$.
+
+Therefore, the averaging system 
+\[
+    x^{k+1} = A x^k,\qquad x^0 \text{ given}
+\]
+is marginally stable. 
+\subsection{Equilibrium manifold of linear averaging}
+Let us investigate the equilibrium manifold of $x^{k+1} = Ax^k$. We have 
+\begin{itemize}
+    \item $x_{eq} = Ax_{eq} \implies x_eq\in\ker(I-A) = \vspan \boldsymbol{1} = \boldsymbol{1}\beta$ for some $\beta\in\R$
+    \item $w^Tx^{k+1} = w^T Ax^k = w^Tx^k = w^Tx^0$ for all $k\in\N$
+        \\ Hence also $w^Tx^0=w^Tx_{eq}=w^T\boldsymbol{1}\beta\implies \beta = (w^Tx^0)/(w^T\boldsymbol{1})$
+    \item Thus: $x_{eq} = \boldsymbol{1} \displaystyle\frac{w^Tx^0}{w^T\boldsymbol{1}}$
+\end{itemize}
+\begin{remark}
+    The equilibrium is not necessarily the origin and depends on the initial condition $x^0$
+\end{remark}
+\begin{remark}
+    Wlog, we condsider a rescaled version of $w$, so that $w^T\boldsymbol{1}=1$
+\end{remark}
+\section{Convergence proof (I): Jordan form approach}
+Being $G$ strongly connected and aperiodic, then $A$ is also primitive (other than being row stochastic). Hence, 
+\begin{itemize}
+    \item it has one dominant eigenvalue in $1$ associated to eigenvectors $\boldsymbol{1}\in\R^N$ (right) and $w\in\R^N$ (left)
+    \item it has $N-1$ eigenvalues with norm strictly less than 1
+\end{itemize}
+Consider the change of coordinates 
+\[
+    x \longmapsto \tilde{x} = T^{-1}x
+\]
+with the nonsingular matrix $T\in\R^{N\times N}$ being associated to the Jordand form $T^{-1}AT$ of $A$
+\[
+    T^{-1} A T = \left[\begin{array}{c| c c c }
+        1 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right]
+\]
+with $J_2\in\R^{(N-1) \times (N-1)}$ Schur (the empty spaces are zeros)
+
+Let matrix $T$ be arranged as 
+\[
+    T = \left[\begin{array}{c | c c c}
+        \uparrow & \uparrow & & \uparrow\\ 
+        \boldsymbol{1} & v^2 & \cdots & v^N \\
+        \downarrow & \downarrow & & \downarrow
+    \end{array}\right] = \left[\begin{array}{c | c}
+        \boldsymbol{1} & W_L
+    \end{array}\right] \quad \text{and} \quad T^{-1} = \left[\begin{array}{c c c}
+        \leftarrow &  w^T   &\rightarrow \\ \hline
+        \leftarrow &  {w^2}^T   &\rightarrow \\
+         &  \vdots   &\\
+        \leftarrow &  {w^N}^T   &\rightarrow \\
+    \end{array}\right] = \left[\begin{array}{c}
+        w^T \\ \hline
+        W_R
+    \end{array} \right]
+\]
+with $W_L\in\R^{N\times (N-1)}$ and $W_R\in\R^{(N-1)\times N}$
+
+The dynamics of $x^{k+1}=Ax^k$ in the new coordinates is 
+\[
+    x \longmapsto \tilde{x} = T^{-1}x \quad \implies \quad \tilde{x}^{k+1} = T^{-1}AT\tilde{x}^k = \left[\begin{array}{c| c c c }
+        1 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right] \tilde{x}^k, \qquad \tilde{x}^0 = T^{-1}x^0
+\]
+with $J_2$ Schur
+
+From the definition of $T^{-1}$, for all $k\in\N$ we have $\tilde{x}^k=(\tilde{x}_m^k,\tilde{x}_\perp^k)$ with 
+\begin{itemize}
+    \item $tilde{x}_m^k = w^T x^k\in\R$ being the weighted average of $x^k$ 
+    \item $\tilde{x}_\perp^k=W_R^Tx^k\in\R^{N-1}$ being the remaining components (dispersion) 
+\end{itemize}
+Then 
+\[
+    \lim_{k\to\infty} \tilde{x}^k = \lim_{k\to\infty} \left[\begin{array}{c}
+        \tilde{x}_m^k \\ \\ \tilde{x}_\perp^k
+    \end{array}\right] = \lim_{k\to\infty}\left[\begin{array}{c| c c c }
+        1 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right]^k \left[\begin{array}{c}
+        \tilde{x}_m^0 \\ \\ \tilde{x}_\perp^0
+    \end{array}\right] = \lim_{k\to\infty} \left[\begin{array}{c}
+        1^k \tilde{x}_m^0 \\ \\ J_2^k\tilde{x}_\perp^0
+    \end{array}\right] = \left[\begin{array}{c}
+        \tilde{x}_m^0 \\ 0 \\ \vdots \\ 0
+    \end{array}\right]
+\]
+where, by definition, $\tilde{x}_m^0=w^Tx^0$
+
+Therefore, in the original coordinates, it holds 
+\[
+    \lim_{k\to\infty} x^k = \lim_{k\to\infty} T\tilde{x}^k = \left[\begin{array}{c}
+        \tilde{x}_m^0 \\ \vdots \\ \tilde{x}_m^0
+    \end{array}\right] = \boldsymbol{1}w^Tx^0
+\]
+\subsection{The dissensus dynamics}
+Consider the so-called delated matrix defined as 
+\[
+    A- \boldsymbol{1}w^T\in\R^{N\times N}
+\]
+that, differently from $A$, is Schur. In fact, the simple eigenvalue in 1 of $A$ has been "moved" to 0
+\\Define the \emph{dissensus} vector in $\R^N$ as 
+\[
+    \delta^k := x^k- \boldsymbol{1}w^Tx^0 = (I-\boldsymbol{1}w^T)x^k
+\]
+for all $k\in\N$
+\begin{remark}
+    If the dissensus is zero, it means that consensus has been achieved
+\end{remark}
+The dissensus dynamics is 
+\[
+    \delta^{k+1} = (A-\boldsymbol{1}w^T)\delta^k, \qquad \delta^0 = (I-\boldsymbol{1}w^t)x^0
+\]
+\section{Convergence proof (II): Lyapunov approach}
+Consider the Jordan form of the deflated matrix
+\[
+    J = T^{-1} (A-\boldsymbol{1}w^T)T = \left[\begin{array}{c| c c c }
+        0 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right] \implies (A-\boldsymbol{1}w^T) = TJT^{-1}
+\]
+with $T\in\R^{N\times N}$ nonsingular.
+
+For all $Q_2=Q_2^T \succ 0 \in\R^{(N-1)\times(N-1)}$, there exists a matrix $P_2=P_2^T \succ 0 \in\R^{(N-1)\times(N-1)}$ and a scalar $p_1>0$ satisfying the following (discrete-time) Lyapunov equation
+\[
+    \left[\begin{array}{c| c c c }
+        0 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right]^T \left[\begin{array}{c| c c c }
+        p_1 & & & \\ \hline \\ & & P_2 & \\ & & & 
+    \end{array}\right] \left[\begin{array}{c| c c c }
+        0 & & & \\ \hline \\ & & J_2 & \\ & & & 
+    \end{array}\right] - \left[\begin{array}{c| c c c }
+        p_1 & & & \\ \hline \\ & & P_2 & \\ & & & 
+    \end{array}\right] = \left[\begin{array}{c| c c c }
+        -p_1 & & & \\ \hline \\ & & -Q_2 & \\ & & & 
+    \end{array}\right]
+\]
+Consider the congruence transformation (preserving the sign of the eigenvalues)
+\[
+    P \longmapsto \Pi := (T^{-1})^T \left[\begin{array}{c| c c c }
+        p_1 & & & \\ \hline \\ & & P_2 & \\ & & & 
+    \end{array}\right] T^{-1} \qquad \implies \quad P = T^T\Pi T
+\]
+and choose the Lyapunov function $V_\Pi:\R^N\to \R_{\geq0}$ 
+\[
+    V_\Pi(\delta) := \delta^T\Pi\delta
+\]
+Then its increment along trajectories satisfies
+\begin{align*}
+    V_\Pi(\delta^{k+1})-V_\Pi(\delta^k) &= (\delta^k)^T(A-\boldsymbol{1}w^T)^T\Pi(A-\boldsymbol{1}w^T)\delta^k-(\delta^k)^T\Pi\delta^k \\
+    &= (\delta^k)^T(TJT^{-1})^T\Pi(TJT^{-1})\delta^k - (\delta^k)^T\Pi\delta^k \\ 
+    &= (T^{-1}\delta^k)^T(J^TT^T\Pi TJ-T^T\Pi T)T^{-1}\delta^k \\ 
+    &= (T^{-1}\delta^k)^T \left[\begin{array}{c|c}
+        -p_1 & \\ \hline & -Q_2 T^{-1}\delta^k
+    \end{array}\right] \\ 
+    &= -\|T^{-1}\delta^k\|^2_Q < 0
+\end{align*}
+
+\section{Convergence proof (III): alternative Lyapunov approach}
+Consider the so-called max-min disagreement function $V_{m-m}:\R^N\to\R_{\geq0}$
+\[
+    V_{m-m}(x) = \left(\max_{i\in\{1,\dots,N\}}x_i\right) - \left(\min_{i\in\{1,\dots,N\}}x_i\right)
+\]
+\begin{itemize}
+    \item it is a non-quadratic candidate Lyapunov function
+    \item Notice that $V_{m-m}(x)=0$ iff $x = \boldsymbol{1}\beta$ for some $\beta\in\R$
+    \item its increment along trajectories decreases monotonically, i.e. for all $k$  
+        \[
+            V_{m-m}(Ax^k)<V_{m-m}(x^k)
+        \]
+\end{itemize}
+Invoking the Lyapunov theorem, we can conclude that $x^k\xrightarrow[\ k\to\infty\ ]{} \boldsymbol{1} \beta$
+\\Since we have shown that the equilibrium is $\beta=w^Tx^0$, it follows that $x^k\xrightarrow[k\to\infty]{}\boldsymbol{1}w^Tx^0$
+
+
+
+\chapter{Gradient tracking analysis}
+In the gradient tracking each agent $i$ performs 
+\begin{align*}
+    z_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}z_j^k - \alpha s_i^k && z_i^0\in\R\\
+    s_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}s_j^k + \nabla\ell_i(z_i^{k+1})-\nabla\ell_i(z_i^k) && s_i^0 = \nabla\ell_i(z_i^0)
+\end{align*}
+\subsubsection{Aggregate reformulation}
+Let 
+\[
+    z^k = \begin{bmatrix}
+        z_1^k \\ \vdots \\ z_N^k
+    \end{bmatrix} \qquad s^k = \begin{bmatrix}
+        s_1^k \\ \vdots \\ s_N^k
+    \end{bmatrix} \nabla\boldsymbol{\ell}(z^k) = \begin{bmatrix}
+        \nabla\ell_1(z_1^k) \\ \vdots \\ \nabla\ell_N(z_N^k)
+    \end{bmatrix}
+\]
+Then, the gradient tracking can be compactly written as 
+\begin{align*}
+    z^{k+1} &= Az^k - \alpha s^k && z^0 \in \R^n \\
+    s^{k+1} &= As^k - \nabla\boldsymbol{\ell}(z^{k+1}) - \nabla\boldsymbol{\ell}(z^{k}) && s^0  = \nabla\boldsymbol{\ell}(z^{0})
+\end{align*}
+where $A\in\R^{N\times N}$ is the matrix collecting the weights $a_{ij}$
+\begin{remark}
+    It is not a causal dynamical system
+\end{remark}
+
+\section{Equilibrium manifold for the Gradient Tracking}
+The equilibrium of the system $(z_{eq},s_{eq})$ must satisfy
+\begin{align*}
+    & z_{eq} = A z_{eq}-\alpha s_{eq} \\
+    & s_{eq} = A s_{eq} + \nabla\boldsymbol{\ell}(z_{eq}) - \nabla\boldsymbol{\ell}(z_{eq})
+\end{align*}
+Therefore 
+\begin{itemize}
+    \item from the second: $s_{eq}\in\ker(I-A)=\vspan \boldsymbol{1} \implies s_{eq} =\boldsymbol{1}\beta_1$ for some $\beta_1\in\R$
+    \item from the first: $(I-A)z_{eq} = -\alpha\boldsymbol{1}\beta_1$. But since $\ker(I-A)=\vspan \boldsymbol{1}$ it must be $\beta_1=0$ and  
+        \begin{align*}
+            &s_{eq} = 0 \\
+            &z_{eq} = \boldsymbol{1} \beta_2 \text{ for some } \beta_2 \in\R
+        \end{align*}
+\end{itemize}
+Moreover, by pre-multiplying by $\boldsymbol{1}^T$ the second state equation, for all $k\in\N$ we have
+\begin{align*}
+    \boldsymbol{1}^T s^{k+1} &= \boldsymbol{1}^T A s^{k} +\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1} -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k})\\ 
+    &= \boldsymbol{1}^T s^k+\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1}) -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k}) 
+\end{align*}
+This implies an invariance condition 
+\begin{align*}
+    \boldsymbol{1}^T s^{k+1} -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1} &=  s^{k}  -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k})\\ 
+    &= \boldsymbol{1}^Ts_{eq}-\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{eq}) = 0 - \boldsymbol{1}^T\nabla\boldsymbol{\ell}(z_{eq}) = -\boldsymbol{1}^T\nabla\boldsymbol{\ell}(\boldsymbol{1}\beta_2)\\ 
+    &= \boldsymbol{1}^Ts_{0}-\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{0}) = 0
+\end{align*}
+Therefore it must be $\beta_2=z^\star$, so that $z_{eq} =\boldsymbol{1}z^\star$
+
+\section{Causal coordinates for the Gradient Tracking}
+Consider the nonlinear change of coordinates 
+\[
+    \begin{bmatrix}
+        z^k \\ s^k
+    \end{bmatrix} \mapsto \begin{bmatrix}
+        z^k \\ \xi^k
+    \end{bmatrix} = \begin{bmatrix}
+        z^k \\ \alpha(\nabla\boldsymbol{\ell}(z^k)-s^k)
+    \end{bmatrix}
+\]
+\begin{remark}
+    The inverse transformation is $s^k = -\frac{1}{\alpha}\xi^k + \nabla \boldsymbol{\ell}(z^k)$
+\end{remark}
+The GT dynamics in the new coordinates is 
+\begin{align*}
+    z^{k+1} &= Az^k + \xi^k - \alpha\nabla\boldsymbol{\ell}(z^k) && z^0\in\R^N\\
+    \xi^{k+1} &= A\xi^k - \alpha(A_I)\nabla\boldsymbol{\ell}(z^k) && \xi^0 = 0
+\end{align*}
+\begin{remark}
+    This is a causal system
+\end{remark}
+
+\subsection{Block diagram of the Gradient Tracking Algorithm}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{figures/gradtrack}
+    \end{center}
+\end{figure}
+\begin{itemize}
+    \item The upper part is a linear dynamical system with states $(z,\xi)$ and input $u$ (and output $y=z$)
+    \item The state matrix $\begin{bmatrix}
+            A & I \\ 0 & A
+    \end{bmatrix}$ is Schur except for the semi-simple eigenvalue in $1$ (geom. mult. 2)
+    \item The step-size $\alpha>0$ plays the role of a gain
+    \item the lower part is a static nonlinearity (as in the gradient method)
+\end{itemize}
+
+\section{Local perspective of the causal GT}
+From a local perspective, each agent $i$ performs 
+\begin{align*}
+    z^{k+1}_i &= \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}z_j^k + \xi_i^k - \alpha\nabla\ell_i(z_i^k) && z_i^0\in\R^N\\
+    \xi_i^{k+1} &= \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}\xi_j^k - \alpha\left(\displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}\nabla\ell_j(z_j^k) - \nabla\ell_i(z_i^k)\right) && \xi_i^0 = 0
+\end{align*}
+\begin{remark}
+    more communication is needed in these coordinates
+\end{remark}
+Since each cost function $\ell_i$ is strongly convex (with parameter $\mu>0$) with Lipschitz continuous gradient (with parameter $L>0$) then for all $z_A, z_B\in\R^N$ it holds 
+\begin{align*}
+    (\nabla\boldsymbol{\ell}(z_A)-\nabla\boldsymbol{\ell}(z_B))^T(z_A-z_B) &= \displaystyle\sum_{i=1}^{N} (\nabla\ell_i(z_{i,A})-\nabla\ell_i(z_{i,B}))^T(z_{i,A}-a_{i,B})\\ 
+    &\geq \displaystyle\frac{\mu L}{L + \mu}\|z_A-z_B\|^2 + \displaystyle\frac{1}{L + \mu}\|\nabla\boldsymbol{\ell}(z_A)-\nabla\boldsymbol{\ell}(z_B)\|^2
+\end{align*}
+
+\section{Error coordinates for the Gradient Tracking}
+Consider the error coordinates 
+\[
+    \begin{bmatrix}
+        z^k \\ \xi^k
+    \end{bmatrix} \mapsto \begin{bmatrix}
+        \tilde{z}^k \\ \tilde{\xi}^k
+    \end{bmatrix} = \begin{bmatrix}
+        z^k - \fatone \\ \xi^k - \alpha\nabla\fatl(\fatone z^\star)
+    \end{bmatrix}
+\]
+The dynamics in the new coordinates is 
+\begin{align*}
+    \tilde{z}^{k+1} &= A \tilde{z}^k + \tilde{\xi}^k - \alpha \left(\nabla\fatl(z^k)-\nabla\fatl(\fatone z^\star)\right) && \tilde{z}^0 \text{ given}\\
+    \tilde{\xi}^{k+1} &= A \tilde{\xi}^k - \alpha (A_I)(\nabla\fatl(z^k)-\nabla\fatl(\fatone z^\star)) && \tilde{\xi}^0 \text{ given}
+\end{align*}
+that can be written as 
+\[
+    \begin{bmatrix}
+        \tilde{z}^{k+1} \\ \tilde{\xi}^{k+1}
+    \end{bmatrix} = \begin{bmatrix}
+        A & I \\ 0 & A
+    \end{bmatrix} \begin{bmatrix}
+        \tilde{z}^{k} \\ \tilde{\xi}^{k}
+    \end{bmatrix} - \alpha \begin{bmatrix}
+        I \\ A_I
+    \end{bmatrix} (\nabla\fatl(\tilde{z}^k+\fatone z^\star)-\nabla\fatl(\fatone z^\star))
+\]
+\begin{remark}
+    The equilibrium has been shifted to the origin $(\tilde{z},\tilde{\xi}) = (0,0)$
+\end{remark}
+
+\subsection{Block diagram of the Gradient Tracking in error coordinates}
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{figures/trackerr}
+    \end{center}
+\end{figure}
+\begin{itemize}
+    \item The origin $(\tilde{z},\tilde{\xi}) = (0,0)$ is the equilibrium
+    \item The feedback action $\tilde{u}^k$ is a static map whose characterization depends on the regularity properties of the cost function, i.e. $(\mu,L)$, and is given by
+        \[
+            (\nabla\boldsymbol{\ell}(\tilde{z}^k+\fatone z^\star)-\nabla\boldsymbol{\ell}(\fatone z^\star))^T \tilde{z}^k \geq \displaystyle\frac{\mu L}{L + \mu}\|\tilde{z}^k\|^2 + \displaystyle\frac{1}{L + \mu}\|\nabla\boldsymbol{\ell}(\tilde{z}^k+\fatone z^\star)-\nabla\boldsymbol{\ell}(\fatone z^\star)\|^2
+        \]
+        \item The feedback must be a stabilizing action for the closed-loop system
+\end{itemize}
+
+\section{Analysis sketch}
+Let us focus on the upper (open-loop) linear system
+\[
+    \begin{bmatrix}
+        \tilde{z}^{k+1} \\ \tilde{\xi}^{k+1}
+    \end{bmatrix} = \begin{bmatrix}
+        A & I \\ 0 & A
+    \end{bmatrix} \begin{bmatrix}
+        \tilde{z}^{k} \\ \tilde{\xi}^{k}
+    \end{bmatrix} + \begin{bmatrix}
+        I \\ A_I
+    \end{bmatrix} \tilde{u}^k
+\]
+Let us consider a change of coordinates (with $T_z = \left[\begin{array}{lr}
+    \fatone & W
+\end{array}\right]$ and $T_\xi = \left[\begin{array}{cc}
+    W & \fatone 
+\end{array}\right])$, orthonormal) given by 
+\[
+    \begin{bmatrix}
+        \tilde{z}^k \\ \tilde{\xi}^k
+    \end{bmatrix} \mapsto \begin{bmatrix}
+        \begin{bmatrix}
+            \tilde{z}^k_m \\ \tilde{z}^k_\perp
+        \end{bmatrix} \\ \begin{bmatrix}
+            \tilde{\xi}^k_\perp \\ \tilde{\xi}^k_m
+        \end{bmatrix}
+    \end{bmatrix} = \left[\begin{array}{c|c}
+        T_z^T & \\ \hline & T_\xi^T
+    \end{array}\right] \begin{bmatrix}
+        \tilde{z}^k \\ \tilde{\xi}^k
+    \end{bmatrix}
+\]
+The dynamics in the new coordinates reads 
+\[
+    \begin{bmatrix}
+        \tilde{z}^{k+1}_m \\ \tilde{z}^{k+1}_\perp \\ \tilde{\xi}^{k+1}_\perp \\ \tilde{\xi}^{k+1}_m
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 0 & 0 & 1 \\ 
+        0 & J_2 & I_{N-1} & 0\\
+        0 & 0 & J_2 & 0 \\
+        0 & 0 & 0 & 1 \\
+    \end{bmatrix} \begin{bmatrix}
+        \tilde{z}^{k}_m \\ \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp \\ \tilde{\xi}^{k}_m
+    \end{bmatrix} + \begin{bmatrix}
+        \fatone^T \\ W^T \\ W^T(A-I) \\ 0
+    \end{bmatrix} \tilde{u}^k
+\]
+where $J_2:= W^TAW$ is Schur
+
+It can be shown that 
+\begin{enumerate}
+    \item the matrix $F_{22} = \begin{bmatrix}
+            J_2 & I_{N-1} \\ 0 & J_2
+    \end{bmatrix}$ is Schur
+\item $\xi_i^0 = 0$ for all $i$ implies that $\tilde{x}^0_m=0$
+\end{enumerate}
+Therefore the evolution of $\tilde{x}_m^k$ can be ignored to obtain a "reduced" system
+\[
+    \begin{bmatrix}
+         \tilde{z}^{k+1}_m \\ \begin{bmatrix}
+             \tilde{z}^{k+1}_\perp \\ \tilde{\xi}^{k+1}_\perp 
+         \end{bmatrix}
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 0 \\ 0 & F_{22}
+    \end{bmatrix} \begin{bmatrix}
+         \tilde{z}^{k}_m \\ \begin{bmatrix}
+             \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+         \end{bmatrix}
+    \end{bmatrix} + \begin{bmatrix}
+        \fatone^T \\ G_2
+    \end{bmatrix} \tilde{u}^k
+\]
+with $G_2 = \begin{bmatrix}
+    W^T \\ W^T(A-I)
+\end{bmatrix}$, where $\tilde{u}^k = -\alpha(\nabla\fatl(\fatone \tilde{z}^k_m + W \tilde{z}^k_\perp + \fatone z^\star)-\nabla\fatl(\fatone z^\star))$ (coupling the dynamics)
+
+Consider the quadratic Lyapunov function
+\[
+    \mathcal{V}(\tilde{z}^k_m,\tilde{z}^k_\perp,\tilde{\xi}^k_\perp) = \begin{bmatrix}
+         \tilde{z}^{k}_m \\ \begin{bmatrix}
+             \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+         \end{bmatrix}
+    \end{bmatrix}^T \begin{bmatrix}
+        1 & 0 \\ 0 & P_2
+    \end{bmatrix} \begin{bmatrix}
+         \tilde{z}^{k}_m \\ \begin{bmatrix}
+             \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+         \end{bmatrix}
+    \end{bmatrix}
+\]
+with $P_2 = P_2^T \succ 0$ designed on the matrix $F_{22}$ (i.e., via $F_{22}^TP_2F_{22}-P_2 \prec 0$)
+
+There exists $\alpha^\star >0$ such that for all $\alpha\in(0,\alpha^\star)$ it holds
+\begin{align*}
+    \mathcal{V}(\tilde{z}^{k+1}_m,\tilde{z}^{k+1}_\perp,\tilde{\xi}^{k+1}_\perp) - \mathcal{V}(\tilde{z}^k_m,\tilde{z}^k_\perp,\tilde{\xi}^k_\perp) &= \begin{bmatrix}
+        \tilde{z}^{k}_m \\ \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+    \end{bmatrix}^T (F^TPF-P) \begin{bmatrix}
+        \tilde{z}^{k}_m \\ \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+    \end{bmatrix} + 2 \begin{bmatrix}
+        \tilde{z}^{k}_m \\ \tilde{z}^{k}_\perp \\ \tilde{\xi}^{k}_\perp 
+    \end{bmatrix}^T F^TPG\tilde{u}^k + (\tilde{u}^k)^T G^T PG\tilde{u}^k \\
+    &\leq -q_1\|\tilde{z}_m^k\|^2 - q_2 \|\tilde{z}^k_\perp\|^2 -q_3 \|\tilde{\xi}^k_\perp\|^2
+\end{align*}
+for some $q_1,q_2,q_3>0$ (depending on $\alpha$)
+
+It follows that the origin is exponentially stable, which translates in the sought linear convergence of the solution estimates generated by the Gradient Tracking
+
+\section{Gradient Tracking: extensions}
+Gradient Tracking can be extended to handle 
+\begin{itemize}
+    \item Nonconvex cost functions
+    \item Convex constraitns on the optimization variable
+    \item Time-varying and directed communication networks (packet losses)
+    \item Block-wise updates and communication
+    \item Stochastic optimization problems
+    \item Heavy-ball, Nesterov, Adam-like implementations
+\end{itemize}
+
+\section{System theoretical approach to distributed optimization}
+\begin{itemize}
+    \item Gradient tracking can be shown to implement a \emph{distributed integral action}
+        \item The approach can be generalized to derive more general controllers and/or algorithms
+\end{itemize}
+For instance, consider the following algorithm
+\begin{align*}
+    z^{k+1} = Az^k - (I-A)\xi^k - \alpha\nabla\fatl(z^k) && z^0 \in\R^N\\
+    \xi^{k+1} = \xi^k + (I-A)z^k && \xi^0 \in\R^N\\
+\end{align*}
+\begin{remark}
+    THe dynamics of the controller state $\xi^k$ is a pure discrete-time integrator trying to compensate for the consensus error $(I-A)z^k$
+\end{remark}
+
+
+
+
+
+
 
 
 
@@ -1301,12 +2042,16 @@ Let us assume a framework withn $N$ robots that must collectively serve $N$ task
         {z_i}_k=0 & \text{otherwise}\\
     \end{cases}
 \]
-And we say that robot $i$ serves task $j$ with some cost $c_{ij}$. 
+Note that each robot serves only one task, thus imposing a constraint of the form
+\[
+    \displaystyle\sum_{k=1}^{N}z_{ik} = 1
+\]
 The constraint set is thus
 \[
-    Z_i = \{z_i\in\R^{n_i}|z_i\in\{0,1\}, \displaystyle\sum_{k=1}^{N}{z_i}_k=1\} % TODO check recording
+    Z_i = \{z_i\in\{0,1\}| \displaystyle\sum_{k=1}^{N}{z_i}_k=1\} 
 \]
-Suppose each robot can serve all tasks. then
+and we say that robot $i$ serves task $j$ with some cost $c_{ij}$. 
+Suppose each robot can serve all tasks. Then, to ensure is task is carried out by only one robot,
 \[
     \displaystyle\sum_{i=1}^{N}{z_{i}}_k = 1 \qquad k=1,\dots,N
 \]
@@ -1404,9 +2149,29 @@ This algorithm was obtained by applying the distributed gradient algorithm to th
 
 If the minimum in the second step can be proven to be unique at every iteration, then $z_i^k$ converges to the optimal solution of the primal problem. Otherwise, it can be proven that the running average of $z_i^k$ converges to the optimal solution.
 \subsection{Distributed dual subgradient convergence}
-% TODO assumptions
+\begin{itemize}
+    \item Assumption 1. Let $a_{ij},\ i,j\in\{1,\dots,N\}$ be non-negative entries of a weighted adjacency matrix $A$ associated to the undirected graph $G$, with $a_{ii}>0$ and $A$ doubly stochastic.
+    \item Assumption 2. The step-size sequence $\{\alpha^k\}_{k\geq 0}$ satisfies the conditions
+        \[
+            \alpha^k \geq 0 \qquad \displaystyle\sum_{k=0}^{\infty} \alpha^k = \infty \qquad \displaystyle\sum_{k==}^{\infty} (\alpha^k)^2 < \infty
+        \]
+    \item Assumption 3d. For all $i\in\{1,\dots,N\}$: each function $\ell_i$ is convex, each constraint $Z_i$ is a non-empty, compact and convex set; each function $g_i$ is a component-wise convex function. Moreover, there exist $\bar{z}_i\in Z_1,\dots, \bar{z}_N\in Z_N$ such that $\sum_{i=1}^{N}g_i(\bar{z}_i)<0$
+\end{itemize}
 \begin{theorem}[Distributed Dual Subgradient]
-    Let Assumptions 1, 2, and 3d hold.
+    Let Assumptions 1, 2, and 3d hold. Then, the sequence of dual variables $\{\mu_1^k,\dots,\mu_N^k\}_{k\geq 0}$ generated by the Distrbuted Dual Subgradient satisfies 
+    \[
+        \lim_{k\to\infty} \|\mu_i^k - \mu^\star\| = 0, \qquad i\in\{1,\dots,N\}
+    \]
+    where $\mu^\star$ is an optimal solution of the dual problem. Moreover, let for each $k$ 
+    \[
+        \hat{z}_i^k = \displaystyle\frac{1}{k} \displaystyle\sum_{\tau=0}^{k} z_i^\tau
+    \]
+    Then, it holds 
+    \begin{gather*}
+        \lim_{k\to\infty} \displaystyle\sum_{i=1}^{N} \ell_i(\hat{z}_i^k) = \ell^\star \\
+        \lim_{k\to\infty} \|\hat{z}_i^k - z_i^\star \| = 0 \qquad i\in\{ 1,\dots,N \}
+    \end{gather*}
+    where $z_i^\star$ and $\ell^\star$ denote an optimal solution and the optimal cost of the primal problem
 \end{theorem}
 
 
