@@ -199,7 +199,7 @@ Team of $N$ (mobile) robots aiming to execute complex tasks
 \begin{definition}[Out-neighbours of $i$]$j\in I$ is an out-neighbour of $i\in I$ if $(i,j)\in E$
 \end{definition}
 \begin{definition}[Set of out-neighbours of $i$]
-    $\mathcal{N}_i^{\text{IN}}=\{j\in\{1,\dots,N\}|(i,j)\in E\}$
+    $\mathcal{N}_i^{\text{OUT}}=\{j\in\{1,\dots,N\}|(i,j)\in E\}$
 \end{definition}
 \begin{definition}[In-degree $\deg_i^{\text{IN}}$]
     number of in-neighbours, i.e. carinality of $\mathcal{N}_i^{\text{IN}}(\deg_i^{\text{IN}}=|\mathcal{N}_i^{\text{IN}}|)$
@@ -286,13 +286,13 @@ where $x_i^k\in\R$ is the state of agent $i$ at $k$ and $a_{ij}>0$ are positive 
 \begin{remark}
     The weights $a_{ij}$ are defined only for $(i,j)\in E$
 \end{remark}
-Wach $i$ uses only the states of neighbours $j\in\mathcal{N}_i^{\text{IN}}$, thus distributed algorithm.
+Each $i$ uses only the states of neighbours $j\in\mathcal{N}_i^{\text{IN}}$, thus this is a distributed algorithm.
 
 For analysis purposes, let us define weights $a_{ij}=0$ for $(j,i)\notin E$. Thus we can rewrite the distributed algorithm as 
 \[
     x_i^{k+1}=\displaystyle\sum_{j=1}^{N}a_{ij}x_j^k \qquad i\in\{1,\dots,N\}
 \]
-This is a LTI autonomous system 
+This is an LTI autonomous system 
 \[
     \begin{bmatrix}
         x_1^{k+1}\\ \vdots \\ x_N^{k+1}
@@ -306,7 +306,7 @@ This is a LTI autonomous system
 \]
 Which can be compactly written as  
 \[
-    x^{k+1} 0 Ax^k
+    x^{k+1} = Ax^k
 \]
 \begin{remark}
     The matrix A can be seen as the weighted adjacency matrix of the reverse digraph $G^{\text{comm,rev}}$ of the digraph $G^{\text{comm}}$
@@ -325,14 +325,14 @@ The non-negative square matrix $A\in\R^{N\times N}$ is
     \item doubly stochastic if both row and column stochastic.
 \end{itemize}
 \begin{lemma}
-    Let $A$ be a row-stochastic matrix and $G$ the associate digraph. If $G$ is strongly connected and aperiodic, then 
+    Let $A$ be a row-stochastic matrix and $G$ the associated digraph. If $G$ is strongly connected and aperiodic, then 
     \begin{enumerate}
         \item the eigenvalue $\lambda=1$ is simple; 
         \item all the other eigenvalues $\mu$ satisfy $|\mu|<1$
     \end{enumerate}
 \end{lemma}
 \begin{remark}
-    The condition "$G$ contains a globally reachable node and the subgraph of globally reachable noes is aperiodic" is necessary and sufficient
+    The condition ``$G$ contains a globally reachable node and the subgraph of globally reachable nodes is aperiodic" is necessary and sufficient
 \end{remark}
 \begin{theorem}[Consensus]
     Consider a (discrete-time) averaging system with associated digraph $G$ and wieghted adjacency matrix $A$. Assume $G$ is strongly connected and aperiodic, and $A$ is row stochastic. Then 
@@ -437,7 +437,7 @@ Consider a network of dynamical systems with dynamics
 \[
     \dot{x}(t) = u_i(t) \qquad i \in \{1,\dots,N\}
 \]
-with states $x_i\in\R$ and inputs $u_i\in\R$, communicating (or interacting) according to a digraph $G$. Consider a (distributed) "proportional" feedback control 
+with states $x_i\in\R$ and inputs $u_i\in\R$, communicating (or interacting) according to a digraph $G$. Consider a (distributed) ``proportional" feedback control 
 \[
     u_i(t) = - \displaystyle\sum_{j\in\mathcal{N}_i^{\text{IN}}}a_{ij}(x_i(t)-x_j(t))
 \]
@@ -806,14 +806,14 @@ Define $x = \begin{bmatrix}
     x_f \\ x_l
 \end{bmatrix}$ with $x_f\in\R^{N_f}$ the followers' state and $x_l\in\R^{N-N_f}$ the leaders' state.
 Consistently, partition the Laplacian matrix as $L = \begin{bmatrix}
-    L_f & L_{fl} \\ L_{FL}^\top & L_l
+    L_f & L_{fl} \\ L_{fl}^\top & L_l
 \end{bmatrix}$.
 If leaders and followers run the same Laplacian-based distributed control law, then the Laplacian dynamics ca be written as 
 \[
     \begin{bmatrix}
         \dot{x}_f(t) \\ \dot{x}_l(t) 
     \end{bmatrix} = -\begin{bmatrix}
-        L_f & L_{fl} \\ L_{FL}^\top & L_l
+        L_f & L_{fl} \\ L_{fl}^\top & L_l
     \end{bmatrix} \begin{bmatrix}
         x_f(t) \\ x_l(t)
     \end{bmatrix}
@@ -907,11 +907,13 @@ If we assume that masses are small, we may written
 \[
     v_i \approx - \displaystyle\frac{\partial}{\partial x_i} V(x)
 \]
-so that the dynamics may be approximated by the following firt order dynamics
+so that the dynamics may be approximated by the following first order dynamics
 \[
     \dot{x}_i = - \displaystyle\frac{\partial}{\partial x_i}V(x) \quad \forall i\in\{ 1,\dots,N \}
 \]
 
+\section{Formation Control}
+\subsection{Laplacian dynamics: potential function interpretation}
 Consider a network of $N$ agents communicating/interacting according to a fixed, undirected graph $G$. Let $x_i(t)\in\R^d$ be the state of agent $i$. Let agents run a Laplacian dynamics
 \[
     \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}(x_i-x_j) \quad \forall i\in\{ 1,\dots,N \}
@@ -936,6 +938,7 @@ can be seen as a "gradient flow", i.e.
 \]
 Thus, the consensus configuration can be seen as a stationary point of $V$. This idea can be extended to general potential functions and applied to distributed control systems.
 
+\subsection{Distributed control based on potential functions}
 Consider a network of $N$ autonomous agents communicating/interacting according to a fixed, undirected graph. Let $x_i(t)\in\R^d$ be the state of agent $i$. Consider a global potential function defined as 
 \[
     V(x)=\displaystyle\sum_{i=1}^{N}\displaystyle\sum_{j\in\mathcal{N}_i}V_{ij}(x_i,x_j)
@@ -947,9 +950,9 @@ such that (local) minima of the potential correspond to desired configurations o
 
  We can define a desired formation by assigning a set of distances, $d_{ij}$, between neighbouring agents $i$ and $J$ in a suitable graph 
  
- The main idea for formation control is to define a potential function matching the sparsity of $G$, $V^{\text{form}}(x) = \sum_{i=1}^{N}\sum_{j\in\mathcal{N}_i}V_{ij}^{\text{form}}(i,j)$, such that a configuration $x^{text{form}}$ satisfying 
+ The main idea for formation control is to define a potential function matching the sparsity of $G$, $V^{\text{form}}(x) = \sum_{i=1}^{N}\sum_{j\in\mathcal{N}_i}V_{ij}^{\text{form}}(i,j)$, such that a configuration $x^{\text{form}}$ satisfying 
  \[
-     \|x_i^{\text{form}}-x_j^{\text{form}}\| = d_ij \qquad \forall (i,j)\in E
+     \|x_i^{\text{form}}-x_j^{\text{form}}\| = d_{ij} \qquad \forall (i,j)\in E
  \]
  is a minimum of $V$.
 
@@ -961,12 +964,14 @@ such that (local) minima of the potential correspond to desired configurations o
 
  The gradient flow dynamics of each agent $i$ is given by 
  \[
-     \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i}\displaystyle\frac{\partial}{\partial x_i} \left(V_{ij}^\text{form}(x_i,x_j)+V_{ji}(x_j,x_i)\right) \qquad \forall i \in \{1,\dots,N\}
+     \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i}\displaystyle\frac{\partial}{\partial x_i} \left(V_{ij}^\text{form}(x_i,x_j)+V_{ji}^{\text{form}}(x_j,x_i)\right) \qquad \forall i \in \{1,\dots,N\}
  \]
  which reads as 
  \[
      \dot{x}_i = - \displaystyle\sum_{j\in\mathcal{N}_i} \left(\|x_i-x_j\|^2-d_{ij}^2\right)(x_i-x_j) \qquad \forall i \in \{1,\dots,N\}
  \]
+
+ \subsection{Inter-agent collision avoidance}
 This dynamics has multiple equilibrium points, including the desired formation in which the agents are at the assigned distances. In particular, the consensual solution $x_1=x_2=\dots=x_N$ is an (undesired) equilibrium.
 
 Such a "degenerate" equilibrium can be avoided by means of additional "collision avoidance" potential functions $V_{ij}^\text{ca}(x_i,x_j)$ such that 
@@ -977,6 +982,8 @@ A possible solution is a barrier function given
 \[
     V_{ij}^\text{ca} = -\log(x_i-x_j)
 \]
+
+\subsection{Obstacle avoidance}
 Similarly, barrier potential functions $V^\text{obs}(x_i)$, depending only on the state of agent $x_i$, can be used to avoid obstacles. 
 
 The formation control dynamics becomes 
@@ -995,7 +1002,7 @@ Consider the optimization problem
 with $z\in\R^d$ 
 \begin{itemize}
     \item $N$ agents communicate over graph $G$
-    \item agent $i$ konws $\ell_i$ and $Z$ only 
+    \item agent $i$ knows $\ell_i$ and $Z$ only 
     \item $z_i^k$ solution estimate of $i$
 \end{itemize}
 \section{Distributed Gradient Algorithm}
@@ -1029,7 +1036,7 @@ with $z_i^0\in\R^d$
         \end{itemize}
 \end{itemize}
 \begin{theorem}[]
-    Let assumptions 1,2 and 3a hold true. Then, the sequences of local solution estimates $\{z_i^k\}_{k\in\N}, i=1,\dots,N$, generated by the Distributed Gradient Algorithm, asymptotically converge to a common solution $z^\star$ of the problem, i.e. for all $i=\,\dots,N$ it holds 
+    Let assumptions 1,2 and 3a hold true. Then, the sequences of local solution estimates $\{z_i^k\}_{k\in\N}, i=1,\dots,N$, generated by the Distributed Gradient Algorithm, asymptotically converge to a common solution $z^\star$ of the problem, i.e. for all $i=1,\dots,N$ it holds 
     \[
         \lim_{k\to\infty} \|z_i^k-z^\star\| = 0
     \]
@@ -1052,7 +1059,7 @@ Convergence to an optimal solution can be achieved by substituting Assumption 3a
 \end{itemize}
 
 \section{Improving the Distributed Gradient Algorithm}
-recall the Distributed Gradient Algorithm 
+Recall the Distributed Gradient Algorithm 
 \[
     z_i^{k+1} = \displaystyle\sum_{j\in\mathcal{N}_i}a_{ij}z_j^k + \alpha d_i^k
 \]
@@ -1105,7 +1112,7 @@ and use its opposite as local descent direction $d_i^k = -s_i^k$
     d_i^k \xrightarrow[\ k\to\infty\ ]-\displaystyle\frac{1}{N} \displaystyle\sum_{h=1}^{N}\nabla\ell_h(z_h^k)
 \]
 \begin{remark}
-    If each $\nabla_ell_i(z_i^k)$ converges to a constant value then perfect tracking is achieved
+    If each $\nabla\ell_i(z_i^k)$ converges to a constant value then perfect tracking is achieved
 \end{remark}
 \begin{remark}
     The convergence of $\nabla\ell_i(z_i^k)$ is intetwined with the convergence of $z_i^k$, e.g. to $z^\star$
@@ -1118,7 +1125,7 @@ The Gradient Tracking Algorithm is
 
 \subsection{Assumptions}
 \begin{itemize}
-    \item Assumption 1. Let $a_{ij},\ i,j\in\{1,\dots,N\}$ be non-negative entries of a weighted adjacency matrix $A$ associated to the undirected graph $G$, with $a_{ii}>0$ and $A$ doubly stochastic.
+    \item Assumption 1. Let $a_{ij},\ i,j\in\{1,\dots,N\}$ be non-negative entries of a weighted adjacency matrix $A$ associated to the undirected and connected graph $G$, with $a_{ii}>0$ and $A$ doubly stochastic.
     \item Assumption 2. For all $i\in\{1,\dots,N\}$ each cost function $\ell_i:\R^d\to\R$ satisfies the following conditions
         \begin{itemize}
             \item it is strongly convex with coefficient $\mu>0$
@@ -1204,6 +1211,7 @@ Since the cost function is a composite function, we need the chain rule to compu
 \end{align*}
 Notice that $\displaystyle\frac{\partial\sigma(z_1,\dots,z_N)}{\partial z_i}=\displaystyle\frac{1}{N}\displaystyle\frac{d}{d z_i}\phi_i(z_i)$ can be computed locally
 
+\subsubsection{Gradient computation (vector case)}
 As in the scalar case, we use the chain rule to compute the gradient of the composite function. The $i$-th block of the gradient, denoted as $\left[\nabla\left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right]_i\in\R^{n_i}$, is given by
 \begin{align*}
     &\left[\nabla\left(\displaystyle\sum_{j=1}^{N}\ell_j(z_j,\sigma(z_1,\dots,z_N))\right)\right]_i \\ 
@@ -1304,7 +1312,7 @@ The above inequality induced by a CBF is called a \emph{control barrier certific
 \subsection{Admissible Control Space}
 We can define the set of admissible (safe) controllers for a given state $x$ as 
 \[
-    U^s(x) = \left\{ u\in\R^m | L_fV^s(x) + L_gV^s(x)u + \gamma(V^s(x))\geq 0 \right\}
+    U^s(x) = \left\{ u\in\R^m | L_fV^s(x) + L_gV^s(x)u + \gamma(V^s(x)) \right\}\geq 0
 \]
 i.e., the set of inputs satisfying the control barrier certificates. 
 \begin{remark}
@@ -1328,7 +1336,7 @@ with $x\in\R^d$ being the state of the robot and $u\in\R^d$ the control input. T
 
 Consider a CBF defined as 
 \[
-    V^s(x) = \| x - x_{text{obs}}\|^2 - d^2
+    V^s(x) = \| x - x_{\text{obs}}\|^2 - d^2
 \]
 where $d$ denotes the safety distance to keep from the obstacle. The gradient wrt $x$ is given by 
 \[
@@ -1337,13 +1345,13 @@ where $d$ denotes the safety distance to keep from the obstacle. The gradient wr
 The safety, CBF-based policy can be computed as 
 \begin{align*}
     \kappa_s (x) = &\arg \min_{u\in\R^d} \|u-u^\text{ref}(x)\|^2\\
-    & \text{subj. to } -2(x-x_\text{obs})^\top u - \gamma(\|x-x_\text{obs}-d^2) \leq 0
+    & \text{subj. to } -2(x-x_\text{obs})^\top u - \gamma(\|x-x_\text{obs}\|-d^2) \leq 0
 \end{align*}
 \begin{remark}
 For a ginve, fixed $x\in\R^d$, the optimization problem above is a quadratic program    
 \end{remark}
 \begin{remark}
-    The safety controller is meant to prevent collisions while being "minimally invasive" in the sense that it aims at altering the reference controller (coming from a higher level) as littel as possible
+    The safety controller is meant to prevent collisions while being "minimally invasive" in the sense that it aims at altering the reference controller (coming from a higher level) as little as possible
 \end{remark}
 \begin{remark}
     From a practical viewpoint the above problem requires a computation time, while the safety policy should be available in continuous time
