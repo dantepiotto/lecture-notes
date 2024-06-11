@@ -1514,7 +1514,7 @@ The spectrum of a square matrix $A$, $spec(A)$, is the set of eigenvalues of $A$
     \[
         spec(A)\subset \bigcup_{i=1}^N \left\{ s\in\mathbb{C} |\ |s-a_{ii}| \leq \displaystyle\sum_{j=1, j\neq i}^{N}|a_{ij}| \right\}
     \]
-    That is, the union of disks in $\mathbb{C}$ centered at each diagonal entry $a_{ii}$ with radius $\sum_{j=1,j\neq i}^{N}|a_{ij}$
+    That is, the union of disks in $\mathbb{C}$ centered at each diagonal entry $a_{ii}$ with radius $\sum_{j=1,j\neq i}^{N}|a_{ij}|$
 \end{theorem}
 \begin{theorem}[]
     Let $G$ be a weighted digraph with $N\geq2$ nodes and with weighted adjacency matrix $A$. Then $A$ is irreducible iff $G$ is strongly connected
@@ -1559,7 +1559,7 @@ is marginally stable.
 \subsection{Equilibrium manifold of linear averaging}
 Let us investigate the equilibrium manifold of $x^{k+1} = Ax^k$. We have 
 \begin{itemize}
-    \item $x_{eq} = Ax_{eq} \implies x_eq\in\ker(I-A) = \vspan \boldsymbol{1} = \boldsymbol{1}\beta$ for some $\beta\in\R$
+    \item $x_{eq} = Ax_{eq} \implies x_{eq}\in\ker(I-A) = \vspan \boldsymbol{1} = \boldsymbol{1}\beta$ for some $\beta\in\R$
     \item $w^Tx^{k+1} = w^T Ax^k = w^Tx^k = w^Tx^0$ for all $k\in\N$
         \\ Hence also $w^Tx^0=w^Tx_{eq}=w^T\boldsymbol{1}\beta\implies \beta = (w^Tx^0)/(w^T\boldsymbol{1})$
     \item Thus: $x_{eq} = \boldsymbol{1} \displaystyle\frac{w^Tx^0}{w^T\boldsymbol{1}}$
@@ -1580,7 +1580,7 @@ Consider the change of coordinates
 \[
     x \longmapsto \tilde{x} = T^{-1}x
 \]
-with the nonsingular matrix $T\in\R^{N\times N}$ being associated to the Jordand form $T^{-1}AT$ of $A$
+with the nonsingular matrix $T\in\R^{N\times N}$ being associated to the Jordan form $T^{-1}AT$ of $A$
 \[
     T^{-1} A T = \left[\begin{array}{c| c c c }
         1 & & & \\ \hline \\ & & J_2 & \\ & & & 
@@ -1618,7 +1618,7 @@ with $J_2$ Schur
 
 From the definition of $T^{-1}$, for all $k\in\N$ we have $\tilde{x}^k=(\tilde{x}_m^k,\tilde{x}_\perp^k)$ with 
 \begin{itemize}
-    \item $tilde{x}_m^k = w^T x^k\in\R$ being the weighted average of $x^k$ 
+    \item $\tilde{x}_m^k = w^T x^k\in\R$ being the weighted average of $x^k$ 
     \item $\tilde{x}_\perp^k=W_R^Tx^k\in\R^{N-1}$ being the remaining components (dispersion) 
 \end{itemize}
 Then 
@@ -1644,7 +1644,7 @@ Therefore, in the original coordinates, it holds
     \end{array}\right] = \boldsymbol{1}w^Tx^0
 \]
 \subsection{The dissensus dynamics}
-Consider the so-called delated matrix defined as 
+Consider the so-called deflated matrix defined as 
 \[
     A- \boldsymbol{1}w^T\in\R^{N\times N}
 \]
@@ -1700,8 +1700,8 @@ Then its increment along trajectories satisfies
     &= (\delta^k)^T(TJT^{-1})^T\Pi(TJT^{-1})\delta^k - (\delta^k)^T\Pi\delta^k \\ 
     &= (T^{-1}\delta^k)^T(J^TT^T\Pi TJ-T^T\Pi T)T^{-1}\delta^k \\ 
     &= (T^{-1}\delta^k)^T \left[\begin{array}{c|c}
-        -p_1 & \\ \hline & -Q_2 T^{-1}\delta^k
-    \end{array}\right] \\ 
+        -p_1 & \\ \hline & -Q_2 
+    \end{array}\right] T^{-1}\delta^k\\ 
     &= -\|T^{-1}\delta^k\|^2_Q < 0
 \end{align*}
 
@@ -1736,7 +1736,7 @@ Let
         z_1^k \\ \vdots \\ z_N^k
     \end{bmatrix} \qquad s^k = \begin{bmatrix}
         s_1^k \\ \vdots \\ s_N^k
-    \end{bmatrix} \nabla\boldsymbol{\ell}(z^k) = \begin{bmatrix}
+    \end{bmatrix} \qquad \nabla\boldsymbol{\ell}(z^k) = \begin{bmatrix}
         \nabla\ell_1(z_1^k) \\ \vdots \\ \nabla\ell_N(z_N^k)
     \end{bmatrix}
 \]
@@ -1767,7 +1767,7 @@ Therefore
 \end{itemize}
 Moreover, by pre-multiplying by $\boldsymbol{1}^T$ the second state equation, for all $k\in\N$ we have
 \begin{align*}
-    \boldsymbol{1}^T s^{k+1} &= \boldsymbol{1}^T A s^{k} +\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1} -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k})\\ 
+    \boldsymbol{1}^T s^{k+1} &= \boldsymbol{1}^T A s^{k} +\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1} ) -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k})\\ 
     &= \boldsymbol{1}^T s^k+\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k+1}) -\boldsymbol{1}^T \nabla\boldsymbol{\ell}(z^{k}) 
 \end{align*}
 This implies an invariance condition 
@@ -1795,7 +1795,7 @@ Consider the nonlinear change of coordinates
 The GT dynamics in the new coordinates is 
 \begin{align*}
     z^{k+1} &= Az^k + \xi^k - \alpha\nabla\boldsymbol{\ell}(z^k) && z^0\in\R^N\\
-    \xi^{k+1} &= A\xi^k - \alpha(A_I)\nabla\boldsymbol{\ell}(z^k) && \xi^0 = 0
+    \xi^{k+1} &= A\xi^k - \alpha(A-I)\nabla\boldsymbol{\ell}(z^k) && \xi^0 = 0
 \end{align*}
 \begin{remark}
     This is a causal system
@@ -1935,7 +1935,7 @@ It can be shown that
     \end{bmatrix}$ is Schur
 \item $\xi_i^0 = 0$ for all $i$ implies that $\tilde{x}^0_m=0$
 \end{enumerate}
-Therefore the evolution of $\tilde{x}_m^k$ can be ignored to obtain a "reduced" system
+Therefore the evolution of $\tilde{\xi}_m^k$ can be ignored to obtain a "reduced" system
 \[
     \begin{bmatrix}
          \tilde{z}^{k+1}_m \\ \begin{bmatrix}
@@ -2008,7 +2008,7 @@ For instance, consider the following algorithm
     \xi^{k+1} = \xi^k + (I-A)z^k && \xi^0 \in\R^N\\
 \end{align*}
 \begin{remark}
-    THe dynamics of the controller state $\xi^k$ is a pure discrete-time integrator trying to compensate for the consensus error $(I-A)z^k$
+    The dynamics of the controller state $\xi^k$ is a pure discrete-time integrator trying to compensate for the consensus error $(I-A)z^k$
 \end{remark}
 
 
