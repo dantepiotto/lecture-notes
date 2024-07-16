@@ -10,6 +10,8 @@ https://www.ejmastnak.com/tutorials/vim-latex/intro/
 - Optimal Control
 - LEDS
 - RTOS
+- STAC
+- Distributed Autonomous Systems
 
 ## Corrections/Suggestions
 Notes are mainly taken during lectures and may present inaccuracies or missing portions. Feel free to suggest any changes or corrections in the Discussion tab.
