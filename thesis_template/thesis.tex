@@ -1,0 +1,17 @@
+\documentclass{book}
+
+\input{resources/preamble.tex}
+
+\begin{document}
+\tableofcontents
+\listoffigures
+
+\chapter*{Abstract}
+\addchaptertoc{Abstract}
+\lipsum[1]
+
+\graphicspath{{./subfiles/chapter1/figures/}}
+\subfile{subfiles/chapter1/chapter1.tex}
+
+\bibliography{resources/bibliography.bib}
+\end{document}

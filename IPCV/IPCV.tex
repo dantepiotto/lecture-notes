@@ -3,7 +3,7 @@
 \usepackage{tabularx}
 \usepackage{textgreek}
 \usepackage{graphicx}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,hyperref}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage{geometry}
@@ -20,7 +20,9 @@
 \date{october 2022}
 
 \begin{document}
-
+\maketitle
+\tableofcontents
+\newpage
 \section{Image formation and acquisition}
 
 \subsection{pinhole camera}
@@ -419,13 +421,13 @@ The two cameras can be separately calibrated using Zhang's algorithm.\\
 Rototranslation between the two cameras needs to be calibrated
 
 \section{Image filtering}
-Image filter: image processing algorithm that computes the new intensity (colour) of a pixel p based on intensities (colours) of pixels in its neighbourhood\\
+Image filter: image processing algorithm that computes the new intensity (colour) of a pixel p based on intensities (colours) of pixels in its neighbourhood
 \subsection{Linear Translation-Equivariant filters}
-Given an input 2D signal $i(x,y)$, a 2D operator $T\{\dot\}:o(x,y)=T\{i(x,y)\}$ is said to be linear iff:
-$$T\{ai_1(x,y)+bi_2(x,y)\}=ao_1(x,y)bo_2(x,y)$$ with $o_1(\dot)=T\{i_1(\dot)\}, o_2(\dot)=T\{i_2(\dot)\}$ and a,b constants.\\
-$T\{\dot\}$ is said to be translation-equivalent iff:
+Given an input 2D signal $i(x,y)$, a 2D operator $T\{\cdot\}:o(x,y)=T\{i(x,y)\}$ is said to be linear iff:
+$$T\{ai_1(x,y)+bi_2(x,y)\}=ao_1(x,y)bo_2(x,y)$$ with $o_1(\cdot)=T\{i_1(\cdot)\}, o_2(\cdot)=T\{i_2(\cdot)\}$ and a,b constants.\\
+$T\{\cdot\}$ is said to be translation-equivalent iff:
 $$T\{i(x-x_0,y-y_0)\}=o(x-x_0,y-y_0)$$
-If the operator is LTE, the output signal is given by the convolution between the impulse response (point spread function), $h(x,y)=T\{\delta(x,y)\}$ of the operator and the input signal.\\
+If the operator is LTE, the output signal is given by the convolution between the impulse response (point spread function), $h(x,y)=T\{\delta(x,y)\}$ of the operator and the input signal.
 $$o(x,y)=T\{i(x,y)\}=\int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} i(\alpha,\beta)h(x-\alpha,y-\beta)d\alpha d\beta$$\\
 LTE filters can be expressed through convolutions
 
@@ -707,8 +709,10 @@ Orientation is typically defined as the angle between the major axis and the hor
 \subsubsection{Oriented Bounding Box}
 aka Minimum Enclosing Rectangle: given by the major and minor\footnote{line through the baricenter perpendicular to the major axis} axes by finding the points that have the highest distance from the major and minor axes on either side, and computing the lines parallel to the axes through said points and their intersections. 
 \subsubsection{Lenght and Width}
-Length: extent of the object along the major axis\\
-Width: extent of the object along the minor axis\\
+\begin{itemize}
+    \item Length: extent of the object along the major axis
+    \item Width: extent of the object along the minor axis
+\end{itemize}
 \subsubsection{Elongatedness}
 Ratio between length and width:
 \[
@@ -727,11 +731,11 @@ Ratio between the area of the object and the area of the ellipse having major an
 
 \section{Local features}
 Edges: pixels that lie inbetween two different uniform regions. 
-\subsubsection{1D Step-Edge} %oh no what are you doing step-edge?
+\subsection{1D Step-Edge} %oh no what are you doing step-edge?
 In the transitoin region between the two constant levels, the absolute value of the first derivative is high (and reaches an extremum at the inflection point)
 % [TODO] instert image of 1D step-edge
 Accordingly, the simplest edge-detection operator relies on thresholding the absolute value of the first derivative of the signal. 
-\subsubsection{2D Step-Edge}
+\subsection{2D Step-Edge}
 A 2D Step-Edge is characterized by both strength and direction. Hence, we cannot use a directional derivative but instead we need an operator allowing to sense the edge whatever its direction is. For this purpose, we use the gradient:
 \[
     \nabla I(x,y)=\displaystyle\frac{\partial I (x,y)}{\partial x}i + \displaystyle\frac{\partial I (x,y)}{\partial y} j
@@ -888,7 +892,7 @@ A great variety of computer vision problems can be dealt with by finding \emph{c
     \item Matching descriptors between images
 \end{enumerate}
 and should be invariant to the transformations that may relate images. 
-\subsubsection{Properties of good detectors/descriptors}
+\subsection{Properties of good detectors/descriptors}
 
 \begin{itemize}
   \item Detector \begin{itemize}
