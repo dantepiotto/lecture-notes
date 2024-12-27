@@ -5,11 +5,13 @@ This repository contains notes personally taken while studying for the Master's 
 These notes are all taken in latex. You may simply download the PDFs or take a look at the source code if you so wish. In order to take the notes I use a setup mainly inspired by this guide:
 https://www.ejmastnak.com/tutorials/vim-latex/intro/
 
-## Up to date notes: 
+## Finalized Notes: 
 - Robotics
 - Optimal Control
 - LEDS
 - RTOS
+- STAC
+- Distributed Autonomous Systems
 
 ## Corrections/Suggestions
 Notes are mainly taken during lectures and may present inaccuracies or missing portions. Feel free to suggest any changes or corrections in the Discussion tab.
