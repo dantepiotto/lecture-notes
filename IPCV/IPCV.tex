@@ -866,7 +866,7 @@ Computing this turns out to be very slow, so instead we can rely on the Laplacia
 \subsubsection{Discrete Laplacian}
 One can use forward and backward differences to approximate the first and second order derivatives respectively:
 \[
-    I_xx \simeq I_x(i,j)-I_x(i,j-1)=I(i,j-1) - 2I(i,j)+I(i,j+1)
+    I_{xx} \simeq I_x(i,j)-I_x(i,j-1)=I(i,j-1) - 2I(i,j)+I(i,j+1)
 \]
 $I_yy$ analogous. This leads to the following convolution kernel:
 \[
@@ -909,7 +909,7 @@ Good keypoints should exhibit a large variation along all directions.
 \[
   C(p) = \min_{q\in n_8(p)} \|N(p)-N(q)\|^2 
 \]
-The cornerness at $p$ is given by the minimum squared difference between the patch centered at $p$ and those centered at its 8 neighbours. The cornerness of the whole image is computed, then thresholding and NMS are applied to identify corners.
+The cornerness at $p$ is given by the minimum squared difference between the values of the pixels in the patch centered at $p$ and those centered at its 8 neighbours. The cornerness of the whole image is computed, then thresholding and NMS are applied to identify corners.
 \subsection{Harris Corner Detector}
 The Harris corner detector is a continuous formulation of the Moravec corner detector. Denoting as $(\Delta x,\Delta y)$ a generic infinitesimal shift, the error function may be written as:
 \begin{align*}
@@ -937,6 +937,10 @@ Due to the shift being infinitesimal, we may take advantage of Taylor series exp
     \Delta x \\ \Delta y
   \end{bmatrix}
 \end{align*}
+where
+\[
+    M = (\nabla I)^\top\nabla I
+\]
 wlog we can assume $M$ to be diagonal, as it is real and symmetric, thus always diagonalizable:
 \[
   M=\begin{pmatrix}
@@ -966,17 +970,21 @@ With this new function we have
   \item $C > 0$: Corner
   \item $C < 0$: Edge
 \end{itemize}
-It is worth noting that the weighing function used is actually not a box function but rather Guassian shaped to assign more weight to closer pixels. Corner detection follows the usual steps of 
+It is worth noting that the weighing function used is actually not a box function but rather Guassian shaped to assign more weight to closer pixels. Corner detection follows the same steps as with the Moravec corner detector:
 \begin{itemize}
   \item computing the cornerness $C$ 
   \item Thresholding the values of $C$ 
   \item perform NMS on the thresholded values of $C$
 \end{itemize}
+
+
+
 \subsection{Shi-Tomasi Corner Detector}
 A popular variant to the Harris corner detector, providing better results when tracking corner points across  video frames. The cornerness function is:
 \[
   C=\min(\lambda_1,\lambda_2)
 \]
+Where $\lambda_1, \lambda_2$ are as defined above for the Harris corner detector.
 It results particularly useful in tracking corner points in videos. 
 \subsection{Invariance properties of the Harris corner detector}
 \subsubsection{Rotation}
@@ -988,7 +996,7 @@ Yes, as the eignevalues of matrix $M$ are invariant to rotation of the image axe
 \end{itemize}
 so overall, no invariance to affine intensity changes. 
 \subsubsection{Scale}
-No, due to fixed detection window size (impossible to detect homologous features when they appear at different scales in images). Images contain features at different scales, thsu a multiscale feature detector is necessary. A point may show up as salient at different scales. The \emph{characteristic scale} of a feature is the scale at which it's more salient. In order to mathc descriptors, large scale features need to be smoothed in order to eliminate details that do not appear across the range of scales. A fixed size detection tool is used on increasingly down-sampled and smoothed versions of the input image. 
+No, due to fixed detection window size (impossible to detect homologous features when they appear at different scales in images - e.g. a corner at some scale might appear as an edge at another scale). Images contain features at different scales, thus a multiscale feature detector is necessary. A point may show up as salient at different scales. The \emph{characteristic scale} of a feature is the scale at which it's more salient. In order to match descriptors, large scale features need to be smoothed in order to eliminate details that do not appear across the range of scales. A fixed size detection tool is used on increasingly down-sampled and smoothed versions of the input image. 
 
 \section{Scale-Space}
 A Scale-Space is a one-parameter family of images created from the original so that the structures at smaller scales are successively suppressed by smoothing operations. Moreover, the scale-space should not introduce artifacts. From studies it has been shown that Gaussian smoothing is the only viable solution: 
@@ -999,8 +1007,9 @@ Thus, a scale-space is created by repeatedly smoothing with larger and larger Ga
 \[
   \frac{\partial I(x,y,t) }{\partial t} = k\nabla^2I(x,y,t) \implies \sigma=\sqrt{2kt}
 \]
-In order to detect features and select their characteristic scale, we can find the extrema of certain combinations of scale-normalized derivatives of the Guassian Scale-Space. 
+In order to detect features and select their characteristic scale, we can find the extrema of certain combinations of scale-normalized derivatives of the Guassian Scale-Space. The method consists in stacking the chosen Gaussian derivatives and seeking for extrema along space and scale. As we smooth more (i.e., larger $\sigma$), derivatives become weaker, thus they are multiplied by $\sigma^2$ to normalize them.
 \subsection{Scale-normalized LOG}
+One proposed combination of derivatives is the Laplacian of Gaussian.
 \[
     F(x,y,\sigma) = \sigma^2\nabla^2L(x,y,\sigma) = \sigma^2(\nabla^2 G(x,y,\sigma)\ast I(x,y))
 \]
@@ -1015,7 +1024,7 @@ This approach provides a computationally efficient approximation of the scale-no
 \]
 as $(k-1)$ is constant, it does not influence the location of extrema. As such, the choice of $k$ is not critical. The DoG detector is rotation invariant.
 \subsubsection{Computation of DoG}
-In general, in an octave, $s$ DoG images are computed (octave: interval from $n\sigma$ to $(n+1)\sigma$). Rather than doubling $\sigma$ for the filters of the next octave, we downsample $L(x,y,2\sigma)$ by taking half of the columns and rows and then use the same filters.
+In general, in an octave, $s$ DoG images are computed (octave: interval from $n\sigma$ to $2n\sigma$). Rather than doubling $\sigma$ for the filters of the next octave, we downsample $L(x,y,2\sigma)$ by taking half of the columns and rows and then use the same filters.
 
 A point is detected as a maximum if the DoG is higher than the $n_8$ neighbourhood in the same image and in the images above and below ($8+9+9=26$ neighbours) (3D NMS)
 
@@ -1028,7 +1037,7 @@ A point is detected as a maximum if the DoG is higher than the $n_8$ neighbourho
 \end{itemize}
 
 \subsection{Canonical orientation}
-A reasonable choice is the direction along which most of the gradient is found. It is used to define a local reference frame for image patches. Gradient magnitude and orientation are computed at each pixel of the patch, then an orientation histogram with bin size $10^\circ$ is created by accumulating the contributions of the pixels belonging to a neighbourhood of the keypoint location. The contribution of each pixel to its designated orientatio bin is given by the gradient magnitude weighted by a Gaussian with $\sigma = 1.5\sigma_s$ where $\sigma_s$ is the scale of the keypoint. The canonical orientation is taken as the peak of the histogram
+A reasonable choice is the direction along which most of the gradient is found. It is used to define a local reference frame for image patches. Gradient magnitude and orientation are computed at each pixel of the patch, then an orientation histogram with bin size $10^\circ$ is created by accumulating the contributions of the pixels belonging to a neighbourhood of the keypoint location. The contribution of each pixel to its designated orientation bin is given by the gradient magnitude weighted by a Gaussian with $\sigma = 1.5\sigma_s$ where $\sigma_s$ is the scale of the keypoint. The canonical orientation is taken as the peak of the histogram, with parabola interpolation of the histogram around the peak using the two columns adjacent to the peak.
 
 
 
