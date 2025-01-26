@@ -1,10 +1,11 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{tabularx}
-\usepackage{textgreek}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,hyperref}
 \DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage{geometry}
  \geometry{
@@ -735,7 +736,7 @@ Edges: pixels that lie inbetween two different uniform regions.
 In the transitoin region between the two constant levels, the absolute value of the first derivative is high (and reaches an extremum at the inflection point)
 % [TODO] instert image of 1D step-edge
 Accordingly, the simplest edge-detection operator relies on thresholding the absolute value of the first derivative of the signal. 
-\subsection{2D Step-Edge}
+\subsection{2D Step-Edge} % step-edge, I'm stuck!
 A 2D Step-Edge is characterized by both strength and direction. Hence, we cannot use a directional derivative but instead we need an operator allowing to sense the edge whatever its direction is. For this purpose, we use the gradient:
 \[
     \nabla I(x,y)=\displaystyle\frac{\partial I (x,y)}{\partial x}i + \displaystyle\frac{\partial I (x,y)}{\partial y} j
@@ -1037,11 +1038,113 @@ A point is detected as a maximum if the DoG is higher than the $n_8$ neighbourho
 \end{itemize}
 
 \subsection{Canonical orientation}
-A reasonable choice is the direction along which most of the gradient is found. It is used to define a local reference frame for image patches. Gradient magnitude and orientation are computed at each pixel of the patch, then an orientation histogram with bin size $10^\circ$ is created by accumulating the contributions of the pixels belonging to a neighbourhood of the keypoint location. The contribution of each pixel to its designated orientation bin is given by the gradient magnitude weighted by a Gaussian with $\sigma = 1.5\sigma_s$ where $\sigma_s$ is the scale of the keypoint. The canonical orientation is taken as the peak of the histogram, with parabola interpolation of the histogram around the peak using the two columns adjacent to the peak.
+A reasonable choice is the direction along which most of the gradient is found. It is used to define a local reference frame for image patches. Gradient magnitude and orientation are computed at each pixel of the patch, then an orientation histogram with bin size $10^\circ$ is created by accumulating the contributions of the pixels belonging to a neighbourhood of the keypoint location. The contribution of each pixel to its designated orientation bin is given by the gradient magnitude weighted by a Gaussian with $\sigma = 1.5\sigma_s$ where $\sigma_s$ is the scale of the keypoint. The canonical orientation is taken as the peak of the histogram, with parabola interpolation of the histogram around the peak using the two columns adjacent to the peak. Other peaks higher than 0.8 of the main one would be kept as well, yielding multiple canonical orientations and thus descriptors sharing the same location/scale with diverse orientations. This has been found to occur quite rarely.
 
+\section{Sift Descriptor}
+The SIFT descriptor is computed as follows: 
+\begin{itemize}
+    \item A 16x16 pixel grid around each keypoint is considered.
+    \item This grid is divided into 16 4x4 pixel subgrids.
+    \item For each subgrid, the gradient magnitude and orientation are computed for each pixel and a gradient orientation histogram is built with 8 bins.
+    \item Gradients are rotated according to the canonical orientation of the keypoint.
+    \item Each pixel in the region contributes to its designated bin according to gradient magnitude as well as to a Gaussian weighting function with $\sigma$ equal to half the grid size. 
+    \item TO avoid boundary effects, a soft assignment is emplopyed: each pixels contribution to two adjacent bins is wighted by the distance to the bin center. His is done within a histogram and also between regions. The overall scheme is referred to as trilinear interpolation. 
+    \item The descriptor is normalized to unit length to gain invariance wrt affine intensity changes. Then t increase robustness to nonlinear changes, all elements larger than 0.2 are saturated and the descriptor is normalized again.
+\end{itemize}
 
+\section{Matching process}
+The most widely used method to compare descriptors is to compute the euclidean distance between descriptors. This gives rise to a nearest neighbour search problem: given a set $S$ of points $p_i$ in a metric space $M$ and a query point $q$, find $p_i\in S$ closest to $q$.
 
+The found NN could be a bad match, therefore there are some criteria to accept or reject a match:
+\begin{itemize}
+    \item $d_{NN}\leq T$ (NN distance) 
+    \item $\displaystyle\frac{d_{NN}}{d_{2-NN}} \leq T$ (ratio of distances)
+\end{itemize}
+For the NN distance criterion, it is hard to pick a threshold. Lowe shows that for ratio of distances criterion $T=0.8$ may allow to reject 90\% of false matches while only missing 5\% of correct ones.
 
+\subsection{Efficient NN search}
+Brute force search is not efficient, as it requires $O(N)$ operations. A more efficient approach is to use a data structure that allows for fast search. A common choice is the k-d tree, which is a binary tree that splits the space into half-spaces. The preferred approach is the \emph{approximate} variant referred to as \emph{BBF (Best Bin First)}. This formulation is efficient also in high-dimensional spaces such as descritpor spaces ($\R^{128}$ for SIFT).
+
+\subsubsection{k-d tree}
+Construction:
+\begin{enumerate}
+    \item Start with a list of $k$-dimensional points 
+    \item At each level: 
+        \begin{itemize}
+            \item select a dimension to split the data 
+            \item sort the points along that dimension 
+            \item choose the median point as the root
+        \end{itemize} 
+    \item Recursively repeat for the left and right subsets:
+        \begin{itemize}
+            \item Left: all points smaller than the median along the splitting dimension 
+            \item Right: all points greater than or equal to the median along the splitting dimension
+        \end{itemize}
+\end{enumerate}
+NN search:
+\begin{enumerate}
+    \item given the query $q$, thje tree is traversed from rott to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr}$ from $q$. 
+    \item Backtracking:
+        \begin{enumerate}
+            \item the parent node to the found leaf is considered: if its distance to $q$ is less than $d(q,NN_{curr}$ the parent node becomes the new $NN_{curr}$ and $d(q,NN_{curr})$ is updated. 
+            \item A check is carried out to determine whether the other halfs-space defined by the current parent node may contain or not a closer point. This depends on whether or not the hypersphere of radius $d(q,NN_{curr})$ centered at $q$ does intersect the splitting hyperplane.
+                \begin{itemize}
+                    \item In the first case, the sub-tree whose root is the parent node is traverse down to the next closest leaf 
+                    \item Conversely, the parent node to the current one is considered.
+                \end{itemize}
+            \item The process ends upon getting to the root of the tree, with $NN_{curr}$ being the nearest neighbour to $q$.
+        \end{enumerate}
+\end{enumerate}
+Best Bin First search:
+\begin{enumerate}
+    \item given the query $q$, the tree is traversed from root to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr}$ from $q$. The visited nodes are ordered in a \emph{priority queue} according to their distance to $q$. 
+    \item Backtracking:
+        \begin{enumerate}
+            \item The first element in the \emph{priority queue} is extracted so to traverse its unexplored branch down to a leaf. During the process, the priority queue is kept updated. 
+            \item The previous step is iterated until a fixed number of leaves ($E_{max}$) have been visited.
+        \end{enumerate}
+\end{enumerate}
+The found \emph{approximate} NN is the closest data point $NN_{curr}$ after $E_{max}$ leaves have been visited.
+
+\section{Instance Detection}
+Detection of a specific instance of an object in an image. Given a reference image of a specific object, the task is to determine whether it is present or not in the image under analysis.
+
+\subsection{Template matching}
+The model image is slid across the target image to compare it with a same size window with a (dis)similarity function.
+\subsubsection{Dis(similarity) functions}
+\begin{itemize}
+    \item   Sum of squared differences (SSD):
+        \[
+            SSD(i,j) = \displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}(I(i+m,j+n)-T(m,n))^2
+        \]
+        both $\tilde{I}(i,j)$ (i.e., the window fo the target image at position $(i,j)$ having the same size as $T$) and $T$ can be though of as $M\cdot N$-dimensional vectors through flattening. Accordingly, $SSD$ represents the squared L2 norm of their difference.
+    \item Sum of Absloute Differences (SAD):
+        \[
+            SAD(i,j) = \displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}|I(i+m,j+n)-T(m,n)|
+        \]
+        which is the L1 norm of the difference between the two vectors.
+    \item Normalized Cross-Correlation (NCC):
+        \[
+            NCC(i,j) = \displaystyle\frac{\displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}I(i+m,j+n)\cdot T(m,n)}{\sqrt{\displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}I(i+m,j+n)^2 \cdot \displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}T(m,n)^2}}
+        \]
+        \[
+            NCC(i,j) = \displaystyle\frac{\tilde{I}(i,j)\cdot T}{\|\tilde{I}(i,j)\|\cdot \|T\|} = \displaystyle\frac{\|\tilde{I}(i,j)\|\cdot \|T\|\cdot \cos\theta}{\|\tilde{I}(i,j)\|\cdot \|T\|} = \cos\theta \quad \implies \quad \tilde{I}(i,j) 0 \alpha \cdot T 
+        \]
+        thus $NCC$ represents the cosine of the angle betwen vectors $\tilde{I}(i,j)$ and $T$ and is therefore invariant to linear intensity changes.
+        \item Zero-mean Normalized Cross-Correlation (ZNCC):
+            \[
+                ZNCC(i,j) = \displaystyle\frac{\displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}(I(i+m,j+n)-\mu_{\tilde{I}})(T(m,n)-\mu_T)}{\sqrt{\displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}(I(i+m,j+n)-\mu_{\tilde{I}})^2 \cdot \displaystyle\sum_{m=0}^{M-1}\displaystyle\sum_{n=0}^{N-1}(T(m,n)-\mu_T)^2}}
+            \]
+            where $\mu_{\tilde{I}}$ and $\mu_T$ are the means of the target and template windows respectively.
+            $\tilde{I}(i,j) = \alpha\cdot T + \beta$, thus $ZNCC$ is invariant to affine intensity changes.
+\end{itemize}
+\subsubsection{Fast template matching}
+Template matching may turn out exceedingly slow when the model and/or target images have a large size ($O(M\times N \times W \times H)$). The simplest approach to speed-up computation is to deploy an \emph{image pyramid}:
+\begin{itemize}
+    \item smoothing and subsampling both model and target image (typically by a factor of 2 on both sides per level) 
+    \item Full search at top level and then local refinements traversing back the pyramid down to the original image 
+    \item To handle rotation and/or scale changes on would need to probe rotated and/or scaled model images, possibly while deploying an image pyramid to speed up the process
+\end{itemize}
 
 
 
