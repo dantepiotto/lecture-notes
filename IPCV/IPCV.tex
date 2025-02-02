@@ -265,7 +265,7 @@ For a useful camera model we need to take into account:
 Digitization can be accounted for by including into the projection equations the scaling factors along the two axes due to the quantization associated with the horizontal and vertical pixel size ($\Delta u$ and $\Delta v$). We also need to model the translation of the piercing point wrt the origin of the image coordinate system
 \begin{gather*}
     u=\frac{f}{z}x \quad \rightarrow u = \frac{1}{\Delta u} \frac{f}{z}x=k_u\frac{f}{z}x+u_0 \\
-    v=\frac{f}{z}y \quad \rightarrow v = \frac{1}{\Delta v} \frac{f}{z}x=k_u\frac{f}{z}x+u_0 \\
+    v=\frac{f}{z}y \quad \rightarrow v = \frac{1}{\Delta v} \frac{f}{z}x=k_v\frac{f}{z}x+u_0 \\
 \end{gather*}
 The PPM can therefore be rewritten as
 \begin{equation}
@@ -342,7 +342,7 @@ Matrix G, which encodes the position and orientation of the camera wrt the WRF, 
 To be noted: the actual DoFs of G are 6, 3 due to rotation and 3 due to translation
 
 \subsection{Homographies}
-\subsubsection{P as a Homography}
+\subsubsection{P as a Homography} \label{sec:homo}
 If the camera is imaging a planar scene we can assume the z axis of the WRF to be perpendicular to the plane so that all points have z coordinate 0. The PPM simplifies as follows:
 \begin{equation}
     k\tilde{m}=\tilde{P}\tilde{W}=\begin{bmatrix}
@@ -404,18 +404,148 @@ $L(r)$ is usually approximated by its Taylor series around the centre of distort
     L(r)=1+k_1r^2+k_2r^4+k_3r^6+\dots
 \end{equation}
 $L(0)=1$, therefore there is no distortion at the centre of distortion. The odd terms are not present beacause $L(r)$ is undefined for $r<0$, so it can be considered to be an even function.
+
+Tangential distortion is approximated as follows:
+\[
+    \begin{bmatrix}
+        d\tilde{x}\\ d\tilde{y} 
+    \end{bmatrix} = \begin{bmatrix}
+        2p_1\tilde{x}\tilde{y}+p_2(r^2+2\tilde{x}^2)\\
+        p_1(r^2+2\tilde{y}^2)+2p_2\tilde{x}\tilde{y}
+    \end{bmatrix}
+\]
 \section{Camera calibration [INCOMPLETE]}
 for the sake of camera calibration, patterned surfaces such as checkboards are used to find corresponding points.
 \subsection{Zhang's Method}
 \begin{enumerate}
     \item Acquire n images of a planar pattern with m internal corners
-    \item comput a homography $H_i$ for each image
+    \item Compute a homography $H_i$ for each image
+
+        Due to the calibration pattern being planar and the choice of the WRF associated with the calibration images, for each of them we consider only 3D control points with $z=0$. Therefore, the mapping between 3D coordinates of the control points and their projections in the calibration images is a homography (see section \ref{sec:homo}):
+        \[
+            k\tilde{m} = \tilde{P}\tilde{w} =  H\tilde{w}'
+        \]
+        Given a pattern with $m$ corners, we can write $m$ systems of 3 linear equations as above, wherein both 3D (with $z=0$) as well as 2D coordinates are known due to corners having been detected in the calibration image and the uknowns being therefore only the elements in $H$
     \item Refine each $H_i$ by minimizing the reprojetion error
+
+        Given the previous initial estimation, $H_i$ is later refined by the least-squares solution of the non-linear minimization problem 
+        \[
+            H = \argmin_{H\in\R^9} \displaystyle\sum_{j=1}^{m} \|\tilde{m}_j - H\tilde{w}_j'\|^2
+        \]
+        which can be obtained by using the Levenberg-Marquardt algorithm. The previous step is necessary to initialize the problem close to a solution
     \item given all the $H_i$ get an initial guess for the intrinsics A
+
+        As $H$ is known up to a scale factor, we can establish the following relation beteen $H$ and the PPM:
+        \[
+            H = \begin{bmatrix}
+                h_1 & h_2 & h_3
+            \end{bmatrix} = \begin{bmatrix}
+                p_1 & p_2 & p_4
+            \end{bmatrix} = \lambda A \begin{bmatrix}
+                r_1 & r_2 & T
+            \end{bmatrix}
+        \]
+        $R$ is an orthonormal matrix. This constrains the intrinsic parameters to obey the following relations:
+        \begin{align*}
+            &&r_1^T r_2 = 0 & \implies h_1^T A^{-T}A^{-1} h_2 = 0\\
+            &&r_1^T r_1 = r_2^T r_2 & \implies h_1^T A^{-T}A^{-1} h_1 = h_2^T A^{-T}A^{-1} h_2
+        \end{align*}
+        where the uknowns are the entries of $B=A^{-T}A^{-1}$. As $A$ is upper triangular, $B$ turns out to be symmetric, so there are only 6 uknowns. By stacking the above two equations provided by each calibration image, we obtain a $2n\times 6$ linear system, which can be solved in case at least 3 images are available.
     \item Given A and $H_i$ get an initial guess for $R_i$ and $T_i$ (extrinsics)
+
+        \begin{align*}
+            H = \begin{bmatrix}
+                h_1 & h_2 & h_3
+            \end{bmatrix} = \lambda A \begin{bmatrix}
+                r_1 & r_2 & T 
+            \end{bmatrix} \\
+           h_1 = \lambda A r_1 \implies r_1 = \displaystyle\frac{1}{\lambda} A^{-1} h_1
+        \end{align*}
+      As $r_1$ is a unit vecotr:
+        \[
+            \lambda = \|A^{-1} h_1\|, \quad r_2 = \displaystyle\frac{1}{\lambda} A^{-1} h_2
+        \]
+        $r_3$ can be derived from $r_1$ and $r_2$ by exploiting orthonormality:
+        \[
+            r_3 = r_1 \times r_2
+        \]
+        Finally we can get $T$:
+        \[
+            T = \displaystyle\frac{1}{\lambda} A^{-1} h_3
+        \]
     \item compute an initial guess for lens distortion k
+
+        Given the already know intrinsic parameter matrix $A$, and the lens distortion model:
+        \[
+            \begin{bmatrix}
+                x'\\
+                y'
+            \end{bmatrix} = L(r) \begin{bmatrix}
+                \tilde{x}\\
+                \tilde{y}
+            \end{bmatrix} =(1 + k_1 r^2 + k_2 r^4) \begin{bmatrix}
+                \tilde x\\
+                \tilde y
+            \end{bmatrix}
+        \]
+        we need to first establish the relationship between the distorted ($u',v'$) and ideal ($\tilde u,\tilde v$) pixel coordinates:
+        \[
+            \begin{bmatrix}
+                u' \\ v' \\ 1
+            \end{bmatrix} = A \begin{bmatrix}
+                x' \\ y' \\ 1
+            \end{bmatrix} = \begin{bmatrix}
+                \alpha_u & 0 & u_0 \\
+                0 & \alpha_v & v_0 \\
+                0 & 0 & 1
+            \end{bmatrix} b \begin{bmatrix}
+                x' \\ y' \\ 1
+            \end{bmatrix}
+        \rightarrow \begin{cases}
+            \displaystyle\frac{u' - u_0}{\alpha_u} = (1 + k_1 r^2 + k_2 r^4) \left(\displaystyle\frac{\tilde u - u_0}{\alpha_u} \right)\\
+            \displaystyle\frac{v' - v_0}{\alpha_v} = (1 + k_1 r^2 + k_2 r^4) \left(\displaystyle\frac{\tilde v - v_0}{\alpha_v} \right)\\
+        \end{cases}
+    \]
+    It is therefore possible to set up a linear system where the unknowns are the distortion coefficients: 
+    \[
+        \begin{bmatrix}
+            (\tilde u - u_0) r^2 & (\tilde u - u_0) r^4 \\
+            (\tilde v - v_0) r^2 & (\tilde v - v_0) r^4
+        \end{bmatrix} \begin{bmatrix}
+            k_1 \\ k_2 
+        \end{bmatrix} = \begin{bmatrix}
+            u' - \tilde u \\
+            v' - \tilde v
+        \end{bmatrix} \qquad \qquad r^2 = \left(\displaystyle\frac{\tilde u - u_0}{\alpha_u}\right)^2 + \left(\displaystyle\frac{\tilde v - v_0}{\alpha_v}\right)^2
+    \]
+    With $m$ corner features in $n$ images, we get a linear system with $2mn$ equations in 2 unknowns, which admits a least-squares solution:
+    \[
+        Dk =d \implies k = D^\dagger d = (D^TD)^{-1}D^Td
+    \]
     \item refine A, $R_i$, $T_i$, k by minimizing the reprojection error
+        This is again done using the Levenberg-Marquardt algorithm to minimize the reprojection error
+        \[
+            \displaystyle\sum_{i=1}^{n} \displaystyle\sum_{j=1}^{m} \|m_{ij} - \hat{m}(A,k,R_i,T_i,w_j)|^2
+        \]
 \end{enumerate}
+
+Given a planar chessboard pattern, known are:
+\begin{itemize}
+    \item the number of internal corners of the pattern, different along the two orthogonal directions for the sake of disambiguation
+    \item The size of the squares which form the pattern
+\end{itemize}
+Internal corners can be detected easily byu standard algorithms (e.g. Harris corner detector). In each image, the 3D WRF is taken at the top-left corner of the pattern, with plane $z=0$ given by the pattern itself and the $x,y$ axes alingned to the two orthogonal directions, in particular so as to always keep the same association between axes and directions. Thus, as for 3D points:
+\begin{itemize}
+    \item The third coordinate is always 0 
+    \item $x$ and $y$ are determined by the known size of the squares forming the chessboard 
+\end{itemize}
+To get camera parameters, two main steps are carried out: 
+\begin{itemize}
+    \item Initial guess by a linear optimizer (minimization of an algebraic error) 
+    \item Refinement by a non-linear optimizer (minimization of a geometric error)
+\end{itemize}
+% [TODO] make image
+Each image requires its own estimate of the extrinsic parameters, as they differ from image to image. A global WRF can be taken to coincide with that associated with one of the calibration images, e.g. the first.
 
 \subsection{Calibration of a stereo camera}
 The two cameras can be separately calibrated using Zhang's algorithm.\\
@@ -785,7 +915,7 @@ However, it is well known that differetiation amplifies noise, making edge detec
 Smoothing and differentiation are carried out jointly within a single step. This is achieved  by computing differences of means. To avoid blurring edges, the two operations are carried out along orthogonal directions
 \begin{gather*}
     \mu_x(i,j)=\displaystyle\frac{1}{3}[I(i,j-1)+I(i,j)+I(i,j+1)] \quad \mu_y(i,j)=\displaystyle\frac{1}{3}[I(i-1,j)+I(i,j)+I(i+1,j)]\\
-    \tilde{I}_x(i,j) = \mu_y(i,j+1)-\mu_y(i,j) = \displaystyle\frac{1}{3}[I(i-1,j+1)+I(i,j+1)+I(i+1,j+1)-I(i-1,j)-I(i,j)-I(i+1,j)]\\
+    \tilde{I}_x(i,j) = \mu_y(i,j+1)-\mu_y(i,j) =\\= \displaystyle\frac{1}{3}[I(i-1,j+1)+I(i,j+1)+I(i+1,j+1)-I(i-1,j)-I(i,j)-I(i+1,j)]\\
     \implies \text{ which is equivalent to the kernel }\displaystyle\frac{1}{3}\begin{bmatrix}
         -1 1 \\
         -1 1 \\
@@ -1146,9 +1276,157 @@ Template matching may turn out exceedingly slow when the model and/or target ima
     \item To handle rotation and/or scale changes on would need to probe rotated and/or scaled model images, possibly while deploying an image pyramid to speed up the process
 \end{itemize}
 
+\subsection{Shape-based matching}
+May be thought of as an edge-based template matching. First, a set of control points $P_k$ is extracted form the model image by an edge detection operation (e.g. Sobel) and the gradient direction at each $P_k$ is recorded. 
+Then, at each position $(i,j)$ of the sliding window within the target image, the recorded gradient directions associated with control points are compared to those at their corresponding image points $\tilde{P}_k(i,j)$ in order to compute a similarity function.
+\begin{align*}
+    &G_k(P_k) = \begin{bmatrix}
+        I_x(P_k) \\ I_y(P_k)
+    \end{bmatrix}, \quad u_k(P_k) = \displaystyle\frac{1}{\|G_k(P_k)\|}G_k(P_k), \quad k=1,\dots,n\\ 
+    &\tilde{G}_k(\tilde{P}_k) = \begin{bmatrix}
+        I_x(\tilde{P}_k) \\ I_y(\tilde{P}_k)
+    \end{bmatrix} \quad \tilde{u}_k(\tilde{P}_k) = \displaystyle\frac{1}{\|\tilde{G}_k(\tilde{P}_k)\|}\tilde{G}_k(\tilde{P}_k), \quad k=1,\dots,n\\
+    &S(i,j) = \displaystyle\frac{1}{n} \displaystyle\sum_{k=1}^{n}u_k(P_k)^\top \tilde{u}_k(\tilde{P}_k) = \displaystyle\frac{1}{n} \displaystyle\sum_{k=1}^{n}\cos(\theta_k)
+\end{align*}
+The above similarity function spans the interval $[-1,1]$, taking maximum value when all the gradients at the control points in the current window of the target image are perfectly aligned to those at the control points of the model image. Choosing a detection threshold can be thought of as specifying the fraction of model points which must be seen in the image to trigger a detection.
 
+To achieve invariance to contrast polarity changes, the following modification is possible:
+\[
+    S(i,j) \displaystyle\frac{1}{n} \left|\displaystyle\sum_{k=1}^{n}u_k(P_k)^\top \tilde{u}_k(\tilde{P}_k) \right| = \displaystyle\frac{1}{n} \left|\displaystyle\sum_{k=1}^{n}\cos(\theta_k)\right|
+\]
+This achieves invariance to global inversions of contrast polarity along object contours. To acheive invariance to local inversions, the following modification is possible:
+\[
+    S(i,j) = \displaystyle\frac{1}{n} \displaystyle\sum_{k=1}^{n}\left|u_k(P_k)^\top \tilde{u}_k(\tilde{P}_k) \right| = \displaystyle\frac{1}{n} \displaystyle\sum_{k=1}^{n}\left|\cos(\theta_k)\right|
+\]
+Edges in the target image are not computed as the control points are extracted from the model image. Thus, this method is robust to the fragility of edge detection given  by light changes.
+\subsection{The Hough Transform}
+The Hough Transform enables to detect objects having a shape that can be expressed by an equation, based on projection of the input data into a suitable space referred to as \emph{parameter} or \emph{Hough} space. Typically the HT is applied after an edge detection process, i.e. the input data consists of the edge pixels extracted from the original image. 
+The HT is robust to noise and allows for detecting the sought shape even thoug it is partially occluded in the image.
+\subsubsection{Line detection}
+let us consider the equation of a line:
+\[
+    y-mx-c = 0
+\]
+In the usual image space interpretation of the line equation, the parameters $\hat{m}$ and $\hat{c}$ are fixed:
+\[
+    y-\hat{m}x-\hat{c} = 0
+\]
+so that the equation represents a mapping from point $\hat{m}, \hat{c}$ of the parameter space to the image points belonging to the line. We may instead fix $\hat{x}, \hat{y}$:
+\[
+    \hat{y}-m\hat{x}-c = 0
+\] 
+so that the equation represents a mapping from point $\hat{x}, \hat{y}$ of the image space to the lines passing through the point. Such a locus is itself a line. 
 
+Accordingly, if we consider to image points $P_1, P_2$ and map both to into the parameter space, we get two lines intersecting at the parameter space point represneting the image line through $P_1, P_2$. Thus, for $n$ collinear image points the line parameters $(m,c)$ are identified by the single intersection of $n$ lines in the parameter space. In looking for a line in the image space we therefore look for a point that is an intersection of lines in the parameter space. More in general, given a sought analytic shape represented by a set of parameters, the HT consists in mapping image points (usually edge points) so as to create curves into the parameter space of the shape, the intersections of which indicate the presence of image points explained by a certain instance of the shape, with more curve intersecting indicating stronger support for presence of the shape in the image.
 
+In practice, to make the process work, the parameter space is discretized and allocated as a memory array, which is typically referred to as Accumulator Array (AA). Then, curves are drawn into the AA by a so called \emph{voting} process: the tranform equation si epeatedly computed to increment the bins satisfying the equation. Accordingly, a high number of intersecting curves at a point of the parameter space will provide a high number of votes into a bin of the AA. Finding parameter space points through which many lines intersect is thus implemented by finding peaks of the AA, i.e. local maxima showing a high number of votes (NMS).
+
+The usual line parametrization is impractical for the HT, as vertical lines would require infinite values of $m$ and $c$. A more suitable parametrization is the \emph{normal parametrization}: 
+\[
+    \rho = x\cos\theta + y\sin\theta
+\]
+Image points are mapped into sinusoidal curves of the $(\theta, \rho)$ parameter space. With the normal parametrization, $\theta\in\left[-\displaystyle\frac{\pi}{2}, \displaystyle\frac{\pi}{2}\right]$, $\rho\in \left[-\rho_{max},\rho_{max}\right]$, where $\rho_{max}$ is usually taken as large as the image diagonal. 
+
+\subsubsection{Circle detection}
+The equation of a circle is:
+\[
+    (x-a)^2+(y-b)^2 = r^2
+\]
+Through the HT this is interpreted as a mapping from the image space to the 3-dimensional parameter space $(a,b,r)$. The points satisfying the equation of the circle lie on a cone in the Hough space, with its axis parallel to the $r$ axis. A 3D AA may be implemented, with each layer being associated to a value of $r$:
+\[
+    \forall \bar{r} \in [r_{min}, r_{max}]: \quad \begin{cases}
+        a = \hat{x} + \bar{r}\cos\theta_k\\
+        a = \hat{y} + \bar{r}\sin\theta_k
+    \end{cases} \qquad \theta_k \in \left[0,2\pi\right] \quad \begin{cases}
+        \Delta \theta = \displaystyle\frac{2\pi}{M}\\
+        \theta_k = k\Delta \theta, \ k=0,\dots,M
+    \end{cases}
+\]
+\subsection{Generalized Hough Transform}
+The HT can be extended to detect arbutrary non analytical shapes. A description of the algorithm follows:
+\begin{itemize}
+    \item \textbf{Off-line Phase}
+        \begin{enumerate}
+            \item Detect edges (B) in the model image
+            \item Choose a reference point $y$ (e.g. the barycenter of B) 
+            \item For each point $x$ in $B$:
+                \begin{enumerate}
+                    \item Compute vector $r$ from $x$ to $y$ (i.e. $r=y-x$) 
+                    \item Compute the direction of the gradient at $x$ $\varphi(x)$ 
+                    \item Store $r$ in a table (R-table) indexed by a chosen gradient direction quantization step $\Delta\varphi$
+                \end{enumerate}
+        \end{enumerate} 
+    \item \textbf{On-line Phase (object detection)} 
+    \begin{enumerate}
+        \item Detect edges in teh target image and initialize another iamage as accumulater array $A[y]$. For eachg edge pixel $x$ of the target image:
+        \item Compute gradient direction $\varphi$ at $x$ 
+        \item Quantize $\varphi$ to index the R-table. For each $r_i$ vector stored in the indexed row:
+            \begin{enumerate}
+                \item Compute the position of the reference point $y=x-r_i$ 
+                \item Cast a vote into the accumulator array $A[y]++$ 
+            \end{enumerate}
+        \item As usual with the HT, instances of the sought object are detected by finding peaks in the accumulator array.
+    \end{enumerate}
+\end{itemize}
+\subsubsection{Invariance to rotation and scale}
+To gain invariance from rotation, it is necessary to quantize the rotation range and try al possible discretized rotations (brute force approach). This is only feasible for small rotation ranges
+\[
+    \forall r:y=x+r_\theta =x + ROT(r,\theta), \quad A[y,\theta]++
+\]
+To handle scale changes a similar approach needs to be taken:
+\[
+    \forall r:y=x+r_s = x + s\cdot r, \quad A[y,s]++
+\]
+Handling rotation and scale (similarity) requires that both approaches be taken together:
+\[
+    \forall r:y=x+ s\cdot r_\theta, \quad A[y,\theta,s]++
+\]
+This is hardly feasible
+\subsection{GHT with Local Invariant Features aka Star Model}
+\textbf{Off-line}:
+\begin{enumerate}
+    \item Detect keypoints (e.g. DoG) and compute descriptors (e.g. SIFT) in the model image:
+        \[
+            F =\{ F_1, F_2,\dots F_N \} \qquad F_i = (P_i, D_i, \varphi_i, S_i)
+        \]
+        where $P_i$ is the keypoint position, $D_i$ is the descriptor, $\varphi_i$ is the orientation and $S_i$ is the scale. 
+    \item Choose a reference point (e.g. barycenter of $P_i$)
+        \[
+            P_C = \displaystyle\frac{1}{N}\displaystyle\sum_{i=1}^{N}P_i
+        \] 
+        \item Compute the joining vectors between the features and the reference point:
+            \[
+                \forall F_i \in F \quad V_i = P_C - P_i
+            \]
+\end{enumerate}
+The Star Model consists of the features and their joining vectors (no need for the R-Table):
+\[
+    F_i  = (P_i, D_i, \varphi_i, S_i, V_i)
+\]
+\textbf{On-line}:
+\begin{enumerate}
+    \item Detect keypoints and compute descriptors in the target image and initialize an accumulator array $A[P_C]$:
+        \[
+            \tilde{F} =\{ \tilde{F}_1, \tilde{F}_2,\dots \tilde{F}_M \} \qquad \tilde{F}_j = (\tilde{P}_j, \tilde{D}_j, \tilde{\varphi}_j, \tilde{S}_j)
+        \]
+    \item Match descriptors between target and model features:
+        \[
+            \forall \tilde{F}_j \in \tilde{F}:\ \tilde{D}_j \Rightarrow D_i
+        \] 
+        \item For each target feature that matches a model feature, compute the position of the reference point and cast a vote into the accumulator array 
+            \[
+                \forall (\tilde{F}_j, F_i): \tilde{D}_j\Rightarrow D_i  \quad \tilde{P}_{C_j}) = \tilde{P}_j + V_i \quad A[\tilde{P}_{C_j}]++
+            \]
+\end{enumerate}
+\subsubsection{Similarity invariant voting}
+Step 3 is done taking into account the scale and canonical orientation of the feature in the target image as compared to those in the model image. Namely, the vector from the feature point to the reference point is rotated by the difference in canonical orientation and scaled by the ratio in scales:
+\[
+    \Delta\varphi_j = \tilde{\varphi}_j - \varphi_i, \ \Delta S_j = \displaystyle\frac{\tilde{S}_j}{S_i} \quad \tilde{P}_{C_j} = \tilde{P}_j + \Delta S_j\cdot R(\Delta\varphi_j) V_i
+\]
+\subsubsection{2D Accumulator Array}
+With a 2D AA, votes coming from diffferent rotation and scale hypotheses my accumulate into the same bin. This mayt yielkd false positives and requires robust (RANSAC) estimation of the pose as the set of correspondences associate with the peak(s) may include wrong ones (outliers).
+\subsubsection{4D Accumulator Array}
+A 4D AA is used to store votes according to the position of the reference point and the rotation and scale hypotheses. This allows to avoid false positives and to directly estimate the pose of the model in the target image.
 
 
 
