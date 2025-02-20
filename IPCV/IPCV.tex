@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{tabularx}
 \usepackage{graphicx}
-\usepackage{amsmath,amssymb,hyperref}
+\usepackage{amsmath,amssymb,hyperref,float}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
@@ -14,6 +14,7 @@
  left=20mm,
  top=20mm,
  }
+ \graphicspath{ {./figs/} }
 
 
 \title{IPCV}
@@ -50,7 +51,7 @@ equations that relate 3d obj coords (x,y,z) to image coords:
 
 to get rid of up/down and left/right inversions we can write
 \begin{equation}
-		u= = x \frac{f}{z}; \quad v=y \frac{f}{z}
+		u=  x \frac{f}{z}; \quad v=y \frac{f}{z}
 \end{equation}
 
 going from 3D to 2D implies a loss of information
@@ -112,7 +113,7 @@ Solution: lenses that gather light and focus it in a single point
 	\item rays parallel to the optical axis are deflected to pass through F
 	\item rays through C are undeflected
 \end{itemize}
-If the image ins in focus, the image formation process obeys the perspective projection model, with the center of the lens being the optical center and the distance $v$ acting as the effective focal length of the projection\\
+If the image is in focus, the image formation process obeys the perspective projection model, with the center of the lens being the optical center and the distance $v$ acting as the effective focal length of the projection\\
 given an image distance, 1 scene plane is in focus\\
 scene points outside the focusing plane are mapped into circles of confusion/blur circles\\
 this problem is alleviated in some ways: 
@@ -121,11 +122,11 @@ this problem is alleviated in some ways:
 	\item lens size (smaller lenses $\rightarrow$ smaller blur circles)
 	\item diaphragm (affects effective lens size used)
 \end{itemize}
-F number = ratio of focal length to effective aperture ($f/d$)
+F number = ratio of focal length to effective aperture ($f/d$)\\
 focusing mechanism: lens is moved wrt the image plane (sensor)
 
 \subsection{Image digitization}
-sensor converts irradiance into an electric quantity (e.g. voltage), which is sampled (2D array of pixels) and quantized (typically 8 bit in grayscale $\rightarrow$ 256 levels)\\
+Sensor converts irradiance into an electric quantity (e.g. voltage), which is sampled (2D array of pixels) and quantized (typically 8 bit in grayscale $\rightarrow$ 256 levels)\\
 In practice image is sampled when sensed due to arrays being arranged in an array\\
 In digital cameras sensor array=pixels\\
 In analog cameras image from sensor array s conveerted to analog signal and then reconverted to digital but pixels $\neq$ camera sensor array\\
@@ -149,8 +150,8 @@ CCD/CMOS is not sensitive to light wavelength $\rightarrow$ colour filtering arr
 both SNR and DR are usually specified in decibels or bits\\
 CCD typically provides higher SNR, DR, and better uniformity than CMOS\\
 with CMOS electronics can be integrated on the same chip $\rightarrow$ compactness, power efficiency, lower cost.\\
-With CMOS an arbitrary window can be read out without haveing to receive the full image\\
-to create colour an array of CFAs is placed in front of the photodetectors so as to render each pixel sensitive to a specific range of wavelengths
+With CMOS an arbitrary window can be read out without having to receive the full image\\
+To create colour an array of CFAs is placed in front of the photodetectors so as to render each pixel sensitive to a specific range of wavelengths
 
 \subsection{Perspective projection}
 By appending a 1 to the Euclidean coordinates of the object we obtain the coordinates in the projective space $\mathbb{P}^3$. We assume
@@ -414,7 +415,7 @@ Tangential distortion is approximated as follows:
         p_1(r^2+2\tilde{y}^2)+2p_2\tilde{x}\tilde{y}
     \end{bmatrix}
 \]
-\section{Camera calibration [INCOMPLETE]}
+\section{Camera calibration}
 for the sake of camera calibration, patterned surfaces such as checkboards are used to find corresponding points.
 \subsection{Zhang's Method}
 \begin{enumerate}
@@ -534,7 +535,7 @@ Given a planar chessboard pattern, known are:
     \item the number of internal corners of the pattern, different along the two orthogonal directions for the sake of disambiguation
     \item The size of the squares which form the pattern
 \end{itemize}
-Internal corners can be detected easily byu standard algorithms (e.g. Harris corner detector). In each image, the 3D WRF is taken at the top-left corner of the pattern, with plane $z=0$ given by the pattern itself and the $x,y$ axes alingned to the two orthogonal directions, in particular so as to always keep the same association between axes and directions. Thus, as for 3D points:
+Internal corners can be detected easily by standard algorithms (e.g. Harris corner detector). In each image, the 3D WRF is taken at the top-left corner of the pattern, with plane $z=0$ given by the pattern itself and the $x,y$ axes alingned to the two orthogonal directions, in particular so as to always keep the same association between axes and directions. Thus, as for 3D points:
 \begin{itemize}
     \item The third coordinate is always 0 
     \item $x$ and $y$ are determined by the known size of the squares forming the chessboard 
@@ -547,7 +548,7 @@ To get camera parameters, two main steps are carried out:
 % [TODO] make image
 Each image requires its own estimate of the extrinsic parameters, as they differ from image to image. A global WRF can be taken to coincide with that associated with one of the calibration images, e.g. the first.
 
-\subsection{Calibration of a stereo camera}
+\subsection{Calibration of a stereo camera [INCOMPLETE]}
 The two cameras can be separately calibrated using Zhang's algorithm.\\
 Rototranslation between the two cameras needs to be calibrated
 
@@ -555,7 +556,7 @@ Rototranslation between the two cameras needs to be calibrated
 Image filter: image processing algorithm that computes the new intensity (colour) of a pixel p based on intensities (colours) of pixels in its neighbourhood
 \subsection{Linear Translation-Equivariant filters}
 Given an input 2D signal $i(x,y)$, a 2D operator $T\{\cdot\}:o(x,y)=T\{i(x,y)\}$ is said to be linear iff:
-$$T\{ai_1(x,y)+bi_2(x,y)\}=ao_1(x,y)bo_2(x,y)$$ with $o_1(\cdot)=T\{i_1(\cdot)\}, o_2(\cdot)=T\{i_2(\cdot)\}$ and a,b constants.\\
+$$T\{ai_1(x,y)+bi_2(x,y)\}=ao_1(x,y)+bo_2(x,y)$$ with $o_1(\cdot)=T\{i_1(\cdot)\}, o_2(\cdot)=T\{i_2(\cdot)\}$ and a,b constants.\\
 $T\{\cdot\}$ is said to be translation-equivalent iff:
 $$T\{i(x-x_0,y-y_0)\}=o(x-x_0,y-y_0)$$
 If the operator is LTE, the output signal is given by the convolution between the impulse response (point spread function), $h(x,y)=T\{\delta(x,y)\}$ of the operator and the input signal.
@@ -577,12 +578,12 @@ Correlation is not commutative.\\
 If h is an even function ($h(x,y)=h(-x,-y)$):
 \begin{gather*}
     i(x,y)*h(x,y)=h(x,y)*i(x,y)=\int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} i(\alpha,\beta)h(x-\alpha,y-\beta)d\alpha d\beta\\
-    = \int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} i(\alpha,\beta)h(\alpha-x,\beta-y-)d\alpha d\beta\\
-    = h(x,y) \circ i(x,y)
+    = \int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} i(\alpha,\beta)h(\alpha-x,\beta-y)d\alpha d\beta\\
+    = h(-x,-y)\circ i(x,y) = h(x,y) \circ i(x,y)
 \end{gather*}
 hence if h is even, the convolution between i and h is the same as the correlation of h wrt i.
 \subsubsection{Discrete convolution}
-For discrete signals, convolution is defined as foolows:
+For discrete signals, convolution is defined as follows:
 \begin{equation}
     O(i,j)=T\{I(i,j)\}=\sum_{m=-\infty}^{+\infty} \sum_{n=-\infty}^{+\infty} I(m,n)H(i-m,j-n)
 \end{equation}
@@ -590,7 +591,7 @@ where $I(i,j)$ and $O(i,j)$ are the discrete 2D input and output signals and $H(
 \subsubsection{Practical implementation of discrete convolution}
 Due to the image being much larger than the kernel, commutativity is exploited in order to obtain a more efficient implementation of convolution:
 \begin{equation}
-    O(i,j)=T\{I(i,j)\}=\sum_{m=-\infty}^{+\infty} \sum_{n=-\infty}^{+\infty} K(m,n)I(i-m,j-n)
+    O(i,j)=T\{I(i,j)\}=\sum_{m=-k}^{k} \sum_{n=k}^{k} K(m,n)I(i-m,j-n)
 \end{equation}
 This equates to sliding the kernel across the whole input image and computing the convolution at each pixel. Pixels close to the border will lack some pixels for the computation of the convolution that would be outside the image. There are two main solutions:
 \begin{itemize}
@@ -651,7 +652,7 @@ The discrete Gaussian kernel can be obtained by sampling the corresponding conti
 It can be noted that, as the size of the kernel grows:
 \begin{itemize}
     \item the more accurate the discrete approximation of the ideal filter turns out
-    \item th more the computational cost grows
+    \item the more the computational cost grows
     \item the Gaussian gets smaller and smaller as we move away from the origin
 \end{itemize}
 \subsubsection{deploying separability}
@@ -670,7 +671,7 @@ The speed-up brought in by the separability property can be expressed as:
     S=\frac{2\times(2k+1)^2}{ 2\times2\times(2k+1) } = k+ \frac{1}{2}
 \end{gather}
 \subsection{Median Filter}
-A non-linear filter whereby each pixel intensity is replaced by the mediano over a given neighbourhood. Median filtering counteracts impulse noise effectively, as outliers tend to fall at either the top or bottom of the sorted intensities. Median filtering also tends to keep sharper edges than linear filters such as the mean or gaussian, it cannot however correct Gaussian-like noise. A standard preprocessing pipeline includes first a median filter followed by a gaussian filter.
+A non-linear filter whereby each pixel intensity is replaced by the median over a given neighbourhood. Median filtering counteracts impulse noise effectively, as outliers tend to fall at either the top or bottom of the sorted intensities. Median filtering also tends to keep sharper edges than linear filters such as the mean or gaussian, it cannot however correct Gaussian-like noise. A standard preprocessing pipeline includes first a median filter followed by a gaussian filter.
 \subsection{Bilateral Filter}
 An advanced non-linear filter to accomplish the denoising of a Gaussian-like noise without blurring the image (aka \emph{edge preserving smoothing}). The kernel is computed based on the distance from the considered pixel and the difference in intensity.
 \[
@@ -704,14 +705,55 @@ In practice, to reduce the computational burden, only a region of the image is c
 
 
 \section{Image segmentation and blob analysis} 
-*sigh* some notes have been lost to the doom that are amd drivers for ubuntu, and will not for the time being be rewritten. We carry on, pondering the option of archlinux with growing intensity.
+Segmentation consists of dividing an image in foreground and background regions, an labelling different objects in the foreground.
+Binarization is the division of the image into foreground and background based on pixel intensity, while labelling is finding connected components of a binary image. 
+\subsection{Binarization}
+Binarization is obtained through the gray-level histogram, which is a function associating to each gray level the number of pixels that have that level. It can only be done for inherently inherently binary images. 
 
+Normalizing the histogram provides the relative frequencies of gray levels in the image. The normalized histogram can be thought of as the probability mass function (pmf) of the discrete random variable given by the gray level of a randomly picked pixel in the image. Binarization can be done by thresholding the gray level of pixels based on the information given by the gray-level histogram. 
 
+\subsubsection{Automatic threshold selection}
+\paragraph{Mean of gray level}
+only works if the pixels are equally distributed between foreground and background
+\paragraph{Peaks method}
+\[
+    T = \argmin\left\{h(i) | i \in [i_1, i_2]\right\}
+\]
+requires finding the two main peaks, which often implies smoothing the histogram before looking for peaks to aveoid the searchg being trapped into spurious local maxima. Two find the two main peaks, 3-level or 5-level neighbourhoods are used.
+\paragraph{Otsu's Algorithm}
+Let us define:
+\begin{itemize}
+    \item $i=1,\dots,L$: gray-levels of the image 
+    \item $N$: number of pixels in the image 
+    \item $h(i)$: $i^{th}$ entry of the image histogram 
+    \item $p(i)=\frac{h(i)}{N}$: probability of gray-level $i$
+\end{itemize}
+Accordignly, the mean $\mu$, and variance $\sigma^2$ of the $pmf$ associate with image gray-levels can be expressed as:
+\[
+    \mu = \sum_{i=1}^{L} i p(i) \qquad \sigma^2 = \sum_{i=1}^{L} (i-\mu)^2 p(i)
+\]
+Any threshold value $t$ would split pixels into two disjoint regions whose associated $pmf$s have mean and variance given by:
+\begin{align*}
+    \mu_1(t) &= \sum_{i=1}^{t} i \frac{p(i)}{q_1(t)} \qquad &&\mu_2(t) = \sum_{i=t+1}^{L} i \frac{p(i)}{q_2(t)}\\
+    \sigma_1^2(t) &= \sum_{i=1}^{t} (i-\mu_1(t))^2 \frac{p(i)}{q_1(t)} \qquad &&\sigma_2^2(t) = \sum_{i=t+1}^{L} (i-\mu_2(t))^2 \frac{p(i)}{q_2(t)}
+\end{align*}
+with
+\[
+    q_1(t) = \displaystyle\sum_{i=1}^{t} p(i) \qquad q_2(t) = \displaystyle\sum_{i=t+1}^{L} p(i)
+\]
+the within-group variance is given by:
+\[
+    \sigma_W^2(t) = q_1(t)\sigma_1^2(t) + q_2(t)\sigma_2^2(t)
+\]
+Otsu's algorithm consists in minimizing the within-group variance. The between-group variance is defined as:
+\[
+    \sigma_B^2(t) = (\mu-\mu_1(t))^2q_1(t) + (\mu-\mu_2(t))^2q_2(t)
+\]
+And it can be shown that $\sigma^2 = \sigma_W^2(t) + \sigma_B^2(t)$, so that the threshold $t$ that minimizes $\sigma_W^2(t)$ maximizes $\sigma_B^2(t)$, and as the latter is quicker to compute the algorithm is tipycally implemented by maximizing the between-group variance.
+\paragraph{Adaptive thresholding}
+If lighting in the image is not uniform, a global threshold may not be appropriate. In such cases, an \emph{adaptive} (i.e. spatially varying) threshold ought to be employed for binarization. Typically, a threshold is computed at each pixel based on the intensities within a small neighbourhood ($5\times 5$, $7\times 7$, $9\times 9$). However, too small a neighbourhood might lack either background or foreground pixels, which would imply segmentation errors unless the issue is dealt with explicitly. For the sake of efficiency, simple operators such as mean, gaussian mean or median are adopted to compute the threshold at each pixel.
 
-
-
-
-
+To address the problem of neighbourhoods lacking foreground pixels, it can be useful to subtract a constant from the computed threshold, pushing false positives above threshold. This technique is used in text analysis.
 
 
 \subsection{Coulour-based segmentation}
@@ -723,7 +765,7 @@ In several applications, the sought for objects exhibit a known colour quite dif
         I_b(p) 
     \end{bmatrix}
 \]
-Then, segmentation can be achieved by computing and thresholding the distance between each pixel's colour and the reference background coloour $\mu$:
+Then, segmentation can be achieved by computing and thresholding the distance between each pixel's colour and the reference background colour $\mu$:
 \[
     \forall p \in I : \begin{cases}
         d(I(p),\mu)\leq T \rightarrow O(p) = B \text{ } (F)\\
@@ -731,14 +773,14 @@ Then, segmentation can be achieved by computing and thresholding the distance be
     \end{cases}
 \]
 \[
-    d(I(p),\mu) = ((I_r(p)-\mu_r)^2+(I_g(p)-\mu_g)^2+(I_b(p)-\mu_b)^2)^{\displaystyle\frac{1}{2}}
+    d(I(p),\mu) = ((I_r(p)-\mu_r)^2+(I_g(p)-\mu_g)^2+(I_b(p)-\mu_b)^2)^{\frac{1}{2}}
 \]
 It is thus necessary to know the reference colour, $\mu$, which can be conveniently estimated from one or more training images, by taking an average of pixels in the image. The decision surface would therefore be a sphere in the RGB colour spaces centered at $\mu$ with a radius as large as $T$. Eulidean distance can however lead to mistakes due to training samples exhibiting different variation along different channels.
 \subsubsection{Mahalanobis Distance}
 given the covariance matrix of the pixel values:
 \[
     \Sigma = \begin{pmatrix}
-        \sigma_{rr}^2 & \sigma_rg^2 & \sigma_{rb}^2 \\
+        \sigma_{rr}^2 & \sigma_{rg}^2 & \sigma_{rb}^2 \\
         \sigma_{gr}^2 & \sigma_{gg}^2 & \sigma_{gb}^2 \\
         \sigma_{br}^2 & \sigma_{bg}^2 & \sigma_{bb}^2 \\
     \end{pmatrix} \Leftarrow \begin{cases}
@@ -762,7 +804,7 @@ wlog let's consider a diagonal $\Sigma$ (i.e. independent components in $I(p)$)
         0 & 0 & \sigma_{bb}^2 \\
     \end{pmatrix} \Rightarrow \begin{pmatrix}
         1/\sigma_{rr}^2 & 0 & 0 \\
-        0 & 1/\sigma_{gg}^2  0 \\
+        0 & 1/\sigma_{gg}^2 &  0 \\
         0 & 0 & 1/\sigma_{bb}^2 \\
     \end{pmatrix} \\ \\
     \Sigma^{-1}(I(p)-\mu) = \begin{bmatrix}
@@ -781,12 +823,12 @@ we get that the decision surface is an ellipsoid centered at $\mu$ with axes ali
     L=\begin{bmatrix}
         L_r \\ L_g \\ L_b
     \end{bmatrix} = T \begin{bmatrix}
-        \sigma_rr \\\sigma_gg \\\sigma_bb 
+        \sigma_{rr} \\\sigma_{gg} \\\sigma_{bb} 
     \end{bmatrix}
 \]
 Note that the Mahalanobis distance weighs the differences along components of the vector differently. In particular, they are weighed according to inverse proportionality to the learned variances.
 
-Due to $\Sigma$ being real ad symmetric, it can always be diagonalized through eigenvalue decomposition:
+Due to $\Sigma$ being real and symmetric, it can always be diagonalized through eigenvalue decomposition:
 \[
     \Sigma = RDR^T \qquad R=(e_1,e_2,e_3), \quad D= \begin{pmatrix}
         \lambda_1 & 0 & 0\\
@@ -839,7 +881,7 @@ Defined according to the axis (line through the baricenter) of least inertia (ma
 Orientation is typically defined as the angle between the major axis and the horizontal axis of the image.
 \subsubsection{Oriented Bounding Box}
 aka Minimum Enclosing Rectangle: given by the major and minor\footnote{line through the baricenter perpendicular to the major axis} axes by finding the points that have the highest distance from the major and minor axes on either side, and computing the lines parallel to the axes through said points and their intersections. 
-\subsubsection{Lenght and Width}
+\subsubsection{Length and Width}
 \begin{itemize}
     \item Length: extent of the object along the major axis
     \item Width: extent of the object along the minor axis
@@ -864,7 +906,12 @@ Ratio between the area of the object and the area of the ellipse having major an
 Edges: pixels that lie inbetween two different uniform regions. 
 \subsection{1D Step-Edge} %oh no what are you doing step-edge?
 In the transitoin region between the two constant levels, the absolute value of the first derivative is high (and reaches an extremum at the inflection point)
-% [TODO] instert image of 1D step-edge
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=0.45\textwidth]{1dstepedge}
+    \end{center}
+    \label{fig:1dstep}
+\end{figure}
 Accordingly, the simplest edge-detection operator relies on thresholding the absolute value of the first derivative of the signal. 
 \subsection{2D Step-Edge} % step-edge, I'm stuck!
 A 2D Step-Edge is characterized by both strength and direction. Hence, we cannot use a directional derivative but instead we need an operator allowing to sense the edge whatever its direction is. For this purpose, we use the gradient:
@@ -874,7 +921,13 @@ A 2D Step-Edge is characterized by both strength and direction. Hence, we cannot
 The direction of the gradient is that of the highest variation of the function, while its magnitude is the absolute value of the directional derivative along such direction. 
 
 \subsection{Edge detection by Gradient Thresholding}
-% [TODO] insert scheme of 2d edge detection 
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{edging}
+    \end{center}
+    \label{fig:edging}
+\end{figure}
+
 Edge detection by gradient thresholding can be achieved by applying this scheme 
 \subsubsection{Discrete approximation of the gradient}
 Backward or forward differences can be used:
@@ -893,7 +946,7 @@ which may be thought of as correlation by:
 \]
 Or also central differences:
 \[
-    \displaystyle\frac{\partial I(x,y)}{\partial x} \cong I_x(i,j)=I(i,j+1)-I(i,j-1), \quad     \displaystyle\frac{\partial I(x,y)}{\partial y} \cong I_y(i+1,j)=I(i,j)-I(i-1,j)\\
+    \displaystyle\frac{\partial I(x,y)}{\partial x} \cong I_x(i,j)=I(i,j+1)-I(i,j-1), \quad     \displaystyle\frac{\partial I(x,y)}{\partial y} \cong I_y(i,j)=I(i+1,j)-I(i-1,j)\\
 \]
 with the corresponding correlation kernels given by:
 \[
@@ -905,9 +958,8 @@ with the corresponding correlation kernels given by:
     \end{bmatrix}
 \]
 We can estimate the magintude by different approximations:
-\[
-    \|\nabla I\|_2=\sqrt{I_x^2+I_y^2} \quad \|\nabla I \|_1 = |I_x| + |I_y| \quad \|\nabla I \|_\infty = max(I_x,I_y)
-\]
+\begin{align*}
+    \|\nabla I\|_2&=\sqrt{I_x^2+I_y^2} \\ \|\nabla I \|_1 &= |I_x| + |I_y| \\ \|\nabla I \|_\infty &= max(I_x,I_y) \end{align*}
 The third approximation is faster and more invariant wrt edge direction. 
 
 However, it is well known that differetiation amplifies noise, making edge detection through differentiation problematic. It is therefore necessary to denoise images for edge detection, which does however lead to blurred edges that will be harder to detect. 
@@ -917,9 +969,9 @@ Smoothing and differentiation are carried out jointly within a single step. This
     \mu_x(i,j)=\displaystyle\frac{1}{3}[I(i,j-1)+I(i,j)+I(i,j+1)] \quad \mu_y(i,j)=\displaystyle\frac{1}{3}[I(i-1,j)+I(i,j)+I(i+1,j)]\\
     \tilde{I}_x(i,j) = \mu_y(i,j+1)-\mu_y(i,j) =\\= \displaystyle\frac{1}{3}[I(i-1,j+1)+I(i,j+1)+I(i+1,j+1)-I(i-1,j)-I(i,j)-I(i+1,j)]\\
     \implies \text{ which is equivalent to the kernel }\displaystyle\frac{1}{3}\begin{bmatrix}
-        -1 1 \\
-        -1 1 \\
-        -1 1 
+        -1 & 1 \\
+        -1 & 1 \\
+        -1 & 1 
     \end{bmatrix}
 \end{gather*}
 and similarlty for $\tilde{I}_y(i,j)$ the kernel turns out to be:
@@ -931,12 +983,12 @@ and similarlty for $\tilde{I}_y(i,j)$ the kernel turns out to be:
 \]
 In the \emph{Prewitt operator}, derivatives are approximated by central differences (better for diagonal edges)
 \begin{gather*}
-    \tilde{I}_x(i,j)=\mu_y(i,j+1)-\mu_y(i,j-1) \quad \implies \quad \begin{bmatrix}
-        -1 & 0 & -1 \\
-        -1 & 0 & -1 \\
-        -1 & 0 & -1 
+    \tilde{I}_x(i,j)=\mu_y(i,j+1)-\mu_y(i,j-1) \quad \implies \quad \frac{1}{3} \begin{bmatrix}
+        -1 & 0 & 1 \\
+        -1 & 0 & 1 \\
+        -1 & 0 & 1 
     \end{bmatrix}\\
-    \tilde{I}_y(i,j)=\mu_x(i,j+1)-\mu_x(i,j-1) \quad \implies \quad \begin{bmatrix}
+    \tilde{I}_y(i,j)=\mu_x(i,j+1)-\mu_x(i,j-1) \quad \implies \quad \frac{1}{3} \begin{bmatrix}
         -1 & -1 & -1 \\
         0 & 0 & 0 \\
         1 & 1 & 1 
@@ -960,28 +1012,41 @@ The gradient direction is discretized. 2$\pi$ is divided into 8 direction bins
 \subsubsection{Continuous formulation}
 Is based on gradient interpolation
 
-The overall flow-chart of an edge detector based on smooth derivatives and NMS ca be sketched as in the figure 
-% [TODO] insert image slide 16
+The overall flow-chart of an edge detector based on smooth derivatives and NMS can be sketched as in the figure 
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{smoothedging}
+    \end{center}
+    \label{fig:sedge}
+\end{figure}
+
 \subsection{Canny's Edge Detector}
 Canny proposed a set of criteria to evaluate an edge detector:
 \begin{enumerate}
     \item Good detection: robustness to noise
     \item Good localization: edges should be localized with the minimum possible error (distance to the "true" edge)
-    \item One response to one edge: the fildter should detect one single edge point at each "true" edge
+    \item One response to one edge: the filter should detect one single edge point at each "true" edge
 \end{enumerate}
-In the 1D case, the optimal edge detection consists in finding local extrema of the convolution of the signal by a 1st order Gaussian derivative (Gaussian: smoothing, derivative: variations). This theoretical result can also be regarded as proof that the gaussian filter is optimal for smoothing. 
+In the 1D case, the optimal edge detection consists in finding local extrema of the convolution of the signal by a 1st order Gaussian derivative (Gaussian: smoothing, derivative: variations). This theoretical result can also be regarded as proof that the gaussian filter is optimal for smoothing to detect noisy edges.
 
 In the 2D case, the optimal filter results to be composed of the sequence of Gaussian smoothing, gradient computation and NMS along the gradient direction. 
 2D convolution by a gaussian can be sped up through separability:
-\begin{align*}
-    \tilde{I}_x(x,y) =& \frac{\partial}{\partial x} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial x}\\
-    \tilde{I}_y(x,y) =& \frac{\partial}{\partial y} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial y}\\
-    G(x,y) =& G(x)G(y)\\
-    \implies \tilde{I}_x(x,y) =& I(x,y) \ast (G'(x)G(y))  =(I(x,y)\ast G'(x))\ast G(y)\\
-    \tilde{I}_x(x,y) =& I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
-\end{align*}
-After NMS an extra thresholding is applied to distinguish true edges and unwanted ones. However, edge streaking may occur when gradient magintude varies along object contours. To address this issue, Canny proposed \emph{hysteresis thresholding}: 2 thresholds are used, a higher ($T_h$) and a lower ($T_l$) one. Pixels are taken as an edge if they are above $T_h$ or if they are higher than $T_l$ and are neighbours to an already detected edge. The overall flow-chart of the Canny edge detector is as follows:
-% [TODO] insert chart slide 21
+\begin{gather*}
+    \tilde{I}_x(x,y) = \frac{\partial}{\partial x} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial x}\\
+    \tilde{I}_y(x,y) = \frac{\partial}{\partial y} (I(x,y)\ast G(x,y)) = I(x,y) \ast \frac{\partial G(x,y)}{\partial y}\\
+    G(x,y) = G(x)G(y)\\
+    \Downarrow\\
+    \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))  =(I(x,y)\ast G'(x))\ast G(y)\\
+    \tilde{I}_x(x,y) = I(x,y) \ast (G'(x)G(y))=(I(x,y)\ast G'(x))\ast G(y)
+\end{gather*}
+After NMS an extra thresholding is applied to distinguish true edges and unwanted ones. However, edge streaking may occur when gradient magnitude varies along object contours. To address this issue, Canny proposed \emph{hysteresis thresholding}: 2 thresholds are used, a higher ($T_h$) and a lower ($T_l$) one. Pixels are taken as an edge if they are above $T_h$ or if they are higher than $T_l$ and are neighbours to an already detected edge. The overall flow-chart of the Canny edge detector is as follows:
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{canny}
+    \end{center}
+    \label{fig:canny}
+\end{figure}
+
 \subsection{Edge detection through the second derivative}
 Edges may also be located by looking for zero-crossing of the second derivative of the signal. The second derivative along the gradient direction can be obtained as $n^THn$ where 
 \[
@@ -999,7 +1064,7 @@ One can use forward and backward differences to approximate the first and second
 \[
     I_{xx} \simeq I_x(i,j)-I_x(i,j-1)=I(i,j-1) - 2I(i,j)+I(i,j+1)
 \]
-$I_yy$ analogous. This leads to the following convolution kernel:
+$I_{yy}$ analogous. This leads to the following convolution kernel:
 \[
     \nabla^2 = \begin{bmatrix}
         0 & 1  & 0 \\
@@ -1178,8 +1243,8 @@ The SIFT descriptor is computed as follows:
     \item For each subgrid, the gradient magnitude and orientation are computed for each pixel and a gradient orientation histogram is built with 8 bins.
     \item Gradients are rotated according to the canonical orientation of the keypoint.
     \item Each pixel in the region contributes to its designated bin according to gradient magnitude as well as to a Gaussian weighting function with $\sigma$ equal to half the grid size. 
-    \item TO avoid boundary effects, a soft assignment is emplopyed: each pixels contribution to two adjacent bins is wighted by the distance to the bin center. His is done within a histogram and also between regions. The overall scheme is referred to as trilinear interpolation. 
-    \item The descriptor is normalized to unit length to gain invariance wrt affine intensity changes. Then t increase robustness to nonlinear changes, all elements larger than 0.2 are saturated and the descriptor is normalized again.
+    \item To avoid boundary effects, a soft assignment is employed: each pixels contribution to two adjacent bins is weighted by the distance to the bin center. This is done within a histogram and also between regions. The overall scheme is referred to as trilinear interpolation. 
+    \item The descriptor is normalized to unit length to gain invariance wrt affine intensity changes. Then to increase robustness to nonlinear changes, all elements larger than 0.2 are saturated and the descriptor is normalized again.
 \end{itemize}
 
 \section{Matching process}
@@ -1213,11 +1278,11 @@ Construction:
 \end{enumerate}
 NN search:
 \begin{enumerate}
-    \item given the query $q$, thje tree is traversed from rott to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr}$ from $q$. 
+    \item given the query $q$, the tree is traversed from root to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr})$ from $q$. 
     \item Backtracking:
         \begin{enumerate}
-            \item the parent node to the found leaf is considered: if its distance to $q$ is less than $d(q,NN_{curr}$ the parent node becomes the new $NN_{curr}$ and $d(q,NN_{curr})$ is updated. 
-            \item A check is carried out to determine whether the other halfs-space defined by the current parent node may contain or not a closer point. This depends on whether or not the hypersphere of radius $d(q,NN_{curr})$ centered at $q$ does intersect the splitting hyperplane.
+            \item the parent node to the found leaf is considered: if its distance to $q$ is less than $d(q,NN_{curr})$ the parent node becomes the new $NN_{curr}$ and $d(q,NN_{curr})$ is updated. 
+            \item A check is carried out to determine whether the other half-space defined by the current parent node may contain or not a closer point. This depends on whether or not the hypersphere of radius $d(q,NN_{curr})$ centered at $q$ does intersect the splitting hyperplane.
                 \begin{itemize}
                     \item In the first case, the sub-tree whose root is the parent node is traverse down to the next closest leaf 
                     \item Conversely, the parent node to the current one is considered.
@@ -1227,7 +1292,7 @@ NN search:
 \end{enumerate}
 Best Bin First search:
 \begin{enumerate}
-    \item given the query $q$, the tree is traversed from root to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr}$ from $q$. The visited nodes are ordered in a \emph{priority queue} according to their distance to $q$. 
+    \item given the query $q$, the tree is traversed from root to the closest leaf, denoted as $NN_{curr}$ with distance $d(q,NN_{curr})$ from $q$. The visited nodes are ordered in a \emph{priority queue} according to their distance to $q$. 
     \item Backtracking:
         \begin{enumerate}
             \item The first element in the \emph{priority queue} is extracted so to traverse its unexplored branch down to a leaf. During the process, the priority queue is kept updated. 
@@ -1343,7 +1408,7 @@ Through the HT this is interpreted as a mapping from the image space to the 3-di
     \end{cases}
 \]
 \subsection{Generalized Hough Transform}
-The HT can be extended to detect arbutrary non analytical shapes. A description of the algorithm follows:
+The HT can be extended to detect arbitrary non analytical shapes. A description of the algorithm follows:
 \begin{itemize}
     \item \textbf{Off-line Phase}
         \begin{enumerate}
